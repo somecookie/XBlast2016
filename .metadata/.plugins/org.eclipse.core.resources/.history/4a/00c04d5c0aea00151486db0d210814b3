@@ -1,0 +1,28 @@
+package ch.epfl.xblast;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import ch.epfl.xblast.server.Block;
+import ch.epfl.xblast.server.Board;
+
+public class BoardTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testOnCheckBlockMatrix() {
+        List<List<Block>> a = new ArrayList<>();
+        ArrayList <Block> b = new ArrayList<>();
+        b.add(Block.FREE);b.add(Block.FREE); b.add(Block.FREE);
+        
+        for (int i = 0; i < 13; i++) {
+            a.add(new ArrayList<>(b));
+        }
+        
+        Board.checkBlockMatrix(a, 14, 3);
+    }
+    
+}

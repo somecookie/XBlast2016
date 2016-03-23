@@ -1,0 +1,33 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Clarise Estelle Fleurimont (246866)
+ * @date 29 févr. 2016
+ */
+package ch.epfl.xblast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public final class Lists {
+    private Lists() {}
+
+    /**
+     * Retourne une version symétrique de la liste donnée.
+     * Lève l'exception IllegalArgumentException si celle-ci est vide.
+     * @param l
+     * @return
+     */
+    public static <T> List<T> mirrored(List<T> l) {
+        if (l.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        else {
+            ArrayList<T> newL = new ArrayList<T>(l);
+            Collections.reverse(l);
+            newL.addAll(l.subList(1,l.size()));
+            List<T> imuL = Collections.unmodifiableList(new ArrayList<>(newL));
+            return imuL;
+        }
+    }
+}

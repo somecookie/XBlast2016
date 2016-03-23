@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.junit.Test"/>
+<fullyQualifiedTypeName name="java.lang.Character"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Block"/>
+<fullyQualifiedTypeName name="java.lang.reflect.Array"/>
+<fullyQualifiedTypeName name="java.lang.IllegalAccessError"/>
+<fullyQualifiedTypeName name="java.lang.NullPointerException"/>
+<fullyQualifiedTypeName name="org.junit.runner.notification.StoppedByUserException"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player.DirectedPosition"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player.LifeState.State"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.SubCell"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Ticks"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.Cell"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player.LifeState"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.ListsTest"/>
+<fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Board"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Bomb"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.ArgumentChecker"/>
+<fullyQualifiedTypeName name="ch.epfl.cs108.Sq"/>
+<fullyQualifiedTypeName name="java.util.Objects"/>
+<fullyQualifiedTypeName name="java.util.Optional"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction"/>
+<fullyQualifiedTypeName name="java.util.LinkedList"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.Lists"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.PlayerID"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+</qualifiedTypeNameHistroy>

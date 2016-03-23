@@ -1,0 +1,10 @@
+Cell :
+public final unmodifible crée le plateau de jeu ordonné par cases (13x15)
+
+SubCell :
+public final unmodifiable crée les sous-cases du plateau de jeu, chaque case contient un tableau de (16x16) sous-cases construites ici.
+
+Direction :
+public enum enumération "décrivant" les quatre directions possibles (Nord-N, Est-E, Sud-S, Ouest-W)
+Contient deux méthodes : -isHorizontal()
+			 -isParallelTo(Direction that)

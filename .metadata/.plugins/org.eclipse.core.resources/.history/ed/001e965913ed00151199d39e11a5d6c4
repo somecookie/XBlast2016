@@ -1,0 +1,137 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Clarise Estelle Fleurimont (246866)
+ * @date 14 mars 2016
+ */
+package ch.epfl.xblast.server;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import ch.epfl.cs108.Sq;
+import ch.epfl.xblast.ArgumentChecker;
+import ch.epfl.xblast.Cell;
+import ch.epfl.xblast.PlayerID;
+
+public final class GameState {
+
+    private final int ticks;
+    private final Board board;
+    private final List<Player> players;
+    private final List<Bomb> bombs;
+    private final List<Sq<Sq<Cell>>> explosions;
+    private final List<Sq<Cell>> blasts;
+
+    /**
+     * Construit l'état du jeu pour le coup d'horloge, le plateau de jeu, les joueurs, les bombes, les explosions et les particules
+     * d'explosion (blasts) donnés.
+     * 
+     * @param ticks
+     * @param board
+     * @param players
+     * @param bombs
+     * @param explosions
+     * @param blasts
+     * @throws IllegalArgumentException si le coup d'horloge est (strictement) négatif ou si la liste des joueurs
+     * ne contient pas exactement 4 éléments.
+     * @throws NullPointerException si l'un des cinq derniers arguments est nul 
+     */
+    public GameState(int ticks, Board board, List<Player> players,
+            List<Bomb> bombs, List<Sq<Sq<Cell>>> explosions,
+            List<Sq<Cell>> blasts){
+        
+        this.ticks = ArgumentChecker.requireNonNegative(ticks);
+        
+        if(players.size() != 4){
+            throw new IllegalArgumentException("Le nombre de joueurs doit être de 4");
+        }
+        this.players = players;
+        this.board = Objects.requireNonNull(board);
+        this.bombs = Objects.requireNonNull(bombs);
+        this.explosions = Objects.requireNonNull(explosions);
+        this.blasts = Objects.requireNonNull(blasts);
+    }
+
+    /**
+     * Construit l'état du jeu pour le plateau et les joueurs donnés,
+     * pour le coup d'horloge 0 et aucune bombe, explosion ou particule d'explosion.
+     * @param board
+     * @param players
+     */
+    public GameState(Board board, List<Player> players) {
+        this(0, board,players,null, null, null);
+    }
+
+    /**
+     * Retourne le coup d'horloge correspondant à l'état
+     * @return
+     */
+    public int ticks() {
+        return ticks;
+    }
+
+    /**
+     * Retourne vrai sii l'état correspond à une partie terminée, c-à-d si le nombre de coups d'horloge d'une partie
+     * (Ticks.TOTAL_TICKS) est écoulé, ou s'il n'y a pas plus d'un joueur vivant
+     * @return
+     */
+    public boolean isGameOver() {
+        if (Ticks.TOTAL_TICKS == ticks || alivePlayers().size() <= 1) {
+            return true;
+            }
+            return false;
+    }
+
+    /**
+     * Retourne le temps restant dans la partie, en secondes
+     * @return
+     */
+    public double remainingTime() {
+        return (Ticks.TOTAL_TICKS - ticks)/ Ticks.TICKS_PER_SECOND;
+    }
+
+    /**
+     * Retourne l'identité du vainqueur de cette partie s'il y en a un, sinon la valeur optionnelle vide (voir plus bas)
+     * @return
+     */
+    public Optional<PlayerID> winner() {
+        if (alivePlayers().size() == 1) {
+            return  Optional.of(players.get(0).id());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Retourne le plateau de jeu
+     * @return
+     */
+    public Board board() {
+        return board;
+    }
+
+    /**
+     * Retourne les joueurs, sous la forme d'une liste contenant toujours 4 éléments, car même les joueurs morts en font partie,
+     * @return
+     */
+    public List<Player> players() {
+        return players;
+    }
+
+    /**
+     * Retourne les joueurs vivants, c-à-d ceux ayant au moins une vie
+     * @return
+     */
+    public List<Player> alivePlayers() {
+        List<Player> alivePlayers = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).isAlive()) {
+                alivePlayers.add(players.get(i));
+            }
+        }
+
+        return alivePlayers;
+    }
+}

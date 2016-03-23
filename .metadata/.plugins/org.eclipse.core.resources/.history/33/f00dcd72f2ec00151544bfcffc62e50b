@@ -1,0 +1,15 @@
+package ch.epfl.xblast.server;
+
+import java.util.Objects;
+
+import ch.epfl.cs108.Sq;
+
+public class main {
+
+    public static void main(String[] args) {
+        Sq<Integer> a = Sq.constant(null);
+        Sq<Integer> b = Objects.requireNonNull(a);
+
+    }
+
+}

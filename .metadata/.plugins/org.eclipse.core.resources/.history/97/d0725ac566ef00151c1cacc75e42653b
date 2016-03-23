@@ -1,0 +1,15 @@
+package ch.epfl.xblast.server;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+public class main {
+    List<Integer> l = Arrays.asList(1,2,3,4,5);
+    Iterator<Integer> it = l.iterator();
+    while(it.hasNext()){
+        Integer i = it.next();
+        System.out.println(i);
+    }
+
+}

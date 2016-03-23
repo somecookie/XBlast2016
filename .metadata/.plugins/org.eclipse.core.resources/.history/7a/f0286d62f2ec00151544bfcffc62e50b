@@ -1,0 +1,13 @@
+package ch.epfl.xblast.server;
+
+import ch.epfl.cs108.Sq;
+
+public class main {
+
+    public static void main(String[] args) {
+        Sq<Integer> a = Sq.constant(null);
+        System.out.println(a.isEmpty());
+
+    }
+
+}
