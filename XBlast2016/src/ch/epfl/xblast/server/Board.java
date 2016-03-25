@@ -60,18 +60,23 @@ public class Board {
      */
     public static Board ofInnerBlocksWalled(List<List<Block>> innerBlocks) {
         checkBlockMatrix(innerBlocks, 11, 13);
-
-        List<Sq<Block>> platEnCstr = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 13; j++) {
-                if (i == 0 ||j == 0 ||i == 14 ||j == 12) {
-                    platEnCstr.add(Sq.constant(Block.INDESTRUCTIBLE_WALL));
-                } else {
-                    platEnCstr.add(Sq.constant(innerBlocks.get(i).get(j)));
-                }
-            }
+        
+        List<List<Block>> platEnCstr = new ArrayList<>();
+        
+        for (int i = 0; i < innerBlocks.size(); i++) {
+            platEnCstr.add(new ArrayList<>());
+            platEnCstr.get(i).add(Block.INDESTRUCTIBLE_WALL);
+            for (int j = 0; j < innerBlocks.get(i).size(); j++) {
+                platEnCstr.get(i).add(innerBlocks.get(i).get(j));
+            } 
+            platEnCstr.get(i).add(Block.INDESTRUCTIBLE_WALL);
         }
-        return new Board(platEnCstr);
+        
+        List<Block> walls = Collections.nCopies(platEnCstr.get(0).size(), Block.INDESTRUCTIBLE_WALL);
+        platEnCstr.add(0, new ArrayList<>(walls));
+        platEnCstr.add(new ArrayList<>(walls));
+
+        return ofRows(platEnCstr);
     }
 
     /**
@@ -84,36 +89,18 @@ public class Board {
      */
     public static Board ofQuadrantNWBlocksWalled(List<List<Block>> quadrantNWBlocks) {
         checkBlockMatrix(quadrantNWBlocks, 6, 7);
-
         List<List<Block>> platEnCstr = new ArrayList<>();
-        List<Block> b = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            b.add(Block.INDESTRUCTIBLE_WALL);
-        }
-        platEnCstr.add(b);
         for (int i = 0; i < quadrantNWBlocks.size(); i++) {
-            List<Block> l = new ArrayList<>();
-            l.add(Block.INDESTRUCTIBLE_WALL);
-            for (int j = 0; j < Lists.mirrored(quadrantNWBlocks.get(i)).size(); j++) {
-                l.add(Lists.mirrored(quadrantNWBlocks.get(i)).get(j));
-            }
-            l.add(Block.INDESTRUCTIBLE_WALL);
-            platEnCstr.add(l);
+            List<Block> tmp = Lists.mirrored(quadrantNWBlocks.get(i));
+            platEnCstr.add(new ArrayList<>(tmp));
         }
 
-        for (int i = (quadrantNWBlocks.size()-1-1); i >= 0; i--) {
-            platEnCstr.add(platEnCstr.get(i));
+        for (int i = platEnCstr.size()-2; i >= 0 ; i--) {
+            platEnCstr.add(new ArrayList<>(platEnCstr.get(i)));
         }
-        platEnCstr.add(b);
-
-        List<Sq<Block>> nouv = new ArrayList<>();
-        for (int i = 0; i <platEnCstr.size(); i++) {
-            for (int j = 0; j < platEnCstr.get(i).size(); j++) {
-                nouv.add(Sq.constant(platEnCstr.get(i).get(j)));
-            }  
-        }
-
-        return new Board(nouv);
+        
+        return ofInnerBlocksWalled(platEnCstr);
+        
     }
 
     /**

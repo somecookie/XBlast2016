@@ -84,4 +84,5 @@ public enum Block {
             throw new NoSuchElementException("La case ne contient pas de bonus!");
         }
     }
+
 }
