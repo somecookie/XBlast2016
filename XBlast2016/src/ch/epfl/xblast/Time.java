@@ -9,6 +9,6 @@ public interface Time {
 
     final int S_PER_MIN = 60;
     final int MS_PER_S = 1000;
-    final int US_PER_S = 1000000;
-    final int NS_PER_S = 1000000000;
+    final int US_PER_S = 1000*MS_PER_S;
+    final int NS_PER_S = 1000*US_PER_S;
 }

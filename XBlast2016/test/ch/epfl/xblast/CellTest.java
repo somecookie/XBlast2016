@@ -3,6 +3,9 @@ package ch.epfl.xblast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 public class CellTest {
@@ -38,7 +41,19 @@ public class CellTest {
             pred = c;
         }
     }
-
+    
+    @Test
+    public void spiralOrderInitailisation(){
+        List<Cell> spir = new ArrayList<>();
+        spir = Cell.SPIRAL_ORDER;
+        for(Cell c: spir){
+            System.out.println(c);
+        }
+        assertEquals(new Cell(5,0), spir.get(5));
+        assertEquals(new Cell(14,6), spir.get(20));
+        assertEquals(new Cell(10,12), spir.get(30));
+        assertEquals(new Cell(8,6), spir.get(Cell.COUNT-1));
+    }
     @Test
     public void constructorCorrectlyNormalizesCoordinates() {
         for (int i = -2; i <= 2; ++i) {

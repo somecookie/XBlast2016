@@ -14,20 +14,20 @@
 <fullyQualifiedTypeName name="ch.epfl.xblast.Cell"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.server.Player.LifeState"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.ListsTest"/>
-<fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.server.Board"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.server.Bomb"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.ArgumentChecker"/>
 <fullyQualifiedTypeName name="ch.epfl.cs108.Sq"/>
 <fullyQualifiedTypeName name="java.util.Objects"/>
 <fullyQualifiedTypeName name="java.util.Optional"/>
-<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction"/>
 <fullyQualifiedTypeName name="java.util.LinkedList"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.Lists"/>
-<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="ch.epfl.xblast.PlayerID"/>
 <fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="ch.epfl.xblast.server.Player"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
 </qualifiedTypeNameHistroy>

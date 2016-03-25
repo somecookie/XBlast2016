@@ -1,6 +1,6 @@
 package ch.epfl.xblast;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +38,22 @@ public class ListsTest {
     public void normalPermutation(){
         List<Integer> a = Arrays.asList(1,2,3, 4);
         List<List<Integer>> b = Lists.permutations(a);
-        //assertEquals(120, b.size());
-        for (int i = 0; i < b.size(); i++) {
-            System.out.println(b.get(i));
-        }
+        assertEquals(24, b.size());
+    }
+    
+    @Test
+    public void nullPermutation(){
+        List<Integer> a = new ArrayList<>();
+        List<List<Integer>> b = Lists.permutations(a);
+        assertTrue(b.get(0).isEmpty());
+        assertEquals(1, b.size());
+    }
+    @Test
+    public void onElementPermutation(){
+        List<Integer> a = Arrays.asList(1);
+        List<List<Integer>> b = Lists.permutations(a);
+        assertEquals(1, b.size());
+        assertEquals(1 ,b.get(0).get(0).intValue());
     }
 
 }

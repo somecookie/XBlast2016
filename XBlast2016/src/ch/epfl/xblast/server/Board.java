@@ -24,7 +24,7 @@ public class Board {
             throw new IllegalArgumentException("Argument invalide: nombre de blocs différent de 195 nombre de blocks obtenus :" + blocks.size());
         }
         else{
-            plateau = Collections.unmodifiableList(blocks);
+            plateau = Collections.unmodifiableList(new ArrayList<>(blocks));
         }
     }
 
@@ -127,6 +127,10 @@ public class Board {
      * @throws IllegalArgumentException si la matrice (liste de liste) donnée ne contient pas rows éléments, contenant chacun columns blocs
      */
     public static void checkBlockMatrix(List<List<Block>> matrix, int rows, int columns) {
+        if(matrix == null || matrix.isEmpty()){
+            throw new IllegalArgumentException("La list est vide!");
+        }
+        
         int rowSize = matrix.size();
         if (rowSize != rows) {
             throw new IllegalArgumentException("Argument invalide: dervait avoir " + rows + "lignes et non " + rowSize);
@@ -134,10 +138,11 @@ public class Board {
         for (int i = 0; i < rowSize; i++) {
             if (matrix.get(i).size() != columns) {
                 throw new IllegalArgumentException("Argument invalide: devrait avoir " + columns + " colonnes et non "
-                        + matrix.get(i).size() + " Ã  la ligne " + i);
+                        + matrix.get(i).size() + " A  la ligne " + i);
             }
         }
     }
+
 
     /**
      * Retourne la séquence des blocs pour la case donnée
