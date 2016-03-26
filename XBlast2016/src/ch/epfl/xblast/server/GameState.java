@@ -81,7 +81,7 @@ public final class GameState {
      * @throws les mêmes exceptions que le constructeur principal
      */
     public GameState(Board board, List<Player> players) {
-        this(0, board,players,null, null, null);
+        this(0, board,players,new ArrayList<Bomb>(), new ArrayList<Sq<Sq<Cell>>>(), new ArrayList<Sq<Cell>>());
     }
 
     /**
