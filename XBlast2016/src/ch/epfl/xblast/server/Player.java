@@ -3,6 +3,7 @@ package ch.epfl.xblast.server;
 import java.util.Objects;
 
 import ch.epfl.cs108.Sq;
+import ch.epfl.xblast.ArgumentChecker;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.PlayerID;
@@ -31,11 +32,8 @@ public final class Player {
         this.id = Objects.requireNonNull(id);
         this.lifeStates = Objects.requireNonNull(lifeStates);
         this.directedPos = Objects.requireNonNull(directedPos);
-        if(maxBombs < 0 || bombRange <0){
-            throw new IllegalArgumentException("Le nombre maximum de bombes et la portée doivent être positif");
-        }
-        this.maxBombs = maxBombs;
-        this.bombRange = bombRange;
+        this.maxBombs = ArgumentChecker.requireNonNegative(maxBombs);
+        this.bombRange = ArgumentChecker.requireNonNegative(bombRange);
     }
     
     /**
@@ -47,14 +45,10 @@ public final class Player {
      * @param bombRange
      */
     public Player(PlayerID id, int lives, Cell position, int maxBombs, int bombRange){
-        this(id, SqCreator(lives),
+        this(id, SqCreator(ArgumentChecker.requireNonNegative(lives)),
              DirectedPosition.stopped(new DirectedPosition(SubCell.centralSubCellOf(position), Direction.N)),
              maxBombs, 
              bombRange);
-        
-        if(lives < 0){
-            throw new IllegalArgumentException("Le nombre de vie est negatif");
-        }
     }
     
     /**
@@ -204,13 +198,7 @@ public final class Player {
          * @throws NullPointerException si l'état est nul
          */
         public LifeState(int lives, State state){
-            
-            if(lives >= 0){
-                this.lives = lives;
-            }
-            else{
-                throw new IllegalArgumentException("Le nombre de vie doit être positif!");
-            }
+            this.lives = ArgumentChecker.requireNonNegative(lives);
             this.state = Objects.requireNonNull(state);
         }
         /**
@@ -289,8 +277,5 @@ public final class Player {
         public DirectedPosition withDirection(Direction newDirection){
             return new DirectedPosition(position, newDirection);
         }
-        
-        
     }
- 
 }

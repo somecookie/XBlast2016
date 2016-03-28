@@ -8,6 +8,7 @@ package ch.epfl.xblast;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -19,12 +20,31 @@ public class BombTest {
     private Bomb bombSimulator() {
         return new Bomb(PlayerID.PLAYER_1, new Cell(3, 3), 5, 3);
     }
-
     @Test
-    public void explosionCreatesCorrectExplosion() {
-        Bomb bomb = bombSimulator();
-        List<Sq<Sq<Cell>>> list = bomb.explosion();
+    public void testOnCOnstruction(){
+        int fuseLength = 10;
+        Sq<Integer> fuseLengths = Objects.requireNonNull(Sq.iterate(fuseLength, u -> u - 1).limit(fuseLength));
+        
+        for (int i = 0; i < 10; i++) {
+            assertEquals(10-i, fuseLengths.head().intValue());
+            fuseLengths = fuseLengths.tail();
+        }
     }
+    
+//    @Test
+//    public void testOnExplosionArmTowards(){
+//        Bomb b = bombSimulator();
+//        Sq<Sq<Cell>> bomb = b.explosionArmTowards(Direction.E);
+//        for (int i = 0; i < b.range(); i++) {
+//            Sq<Cell> bomb1 = bomb.head();
+//            for (int j = 0; j < 5; j++) {
+//               System.out.print(bomb1.head()+", ");
+//               bomb1 = bomb1.tail();
+//            }
+//            System.out.println();
+//            bomb = bomb.tail();
+//        }
+//    }
 
     @Test(expected = IllegalArgumentException.class)
     public void secondBuilderThrowsCorrectExeption_1() {

@@ -22,6 +22,7 @@ public final class Bomb {
     private final int range;
 
     /**
+     * Constructeur principal
      * construit une bombe avec le propriétaire, la position, la séquence de longueurs de mèche et la portée donnés
      * Lève l'exception  si l'un des trois premiers arguments est nul
      * Lève l'exception
@@ -43,6 +44,7 @@ public final class Bomb {
     }
 
     /**
+     * Constructeur secondaire
      * construit une bombe avec le propriétaire, la position et la portée donnés, et la séquence de longueur de mèche (fuseLength, fuseLength - 1, fuseLength - 2, …, 1).
      * Lève les mêmes exceptions que le constructeur précédent, dans les mêmes situations.
      * @param ownerId
@@ -51,10 +53,7 @@ public final class Bomb {
      * @param range
      */
     public Bomb(PlayerID ownerId, Cell position, int fuseLength, int range) {
-        this.ownerID = Objects.requireNonNull(ownerId);;
-        this.position = Objects.requireNonNull(position);
-        this.range = ArgumentChecker.requireNonNegative(range);
-        this.fuseLengths = Objects.requireNonNull(Sq.iterate(fuseLength, u -> u - 1).limit(fuseLength));
+        this(ownerId, position, Objects.requireNonNull(Sq.iterate(fuseLength, u -> u - 1).limit(fuseLength)), range);
     }
 
     public PlayerID ownerId() {
@@ -83,33 +82,12 @@ public final class Bomb {
      * @return
      */
     public List<Sq<Sq<Cell>>> explosion() {
-        Sq<Integer> ticks = Sq.iterate(Ticks.EXPLOSION_TICKS, n -> n - 1).limit(Ticks.EXPLOSION_TICKS);
         List<Sq<Sq<Cell>>> explosion = new ArrayList<>();
-        Sq<Sq<Cell>> north = explosionArmTowards(Direction.N);
-        Sq<Sq<Cell>> est = explosionArmTowards(Direction.E).tail();
-        Sq<Sq<Cell>> south = explosionArmTowards(Direction.S).tail();
-        Sq<Sq<Cell>> west = explosionArmTowards(Direction.W).tail();
-
-        explosion.add(Sq.repeat(Ticks.EXPLOSION_TICKS - range, north.head()));
-        north = north.tail();
-        explosion.add(Sq.repeat(Ticks.EXPLOSION_TICKS - range, est.head()));
-        est = est.tail();
-        explosion.add(Sq.repeat(Ticks.EXPLOSION_TICKS - range, south.head()));
-        south = south.tail();
-        explosion.add(Sq.repeat(Ticks.EXPLOSION_TICKS - range, west.head()));
-        west = west.tail();
-
-        for (int i = 0; i < range-1; i++) {
-            explosion.get(0).concat(Sq.repeat(Ticks.EXPLOSION_TICKS - range, north.head()));
-            north = north.tail();
-            explosion.get(1).concat(Sq.repeat(Ticks.EXPLOSION_TICKS - range, est.head()));
-            est = est.tail();
-            explosion.get(2).concat(Sq.repeat(Ticks.EXPLOSION_TICKS - range, south.head()));
-            south = south.tail();
-            explosion.get(3).concat(Sq.repeat(Ticks.EXPLOSION_TICKS - range, west.head()));
-            west = west.tail();
-            ticks = ticks.tail();
-        }
+        
+        explosion.add(explosionArmTowards(Direction.N).limit(Ticks.EXPLOSION_TICKS-range));
+        explosion.add(explosionArmTowards(Direction.E).limit(Ticks.EXPLOSION_TICKS-range));
+        explosion.add(explosionArmTowards(Direction.S).limit(Ticks.EXPLOSION_TICKS-range));
+        explosion.add(explosionArmTowards(Direction.W).limit(Ticks.EXPLOSION_TICKS-range));
 
         return explosion;
     }
@@ -120,6 +98,7 @@ public final class Bomb {
      * @return
      */
     private Sq<Sq<Cell>> explosionArmTowards(Direction dir) {
-        return Sq.constant(Sq.iterate(position, c -> c.neighbor(dir)));
+        Sq<Cell> pos = Sq.iterate(position, c -> c.neighbor(dir)).limit(range);
+        return Sq.constant(pos);
     }
 }

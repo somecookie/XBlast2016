@@ -133,5 +133,4 @@ public class BoardTest {
         }
         Board b = Board.ofQuadrantNWBlocksWalled(bl);
     }
-    //PAS GITS
 }
