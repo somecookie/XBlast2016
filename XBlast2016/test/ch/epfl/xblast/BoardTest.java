@@ -22,6 +22,8 @@ import ch.epfl.xblast.server.Block;
 import ch.epfl.xblast.server.Board;
 
 public class BoardTest {
+    
+    
 
     @Test(expected = IllegalArgumentException.class)
     public void testOnExeptionOfOfRows(){

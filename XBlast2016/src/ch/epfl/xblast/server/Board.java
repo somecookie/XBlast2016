@@ -17,10 +17,13 @@ import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Lists;
 
 public class Board {
+    public static final int COLUMNS = 15;
+    public static final int ROWS = 13;
+    public static final int COUNT = COLUMNS*ROWS;
     private final List<Sq<Block>> plateau;
 
     public Board(List<Sq<Block>> blocks){
-        if(blocks.size() != 195){
+        if(blocks.size() != COUNT){
             throw new IllegalArgumentException("Argument invalide: nombre de blocs différent de 195 nombre de blocks obtenus :" + blocks.size());
         }
         else{
@@ -37,7 +40,7 @@ public class Board {
      * @throws IllegalArgumentException si la liste reçue n'est pas constituée de 13 listes de 15 éléments chacune
      */
     public static Board ofRows(List<List<Block>> rows){
-        checkBlockMatrix(rows, 13, 15);
+        checkBlockMatrix(rows, ROWS, COLUMNS);
 
         List<Sq<Block>> platEnCstr = new ArrayList<>();
         for (int i = 0; i < rows.size(); i++) {

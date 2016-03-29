@@ -24,6 +24,7 @@ import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.Lists;
 import ch.epfl.xblast.PlayerID;
+import ch.epfl.xblast.SubCell;
 
 public final class GameState {
 
@@ -34,7 +35,8 @@ public final class GameState {
     private final List<Sq<Sq<Cell>>> explosions;
     private final List<Sq<Cell>> blasts;
     private final static List<List <PlayerID>> permut = Lists.permutations(Arrays.asList(PlayerID.values()));
-    private static final Random RANDOM = new Random(3);
+    private static final Random RANDOM = new Random(2016);
+    private static Set<Cell> touchedBonus = new HashSet<>();
 
     /**
      * Construit l'état du jeu pour le coup d'horloge, le plateau de jeu, les joueurs, les bombes, les explosions et les particules
@@ -185,30 +187,55 @@ public final class GameState {
         return blasts1;
     }
 
-    /**
-     * Retourne une table associant les bombes aux cases qu'elles occupent
-     * @return bombedCells (Map<Cell, Bomb>)
-     *          Table associant les bombes aux cases qu'elles occupent
-     */
-    public Map<Cell, Bomb> bombedCells() {
+    private static Map<Cell, Bomb> bombedCells(List<Bomb> bombs){
         Map<Cell, Bomb> bombedCells = new HashMap<>();
         for (Bomb b : bombs) {
             bombedCells.put(b.position(), b);
         }
         return bombedCells;
     }
+    
+    /**
+     * Retourne une table associant les bombes aux cases qu'elles occupent
+     * @return bombedCells (Map<Cell, Bomb>)
+     *          Table associant les bombes aux cases qu'elles occupent
+     */
+    public Map<Cell, Bomb> bombedCells() {
+       return bombedCells(bombs);
+    }
 
+    private static Set<Cell> blastedCells(List<Sq<Cell>> blasts){
+        Set<Cell> blastedCells = new HashSet<>();
+        for (Sq<Cell> cell : blasts) {
+            blastedCells.add(cell.head());
+        }
+        return blastedCells;
+    }
+    
     /**
      * Retourne l'ensemble des cases sur lesquelles se trouve au moins une particule d'explosion
      * @return blastedCells (Set<Cell>)
      *          Ensemble de cases contenant au moins une particule d'explosion
      */
     public Set<Cell> blastedCells() {
-        Set<Cell> blastedCells = new HashSet<>();
-        for (Sq<Cell> cell : blasts) {
-            blastedCells.add(cell.head());
+       return blastedCells(blasts);
+    }
+    
+    /**
+     * methode qui parcourt le board et qui place les bonus dans une liste
+     * @param board
+     * @return une liste des positions des bonus sur le board
+     */
+    private static List<Cell> bonus(Board board){
+        List<Cell> bonus = new ArrayList<>();
+        for (int i = 0; i < Board.ROWS; i++) {
+            for (int j = 0; j < Board.COLUMNS; j++) {
+                if(board.blockAt(new Cell(j,i)).isBonus()){
+                    bonus.add(new Cell(j,i));
+                }
+            }
         }
-        return blastedCells;
+        return bonus;
     }
 
     /**
@@ -221,15 +248,67 @@ public final class GameState {
      *          Prochain état du jeu
      */
     public GameState next(Map<PlayerID, Optional<Direction>> speedChangeEvents, Set<PlayerID> bombDropEvents) {
-        for (Bomb b : bombs) {
-            if (b.fuseLength() == Ticks.BOMB_FUSE_TICKS) {
-                bombs.remove(b);
+        
+        List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
+        
+        Set<Cell> consumedBonuses = consumedBonuses(bonus(board), players);
+        Board board1 = nextBoard(board, consumedBonuses, blastedCells(blasts1));
+        List<Sq<Sq<Cell>>> explosions1 = nextExplosions(explosions);
+        
+        List<Bomb> bombs1 = new ArrayList<>();
+        List<Bomb> tmpBomb = new ArrayList<>(bombs);
+        tmpBomb.addAll(newlyDroppedBombs(players, bombDropEvents, bombs));
+        
+        for(Bomb b : tmpBomb){
+            if(b.fuseLength() == 1){
+                explosions1.addAll(b.explosion());
+            }
+            else{
+                bombs1.add(new Bomb(b.ownerId(),b.position(), b.fuseLength()-1, b.range()));
+            }
+            
+        }
+//        for (int i = 0; i < tmpBomb.size(); i++) {
+//            if (tmpBomb.get(i).fuseLength() == 1) {
+//                explosions1.addAll(tmpBomb.get(i).explosion());
+//            }
+//            else{
+//                bombs1.add(new Bomb(tmpBomb.get(i).ownerId(), tmpBomb.get(i).position(), tmpBomb.get(i).fuseLength()-1, tmpBomb.get(i).range()));
+//        
+//            }
+//        }
+        
+        for(Bomb b : bombs1){
+            if(blastedCells(blasts1).contains(b.position())){
+                explosions1.addAll(b.explosion());
+                bombs1.remove(b);
             }
         }
+        List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1), board1, blastedCells(blasts1), speedChangeEvents);
         
+        return new GameState(ticks+1, board1, players1, bombs1, explosions1, blasts1);
+    }
+    
+    /**
+     * méthode qui retourne un set des bonus qui ont été consommés par les joueurs.
+     * @param board0
+     * @param blastedCells1
+     * @param players
+     * @return
+     */
+    private static Set<Cell> consumedBonuses(List<Cell> bonus, List<Player> players){
         
-        GameState nextState = new GameState(ticks + 1, board, alivePlayers(), bombs, explosions, nextBlasts(blasts, board, explosions));
-        return nextState;
+        Set<Cell> consumedBonuses = new HashSet<>();
+        
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = 0; j < bonus.size(); j++) {
+                if (players.get(i).position().equals(SubCell.centralSubCellOf(bonus.get(j)))) {
+                    consumedBonuses.add(bonus.get(j));
+                }
+            }
+        }
+        return consumedBonuses;
+        
     }
 
     /**
@@ -245,26 +324,60 @@ public final class GameState {
      *          Prochain état du plateau de jeu en fonction des paramètres donnés
      */
     private static Board nextBoard(Board board0, Set<Cell> consumedBonuses, Set<Cell> blastedCells1) {
-        List<Sq<Block>> plat = new ArrayList<>();
+        List<Sq<Block>> board1 = new ArrayList<>();
         
-        for (int i = 0; i < 13; i++) {
-            for (int j = 0; j < 15; j++) {
-               if (consumedBonuses.contains(board0.blockAt(new Cell(i, j))) && board0.blockAt(new Cell(i, j)).isBonus()) {
-                    plat.add(Sq.constant(Block.FREE));
-                } else if (blastedCells1.contains(board0.blockAt(new Cell(i, j))) && !board0.blockAt(new Cell(i, j)).isFree() && !board0.blockAt(new Cell(i, j)).isBonus()) {
-                    plat.add(Sq.repeat(Ticks.WALL_CRUMBLING_TICKS, Block.CRUMBLING_WALL).concat(Sq.constant(Block.FREE)));
-                } else if (blastedCells1.contains(board0.blockAt(new Cell(i, j))) && board0.blockAt(new Cell(i, j)).isBonus()) {
-                    if (board0.blocksAt(new Cell(i, j)).findFirst(p -> p == Block.FREE).isFree()) {
-                        plat.add(board0.blocksAt(new Cell(i, j)).tail());
-                    } else {
-                        plat.add(Sq.repeat(Ticks.BONUS_DISAPPEARING_TICKS, board0.blockAt(new Cell(i, j))).concat(Sq.constant(Block.FREE)));
+        for (int i = 0; i < Board.ROWS; i++) {
+            for (int j = 0; j < Board.COLUMNS; j++) {
+                Cell c = new Cell(j, i);
+                if (board0.blockAt(c).equals(Block.DESTRUCTIBLE_WALL) && blastedCells1.contains(c)) {
+                    int random = RANDOM.nextInt(3);
+                    Sq<Block> newWall = Sq.repeat(Ticks.WALL_CRUMBLING_TICKS, Block.CRUMBLING_WALL);
+                    
+                    switch(random){
+                    case 0:
+                        newWall = newWall.concat(Sq.constant(Block.BONUS_BOMB));
+                        break;
+                    case 1:
+                        newWall = newWall.concat(Sq.constant(Block.BONUS_RANGE));
+                        break;
+                    case 2:
+                        newWall = newWall.concat(Sq.constant(Block.FREE));
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Le nombre aléatoire doit être compris entre 0 et 2 et ne peut donc pas être"+random);    
                     }
-                } else {
-                    plat.add(board0.blocksAt(new Cell(i, j)));
+                    board1.add(newWall);
+                }
+                else if(board0.blockAt(c).equals(Block.CRUMBLING_WALL)){
+                   
+                    board1.add(board0.blocksAt(c).tail());
+                    
+                }
+                else if(board0.blockAt(c).isBonus() && blastedCells1.contains(c)){
+                    Sq<Block> newBonus;
+                    
+                    if (touchedBonus.contains(c)) {
+                        newBonus = board0.blocksAt(c).tail();
+                        if (newBonus.head().equals(Block.FREE)) {
+                            touchedBonus.remove(c);
+                        }
+                    }
+                    else{
+                        newBonus = board0.blocksAt(c).limit(Ticks.BONUS_DISAPPEARING_TICKS);
+                        newBonus = newBonus.concat(Sq.constant(Block.FREE));
+                        touchedBonus.add(c);
+                    }
+                    board1.add(newBonus);
+                }
+                else if(consumedBonuses.contains(c)){
+                    board1.add(Sq.constant(Block.FREE));
+                }
+                else{
+                    board1.add(board0.blocksAt(c));
                 }
             }
         }
-        return new Board(plat);
+        return new Board(board1);
     }
 
     /**
@@ -289,10 +402,11 @@ public final class GameState {
      * @return 
      */
     private static List<Sq<Sq<Cell>>> nextExplosions(List<Sq<Sq<Cell>>> explosions0) {
+        List<Sq<Sq<Cell>>> explosions1 = new ArrayList<>();
         for (Sq<Sq<Cell>> e : explosions0) {
-            e = e.tail();
+            explosions1.add(e.tail());
         }
-        return explosions0;
+        return explosions1;
     }
 
     /**
@@ -304,6 +418,7 @@ public final class GameState {
      * @return newlyDroppedBombs (List<Bomb>)
      */
     private static List<Bomb> newlyDroppedBombs(List<Player> players0, Set<PlayerID> bombDropEvents, List<Bomb> bombs0) {
-        return bombs0;
+        List<Bomb> newBombs = new ArrayList<>();
+        return newBombs;
     }
 }

@@ -7,15 +7,24 @@ package ch.epfl.xblast;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.junit.Test;
 
 import ch.epfl.cs108.Sq;
+import ch.epfl.xblast.server.Block;
+import ch.epfl.xblast.server.Board;
 import ch.epfl.xblast.server.Bomb;
+import ch.epfl.xblast.server.GameState;
 
 public class BombTest {
+    
 
     private Bomb bombSimulator() {
         return new Bomb(PlayerID.PLAYER_1, new Cell(3, 3), 5, 3);
@@ -30,6 +39,8 @@ public class BombTest {
             fuseLengths = fuseLengths.tail();
         }
     }
+    
+  
     
 //    @Test
 //    public void testOnExplosionArmTowards(){
