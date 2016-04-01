@@ -34,7 +34,7 @@ public final class GameState {
     private final List<Bomb> bombs;
     private final List<Sq<Sq<Cell>>> explosions;
     private final List<Sq<Cell>> blasts;
-    private final static List<List <PlayerID>> permut = Lists.permutations(Arrays.asList(PlayerID.values()));
+    private final static List<List <PlayerID>> permut = Collections.unmodifiableList(Lists.permutations(Arrays.asList(PlayerID.values())));
     private static final Random RANDOM = new Random(2016);
     private static Set<Cell> touchedBonus = new HashSet<>();
 
@@ -257,6 +257,19 @@ public final class GameState {
         
         List<Bomb> bombs1 = new ArrayList<>();
         List<Bomb> tmpBomb = new ArrayList<>(bombs);
+        
+        for (Player p1 : players) {
+            if(bombDropEvents.contains(p1.id())){
+                for(Player p2 : players){
+                    if (bombDropEvents.contains(p2.id())) {
+                        if(!p1.id().equals(p2.id()) && p1.position().equals(p2.position())){
+                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())));
+                        }
+                    }
+                }
+            }
+        }
+        
         tmpBomb.addAll(newlyDroppedBombs(players, bombDropEvents, bombs));
         
         for(Bomb b : tmpBomb){
@@ -268,23 +281,16 @@ public final class GameState {
             }
             
         }
-//        for (int i = 0; i < tmpBomb.size(); i++) {
-//            if (tmpBomb.get(i).fuseLength() == 1) {
-//                explosions1.addAll(tmpBomb.get(i).explosion());
-//            }
-//            else{
-//                bombs1.add(new Bomb(tmpBomb.get(i).ownerId(), tmpBomb.get(i).position(), tmpBomb.get(i).fuseLength()-1, tmpBomb.get(i).range()));
-//        
-//            }
-//        }
-        
+
         for(Bomb b : bombs1){
             if(blastedCells(blasts1).contains(b.position())){
                 explosions1.addAll(b.explosion());
                 bombs1.remove(b);
             }
         }
-        List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1), board1, blastedCells(blasts1), speedChangeEvents);
+        Map<PlayerID, Bonus> playerBonuses = null;
+        
+        List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
         
         return new GameState(ticks+1, board1, players1, bombs1, explosions1, blasts1);
     }
@@ -384,14 +390,14 @@ public final class GameState {
      * 
      * @param players0
      * @param playerBonuses
-     * @param bombedCells1
+     * @param map
      * @param board1
      * @param blastedCells1
      * @param speedChangeEvents
      * @return
      */
-    private static List<Player> nextPlayers(List<Player> players0, Map<PlayerID, Bonus> playerBonuses, Set<Cell> bombedCells1,
-            Board board1, Set<Cell> blastedCells1, Map<PlayerID, Optional<Direction>> speedChangeEvents) {
+    private static List<Player> nextPlayers(List<Player> players0, Map<PlayerID, Bonus> playerBonuses, Set<Cell>bombedCells1,
+            Board board1, Set<Cell> blastedCells1,Map<PlayerID, Optional<Direction>> speedChangeEvents) {
         
         return players0;
     }
@@ -408,6 +414,17 @@ public final class GameState {
         }
         return explosions1;
     }
+    
+    /**
+     * renvoie le joueur qui est le plus bas dans le tableau des priorités.
+     */
+    private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
+        
+        int i = currentPermut.indexOf(p1);
+        int j = currentPermut.indexOf(p2);
+        
+        return (i>j)? p1:p2;
+    }
 
     /**
      * Retourne la liste des bombes nouvellement posées par les joueurs, étant donnés les joueurs actuels,
@@ -419,6 +436,26 @@ public final class GameState {
      */
     private static List<Bomb> newlyDroppedBombs(List<Player> players0, Set<PlayerID> bombDropEvents, List<Bomb> bombs0) {
         List<Bomb> newBombs = new ArrayList<>();
+        
+        for(Player p : players0){
+            if(bombDropEvents.contains(p.id())){
+                boolean taken = false;
+                int nbrBombs = 0;
+                
+                for(Bomb b : bombs0){
+                    if(b.ownerId().equals(p.id())){
+                        nbrBombs++;
+                    }
+                    if(b.position().equals(p.position())){
+                        taken = true;
+                    }
+                }
+                if(p.isAlive() && nbrBombs <= p.maxBombs() && !taken){
+                    newBombs.add(new Bomb(p.id(), p.position().containingCell(), Ticks.BOMB_FUSE_TICKS, p.bombRange()));
+                }
+            }   
+        }
+        
         return newBombs;
     }
 }

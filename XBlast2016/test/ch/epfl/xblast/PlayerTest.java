@@ -91,6 +91,12 @@ public class PlayerTest {
          p = new Player(PlayerID.PLAYER_1, 1, new Cell(0,0), 0, 0);
          assertTrue(p.isAlive());
      }
+     
+      @Test
+      public void idTest(){
+          Player p = new Player(PlayerID.PLAYER_1, 5, new Cell(0,0), 5, 5);
+          assertTrue(p.id().equals(PlayerID.PLAYER_1));
+      }
 }
 
 
