@@ -175,14 +175,18 @@ public final class GameState {
      *          Liste de particules d'explosion courantes
      */
     private static List<Sq<Cell>> nextBlasts(List<Sq<Cell>> blasts0, Board board0, List<Sq<Sq<Cell>>> explosions0){
+        
         List<Sq<Cell>> blasts1 = new LinkedList<>();
         for (Sq<Cell> bla: blasts0) {
-            if(board0.blockAt(bla.head()).isFree() && !bla.isEmpty()){
-                blasts1.add(bla);
+            if(!bla.isEmpty() && board0.blockAt(bla.head()).isFree()){
+                blasts1.add(bla.tail());
             }
         }
+        
         for(Sq<Sq<Cell>> exp: explosions0){
-            blasts1.add(exp.head());
+            if(!exp.isEmpty()){
+                blasts1.add(exp.head());
+            }
         }
         return blasts1;
     }
@@ -207,7 +211,9 @@ public final class GameState {
     private static Set<Cell> blastedCells(List<Sq<Cell>> blasts){
         Set<Cell> blastedCells = new HashSet<>();
         for (Sq<Cell> cell : blasts) {
-            blastedCells.add(cell.head());
+            if(!cell.isEmpty()){
+                blastedCells.add(cell.head());
+            }
         }
         return blastedCells;
     }
@@ -249,6 +255,7 @@ public final class GameState {
      */
     public GameState next(Map<PlayerID, Optional<Direction>> speedChangeEvents, Set<PlayerID> bombDropEvents) {
         
+
         List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
         
         Set<Cell> consumedBonuses = consumedBonuses(bonus(board), players);
@@ -281,13 +288,15 @@ public final class GameState {
             }
             
         }
-
+        tmpBomb.clear();
+        tmpBomb = new ArrayList<>(bombs1);
         for(Bomb b : bombs1){
             if(blastedCells(blasts1).contains(b.position())){
                 explosions1.addAll(b.explosion());
-                bombs1.remove(b);
+                tmpBomb.remove(b);
             }
         }
+        bombs1 = new ArrayList<>(tmpBomb);
         Map<PlayerID, Bonus> playerBonuses = null;
         
         List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
@@ -361,7 +370,6 @@ public final class GameState {
                 }
                 else if(board0.blockAt(c).isBonus() && blastedCells1.contains(c)){
                     Sq<Block> newBonus;
-                    
                     if (touchedBonus.contains(c)) {
                         newBonus = board0.blocksAt(c).tail();
                         if (newBonus.head().equals(Block.FREE)) {
@@ -369,6 +377,7 @@ public final class GameState {
                         }
                     }
                     else{
+                        
                         newBonus = board0.blocksAt(c).limit(Ticks.BONUS_DISAPPEARING_TICKS);
                         newBonus = newBonus.concat(Sq.constant(Block.FREE));
                         touchedBonus.add(c);
@@ -379,7 +388,17 @@ public final class GameState {
                     board1.add(Sq.constant(Block.FREE));
                 }
                 else{
-                    board1.add(board0.blocksAt(c));
+                    if (touchedBonus.contains(c)) {
+                        Sq<Block> newBonus;
+                        newBonus = board0.blocksAt(c).tail();
+                        if (newBonus.head().equals(Block.FREE)) {
+                            touchedBonus.remove(c);
+                        }
+                        board1.add(newBonus);
+                    }
+                    else{
+                        board1.add(board0.blocksAt(c));
+                    }
                 }
             }
         }
@@ -409,9 +428,14 @@ public final class GameState {
      */
     private static List<Sq<Sq<Cell>>> nextExplosions(List<Sq<Sq<Cell>>> explosions0) {
         List<Sq<Sq<Cell>>> explosions1 = new ArrayList<>();
+        
         for (Sq<Sq<Cell>> e : explosions0) {
-            explosions1.add(e.tail());
+            if(!e.isEmpty()){
+               
+                explosions1.add(e.tail());
+            }
         }
+      
         return explosions1;
     }
     

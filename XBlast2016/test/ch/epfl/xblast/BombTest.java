@@ -22,12 +22,29 @@ import ch.epfl.xblast.server.Block;
 import ch.epfl.xblast.server.Board;
 import ch.epfl.xblast.server.Bomb;
 import ch.epfl.xblast.server.GameState;
+import ch.epfl.xblast.server.Ticks;
 
 public class BombTest {
     
 
     private Bomb bombSimulator() {
         return new Bomb(PlayerID.PLAYER_1, new Cell(3, 3), 5, 3);
+    }
+    
+    @Test
+    public void testOnExplosion(){
+        Bomb b = bombSimulator();
+        List<Sq<Sq<Cell>>> expl = b.explosion();
+        Sq<Sq<Cell>> e = expl.get(0);
+        
+        for (int i = 0; i < Ticks.EXPLOSION_TICKS+2; i++) {
+            System.out.println(i);
+            if(!e.isEmpty()){
+                System.out.println(e.head().head());
+                e = e.tail();
+            }
+        }
+        assertEquals(4, expl.size());
     }
     @Test
     public void testOnCOnstruction(){

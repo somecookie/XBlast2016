@@ -84,10 +84,10 @@ public final class Bomb {
     public List<Sq<Sq<Cell>>> explosion() {
         List<Sq<Sq<Cell>>> explosion = new ArrayList<>();
         
-        explosion.add(explosionArmTowards(Direction.N).limit(Ticks.EXPLOSION_TICKS-range));
-        explosion.add(explosionArmTowards(Direction.E).limit(Ticks.EXPLOSION_TICKS-range));
-        explosion.add(explosionArmTowards(Direction.S).limit(Ticks.EXPLOSION_TICKS-range));
-        explosion.add(explosionArmTowards(Direction.W).limit(Ticks.EXPLOSION_TICKS-range));
+        explosion.add(explosionArmTowards(Direction.N));
+        explosion.add(explosionArmTowards(Direction.E));
+        explosion.add(explosionArmTowards(Direction.S));
+        explosion.add(explosionArmTowards(Direction.W));
 
         return explosion;
     }
@@ -99,6 +99,8 @@ public final class Bomb {
      */
     private Sq<Sq<Cell>> explosionArmTowards(Direction dir) {
         Sq<Cell> pos = Sq.iterate(position, c -> c.neighbor(dir)).limit(range);
-        return Sq.constant(pos);
+        Sq<Sq<Cell>> arm = Sq.repeat(Ticks.EXPLOSION_TICKS-range, pos);
+        return arm;
+        
     }
 }
