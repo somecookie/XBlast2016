@@ -270,7 +270,7 @@ public final class GameState {
                 for(Player p2 : players){
                     if (bombDropEvents.contains(p2.id())) {
                         if(!p1.id().equals(p2.id()) && p1.position().equals(p2.position())){
-                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())));
+                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())).id());
                         }
                     }
                 }
@@ -443,11 +443,9 @@ public final class GameState {
      * renvoie le joueur qui est le plus bas dans le tableau des priorités.
      */
     private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
-        
-        int i = currentPermut.indexOf(p1);
-        int j = currentPermut.indexOf(p2);
-        
-        return (i>j)? p1:p2;
+        int i = currentPermut.indexOf(p1.id());
+        int j = currentPermut.indexOf(p2.id());
+        return (i > j)? p1:p2;
     }
 
     /**

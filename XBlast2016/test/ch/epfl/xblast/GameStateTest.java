@@ -37,6 +37,23 @@ public class GameStateTest {
         board.add(l1);  board.add(l2);  board.add(l3);  board.add(l4);  board.add(l5);  board.add(l6);
         return Board.ofQuadrantNWBlocksWalled(board);
     }
+    private static Board oneElementBoard(Block b){
+        List<Block> free = Collections.nCopies(13, Block.FREE);
+        List<Block> a = Collections.nCopies(6, Block.FREE);
+        List<Block> notFree = new ArrayList<>(a);
+        notFree.add(b);
+        notFree.addAll(a);
+        List<List<Block>> board = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            if(i==5){
+                board.add(new ArrayList<>(notFree));
+            }
+            else{
+                board.add(new ArrayList<>(free));
+            }
+        }
+        return Board.ofInnerBlocksWalled(board);
+    }
     
     private static List<Player> players(){
         Player p = new Player(PlayerID.PLAYER_1, 3, new Cell(5,4), 5, 5);
@@ -92,6 +109,44 @@ public class GameStateTest {
     }
     
 //    @Test
+//    public void testOn2PlayersDeposing(){
+//        Board board = oneElementBoard(Block.FREE);
+//        List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 5, new Cell(5, 5), 5, 5),
+//                new Player(PlayerID.PLAYER_2, 5, new Cell(5, 5), 5, 5),
+//                new Player(PlayerID.PLAYER_3, 5, new Cell(5, 5), 5, 5),
+//                new Player(PlayerID.PLAYER_4, 5, new Cell(5, 5), 5, 5)));
+//        
+//
+//        Set<PlayerID> bombDropEvents = new HashSet<>();
+//        bombDropEvents.add(PlayerID.PLAYER_1); bombDropEvents.add(PlayerID.PLAYER_2);
+//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+//        
+//        List<Bomb> bombs = new ArrayList<>();
+//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+//        List<Sq<Cell>> blasts = new ArrayList<>();
+//        
+//        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+//        
+//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+//        assertEquals(PlayerID.PLAYER_1, g.getBomb().get(0).ownerId());
+//        
+//        g = new GameState(2, board, players, bombs, explosions, blasts);
+//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+//        
+//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
+//        
+//        
+//        g = new GameState(23, board, players, bombs, explosions, blasts);
+//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
+//        
+//        g = new GameState(27, board, players, bombs, explosions, blasts);
+//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
+//    }
+    
+    
+//    @Test
 //    public void testOnNext(){
 //        Board board = board();
 //        List<Player> players = players();
@@ -122,42 +177,41 @@ public class GameStateTest {
 //
 //    }
     
-    @Test
-    public void testOnExplodedBonus(){
-        List<Block> free = Collections.nCopies(13, Block.FREE);
-        List<Block> a = Collections.nCopies(6, Block.FREE);
-        List<Block> notFree = new ArrayList<>(a);
-        notFree.add(Block.BONUS_BOMB);
-        notFree.addAll(a);
-        List<List<Block>> b = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            if(i==5){
-                b.add(new ArrayList<>(notFree));
-            }
-            else{
-                b.add(new ArrayList<>(free));
-            }
-        }
-        Board board = Board.ofInnerBlocksWalled(b);
-        List<Bomb> bombs = new ArrayList<>();
-        bombs.add(new Bomb(PlayerID.PLAYER_1, new Cell(6,6), 5, 5));
-        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
-        List<Sq<Cell>> blasts = new ArrayList<>();
-        GameState g = new GameState(0, board, players(), bombs, explosions, blasts);
-        System.out.println("Etat inital");
-        GameStatePrinter.printGameStateWithoutPlayers(g);
-        
-        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-        Set<PlayerID> bombDropEvents = new HashSet<>();
-        for (int i = 1; i <= 100; i++) {
-            System.out.println(i+") ");
-            g = g.next(speedChangeEvents, bombDropEvents);
-            GameStatePrinter.printGameStateWithoutPlayers(g);
-        }
-        
-    }
-
-    
+//    @Test
+//    public void testOnExplodedBonus(){
+//        
+//        List<Bomb> bombs = new ArrayList<>();
+//        bombs.add(new Bomb(PlayerID.PLAYER_1, new Cell(6,6), 5, 5));
+//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+//        List<Sq<Cell>> blasts = new ArrayList<>();
+//        Board board = oneElementBoard(Block.BONUS_BOMB);
+//        GameState g = new GameState(0, board, players(), bombs, explosions, blasts);
+//        System.out.println("Etat inital");
+//        GameStatePrinter.printGameStateWithoutPlayers(g);
+//        
+//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+//        Set<PlayerID> bombDropEvents = new HashSet<>();
+//        for (int i = 1; i <= 100; i++) {
+//            System.out.println(i+") ");
+//            g = g.next(speedChangeEvents, bombDropEvents);
+//            GameStatePrinter.printGameStateWithoutPlayers(g);
+//        }
+//        
+//    }
+//    @Test
+//    public void DeadDeposingBomb(){
+//        List <Player> players = players();
+//        players.set(0, new Player(PlayerID.PLAYER_1, 0, new Cell(5, 5), 5, 5));
+//        Board board = oneElementBoard(Block.FREE);
+//        GameState g = new GameState(board, players);
+//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+//        Set<PlayerID> bombDropEvents = new HashSet<>();
+//        bombDropEvents.add(PlayerID.PLAYER_1);
+//        g = g.next(speedChangeEvents, bombDropEvents);
+//        GameStatePrinter.printGameStateWithoutPlayers(g);
+//    }
+//
+//    
 //    @Test
 //    public void testOnNextBoard(){
 //        Board b = board();

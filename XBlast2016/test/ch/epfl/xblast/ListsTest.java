@@ -39,6 +39,9 @@ public class ListsTest {
         List<Integer> a = Arrays.asList(1,2,3, 4);
         List<List<Integer>> b = Lists.permutations(a);
         assertEquals(24, b.size());
+        for (int i = 0; i < b.size(); i++) {
+            System.out.println(i+") "+b.get(i));
+        }
     }
     
     @Test
