@@ -1,8 +1,9 @@
 package ch.epfl.xblast;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,130 +121,138 @@ public class GameStateTest {
         Set<PlayerID> bombDropEvents = new HashSet<>();
         bombDropEvents.add(PlayerID.PLAYER_1);
         g = g.next(speedChangeEvents , bombDropEvents );
-        assertEquals(1, g.getBombs().size());
+        assertEquals(1, g.bombedCells().size());
     }
     
-//    @Test
-//    public void testOnTakenCell(){
-//        Board board = board();
-//        List<Player> players = players();
-//        List<Bomb> bombs = new ArrayList<Bomb>(Arrays.asList(new Bomb(PlayerID.PLAYER_1, new Cell(9,6), 5, 5)));
-//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
-//        List<Sq<Cell>> blasts = new ArrayList<>();
-//        
-//        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
-//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-//        Set<PlayerID> bombDropEvents = new HashSet<>();
-//        bombDropEvents.add(PlayerID.PLAYER_2);
-//        g = g.next(speedChangeEvents , bombDropEvents );
-//        assertEquals(1, g.getBombs().size());
-//        assertEquals(PlayerID.PLAYER_1, g.getBombs().get(0).ownerId());
-//    }
-//    
-//    @Test
-//    public void testOn2PlayersDeposing(){
-//        Board board = oneElementBoard(Block.FREE);
-//        List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 5, new Cell(5, 5), 5, 5),
-//                new Player(PlayerID.PLAYER_2, 5, new Cell(5, 5), 5, 5),
-//                new Player(PlayerID.PLAYER_3, 5, new Cell(5, 5), 5, 5),
-//                new Player(PlayerID.PLAYER_4, 5, new Cell(5, 5), 5, 5)));
-//        
-//
-//        Set<PlayerID> bombDropEvents = new HashSet<>();
-//        bombDropEvents.add(PlayerID.PLAYER_1); bombDropEvents.add(PlayerID.PLAYER_2);
-//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-//        
-//        List<Bomb> bombs = new ArrayList<>();
-//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
-//        List<Sq<Cell>> blasts = new ArrayList<>();
-//        
-//        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
-//        
-//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-//        assertEquals(PlayerID.PLAYER_1, g.getBomb().get(0).ownerId());
-//        
-//        g = new GameState(2, board, players, bombs, explosions, blasts);
-//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-//        
-//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
-//        
-//        
-//        g = new GameState(23, board, players, bombs, explosions, blasts);
-//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
-//        
-//        g = new GameState(27, board, players, bombs, explosions, blasts);
-//        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-//        assertEquals(PlayerID.PLAYER_2, g.getBomb().get(0).ownerId());
-//    }
+    @Test
+    public void testOnTakenCell(){
+        Board board = board();
+        List<Player> players = players();
+        List<Bomb> bombs = new ArrayList<Bomb>(Arrays.asList(new Bomb(PlayerID.PLAYER_1, new Cell(9,6), 5, 5)));
+        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        
+        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        bombDropEvents.add(PlayerID.PLAYER_2);
+        g = g.next(speedChangeEvents , bombDropEvents );
+        Collection<Bomb> b = g.bombedCells().values();
+        assertEquals(1, g.bombedCells().size());
+        assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
+        
+    }
     
+    @Test
+    public void testOn2PlayersDeposing(){
+        Board board = oneElementBoard(Block.FREE);
+        List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 5, new Cell(5, 5), 5, 5),
+                new Player(PlayerID.PLAYER_2, 5, new Cell(5, 5), 5, 5),
+                new Player(PlayerID.PLAYER_3, 5, new Cell(5, 5), 5, 5),
+                new Player(PlayerID.PLAYER_4, 5, new Cell(5, 5), 5, 5)));
+        
+
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        bombDropEvents.add(PlayerID.PLAYER_1); bombDropEvents.add(PlayerID.PLAYER_2);
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        
+        List<Bomb> bombs = new ArrayList<>();
+        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        
+        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+        Collection<Bomb> b = g.bombedCells().values();
+        assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
+     
+        
+        g = new GameState(2, board, players, bombs, explosions, blasts);
+        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+        b = g.bombedCells().values();
+        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
+        
+        
+        g = new GameState(23, board, players, bombs, explosions, blasts);
+        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+        b = g.bombedCells().values();
+        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
+        
+        g = new GameState(27, board, players, bombs, explosions, blasts);
+        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
+        b = g.bombedCells().values();
+        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
+    }
+   
     
-//    @Test
-//    public void testOnNext(){
-//        Board board = board();
-//        List<Player> players = players();
-//        List<Bomb> bombs = bombs();
-//        List<Sq<Sq<Cell>>> explosions = explosions();
-//        List<Sq<Cell>> blasts = new ArrayList<>();
-//        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
-//        
-//        System.out.println("Etat initial:");
-//        GameStatePrinter.printGameState(g);
-//        
-//        Set<PlayerID> bombDropEvents = new HashSet<>();
-//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-//        for (int i = 0; i < 100; i++) {
-//            
-//            
-//            if(i == Ticks.EXPLOSION_TICKS+15){
-//                bombDropEvents.add(PlayerID.PLAYER_1);
-//                bombDropEvents.add(PlayerID.PLAYER_3);
-//            }
-//            System.out.println();
-//            System.out.println(i+") ");
-//            
-//            g = g.next(speedChangeEvents, bombDropEvents);
-//            
-//            GameStatePrinter.printGameState(g);
-//        }
-//
-//    }
+    @Test
+    public void testOnNext(){
+        System.out.println("testOnNext");
+        Board board = board();
+        List<Player> players = players();
+        List<Bomb> bombs = bombs();
+        List<Sq<Sq<Cell>>> explosions = explosions();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+        
+        System.out.println("Etat initial:");
+        GameStatePrinter.printGameState(g);
+        
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        for (int i = 0; i < 100; i++) {
+            
+            
+            if(i == Ticks.EXPLOSION_TICKS+15){
+                bombDropEvents.add(PlayerID.PLAYER_1);
+                bombDropEvents.add(PlayerID.PLAYER_3);
+            }
+            System.out.println();
+            System.out.println(i+") ");
+            
+            g = g.next(speedChangeEvents, bombDropEvents);
+            
+            GameStatePrinter.printGameState(g);
+        }
+
+    }
+  
+    @Test
+    public void testOnExplodedBonus(){
+        System.out.println("testOnExplodedBonus");
+        
+        List<Bomb> bombs = new ArrayList<>();
+        bombs.add(new Bomb(PlayerID.PLAYER_1, new Cell(6,6), 5, 5));
+        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        Board board = oneElementBoard(Block.BONUS_BOMB);
+        GameState g = new GameState(0, board, players(), bombs, explosions, blasts);
+        System.out.println("Etat inital");
+        GameStatePrinter.printGameStateWithoutPlayers(g);
+        
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        for (int i = 1; i <= 100; i++) {
+            System.out.println(i+") ");
+            g = g.next(speedChangeEvents, bombDropEvents);
+            GameStatePrinter.printGameStateWithoutPlayers(g);
+        }
+        
+    }
+    @Test
+    public void DeadDeposingBomb(){
+        System.out.println("DeadDeposingBomb");
+        List <Player> players = players();
+        players.set(0, new Player(PlayerID.PLAYER_1, 0, new Cell(5, 5), 5, 5));
+        Board board = oneElementBoard(Block.FREE);
+        GameState g = new GameState(board, players);
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        bombDropEvents.add(PlayerID.PLAYER_1);
+        g = g.next(speedChangeEvents, bombDropEvents);
+        GameStatePrinter.printGameStateWithoutPlayers(g);
+    }
+
     
-//    @Test
-//    public void testOnExplodedBonus(){
-//        
-//        List<Bomb> bombs = new ArrayList<>();
-//        bombs.add(new Bomb(PlayerID.PLAYER_1, new Cell(6,6), 5, 5));
-//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
-//        List<Sq<Cell>> blasts = new ArrayList<>();
-//        Board board = oneElementBoard(Block.BONUS_BOMB);
-//        GameState g = new GameState(0, board, players(), bombs, explosions, blasts);
-//        System.out.println("Etat inital");
-//        GameStatePrinter.printGameStateWithoutPlayers(g);
-//        
-//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-//        Set<PlayerID> bombDropEvents = new HashSet<>();
-//        for (int i = 1; i <= 100; i++) {
-//            System.out.println(i+") ");
-//            g = g.next(speedChangeEvents, bombDropEvents);
-//            GameStatePrinter.printGameStateWithoutPlayers(g);
-//        }
-//        
-//    }
-//    @Test
-//    public void DeadDeposingBomb(){
-//        List <Player> players = players();
-//        players.set(0, new Player(PlayerID.PLAYER_1, 0, new Cell(5, 5), 5, 5));
-//        Board board = oneElementBoard(Block.FREE);
-//        GameState g = new GameState(board, players);
-//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-//        Set<PlayerID> bombDropEvents = new HashSet<>();
-//        bombDropEvents.add(PlayerID.PLAYER_1);
-//        g = g.next(speedChangeEvents, bombDropEvents);
-//        GameStatePrinter.printGameStateWithoutPlayers(g);
-//    }
-//
-//    
 //    @Test
 //    public void testOnNextBoard(){
 //        Board b = board();
@@ -253,7 +262,7 @@ public class GameStateTest {
 //        blastedCells1.add(new Cell(3,2));
 //        blastedCells1.add(new Cell(2,7));
 //        
-//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+////        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
 //        List<Sq<Cell>> blasts = new ArrayList<>();
 //        GameState g = new GameState(0, b, players(), bombs(), explosions, blasts);
 //        GameStatePrinter.printGameState(g);

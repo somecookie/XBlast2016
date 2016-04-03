@@ -8,6 +8,7 @@ package ch.epfl.xblast.server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -164,10 +165,6 @@ public final class GameState {
         return alivePlayers;
     }
     
-    public List<Bomb> getBombs(){
-        return bombs;
-    }
-    
     /**
      * Calcule les particules d'explosion pour l'état suivant étant données celles de l'état courant, le plateau de jeu courant et les explosions courantes.
      * @param blasts0
@@ -232,22 +229,6 @@ public final class GameState {
        return blastedCells(blasts);
     }
     
-    /**
-     * methode qui parcourt le board et qui place les bonus dans une liste
-     * @param board
-     * @return une liste des positions des bonus sur le board
-     */
-    private static List<Cell> bonus(Board board){
-        List<Cell> bonus = new ArrayList<>();
-        for (int i = 0; i < Board.ROWS; i++) {
-            for (int j = 0; j < Board.COLUMNS; j++) {
-                if(board.blockAt(new Cell(j,i)).isBonus()){
-                    bonus.add(new Cell(j,i));
-                }
-            }
-        }
-        return bonus;
-    }
 
     /**
      * Retourne l'état du jeu pour le coup d'horloge suivant, en fonction de l'actuel et des événements donnés (speedChangeEvents et bombDropEvents)
@@ -263,19 +244,43 @@ public final class GameState {
 
         List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
         
-        Set<Cell> consumedBonuses = consumedBonuses(bonus(board), players);
+        List<Cell> bonus = new ArrayList<>();
+        for (int i = 0; i < Board.ROWS; i++) {
+            for (int j = 0; j < Board.COLUMNS; j++) {
+                Cell c = new Cell(j,i);
+                if(board.blockAt(c).isBonus()){
+                    bonus.add(c);
+                }
+            }
+        }
+        
+        Set<Cell> consumedBonuses = new HashSet<>();
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = 0; j < bonus.size(); j++) {
+                if (players.get(i).position().equals(SubCell.centralSubCellOf(bonus.get(j)))) {
+                    consumedBonuses.add(bonus.get(j));
+                }
+            }
+        }
         Board board1 = nextBoard(board, consumedBonuses, blastedCells(blasts1));
         List<Sq<Sq<Cell>>> explosions1 = nextExplosions(explosions);
         
         List<Bomb> bombs1 = new ArrayList<>();
         List<Bomb> tmpBomb = new ArrayList<>(bombs);
-        
+
         for (Player p1 : players) {
             if(bombDropEvents.contains(p1.id())){
                 for(Player p2 : players){
                     if (bombDropEvents.contains(p2.id())) {
-                        if(!p1.id().equals(p2.id()) && p1.position().equals(p2.position())){
-                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())).id());
+                        if(!p1.id().equals(p2.id()) && p1.position().containingCell().equals(p2.position().containingCell())){
+                            int i = permut.get(ticks%permut.size()).indexOf(p1.id());
+                            int j = permut.get(ticks%permut.size()).indexOf(p2.id());
+                            if(i > j){
+                                bombDropEvents.remove(p1.id());
+                            }
+                            else{
+                                bombDropEvents.remove(p2.id());
+                            }
                         }
                     }
                 }
@@ -310,28 +315,6 @@ public final class GameState {
         return new GameState(ticks+1, board1, players1, bombs1, explosions1, blasts1);
     }
     
-    /**
-     * méthode qui retourne un set des bonus qui ont été consommés par les joueurs.
-     * @param board0
-     * @param blastedCells1
-     * @param players
-     * @return
-     */
-    private static Set<Cell> consumedBonuses(List<Cell> bonus, List<Player> players){
-        
-        Set<Cell> consumedBonuses = new HashSet<>();
-        
-        for (int i = 0; i < players.size(); i++) {
-            for (int j = 0; j < bonus.size(); j++) {
-                if (players.get(i).position().equals(SubCell.centralSubCellOf(bonus.get(j)))) {
-                    consumedBonuses.add(bonus.get(j));
-                }
-            }
-        }
-        return consumedBonuses;
-        
-    }
-
     /**
      * Calcule le prochain état du plateau en fonction du plateau actuel
      * des bonus consommés par les joueurs et les nouvelles particules d'explosion donnés.
@@ -445,15 +428,6 @@ public final class GameState {
         return explosions1;
     }
     
-    /**
-     * renvoie le joueur qui est le plus bas dans le tableau des priorités.
-     */
-    private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
-        int i = currentPermut.indexOf(p1.id());
-        int j = currentPermut.indexOf(p2.id());
-        return (i > j)? p1:p2;
-    }
-
     /**
      * Retourne la liste des bombes nouvellement posées par les joueurs, étant donnés les joueurs actuels,
      * les événements de dépôt de bombes et les bombes actuelles donnés
