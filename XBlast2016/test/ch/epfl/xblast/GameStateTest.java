@@ -56,7 +56,7 @@ public class GameStateTest {
     }
     
     private static List<Player> players(){
-        Player p = new Player(PlayerID.PLAYER_1, 3, new Cell(5,4), 5, 5);
+        Player p = new Player(PlayerID.PLAYER_1, 3, new Cell(5,4), 1, 5);
         Player p2 = new Player(PlayerID.PLAYER_2, 5, new Cell(9,6), 5, 5);
         Player p3 = new Player(PlayerID.PLAYER_3, 3, new Cell(7,5), 5, 5);
         Player p4 = new Player(PlayerID.PLAYER_4, 5, new Cell(9,7), 5, 5);
@@ -107,7 +107,39 @@ public class GameStateTest {
         List<Player> alPl = g.alivePlayers();
         assertEquals(1,alPl.size());
     }
+    @Test
+    public void maxBombs(){
+        Board board = board();
+        List<Player> players = players();
+        List<Bomb> bombs = new ArrayList<Bomb>(Arrays.asList(new Bomb(PlayerID.PLAYER_1, new Cell(9,6), 5, 5)));
+        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        GameState g = new GameState(0, board, players, bombs, explosions, blasts);  
+        
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        bombDropEvents.add(PlayerID.PLAYER_1);
+        g = g.next(speedChangeEvents , bombDropEvents );
+        assertEquals(1, g.getBombs().size());
+    }
     
+//    @Test
+//    public void testOnTakenCell(){
+//        Board board = board();
+//        List<Player> players = players();
+//        List<Bomb> bombs = new ArrayList<Bomb>(Arrays.asList(new Bomb(PlayerID.PLAYER_1, new Cell(9,6), 5, 5)));
+//        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+//        List<Sq<Cell>> blasts = new ArrayList<>();
+//        
+//        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+//        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+//        Set<PlayerID> bombDropEvents = new HashSet<>();
+//        bombDropEvents.add(PlayerID.PLAYER_2);
+//        g = g.next(speedChangeEvents , bombDropEvents );
+//        assertEquals(1, g.getBombs().size());
+//        assertEquals(PlayerID.PLAYER_1, g.getBombs().get(0).ownerId());
+//    }
+//    
 //    @Test
 //    public void testOn2PlayersDeposing(){
 //        Board board = oneElementBoard(Block.FREE);

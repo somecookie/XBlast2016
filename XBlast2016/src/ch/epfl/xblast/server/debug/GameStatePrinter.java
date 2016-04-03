@@ -53,7 +53,6 @@ public final class GameStatePrinter {
     }
     
     public static void printGameStateWithoutPlayers(GameState s) {
-        List<Player> ps = s.alivePlayers();
         Board board = s.board();
         Map<Cell, Bomb> bomb = s.bombedCells();
         Set<Cell> blasts = s.blastedCells();

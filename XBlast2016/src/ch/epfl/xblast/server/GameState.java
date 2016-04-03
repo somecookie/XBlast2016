@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -163,6 +164,10 @@ public final class GameState {
         return alivePlayers;
     }
     
+    public List<Bomb> getBombs(){
+        return bombs;
+    }
+    
     /**
      * Calcule les particules d'explosion pour l'état suivant étant données celles de l'état courant, le plateau de jeu courant et les explosions courantes.
      * @param blasts0
@@ -288,15 +293,16 @@ public final class GameState {
             }
             
         }
-        tmpBomb.clear();
-        tmpBomb = new ArrayList<>(bombs1);
-        for(Bomb b : bombs1){
-            if(blastedCells(blasts1).contains(b.position())){
-                explosions1.addAll(b.explosion());
-                tmpBomb.remove(b);
+        
+        Iterator<Bomb> b = bombs1.iterator();
+        while(b.hasNext()){
+            Bomb bomb = b.next();
+            if(blasts1.contains(bomb.position())){
+                explosions1.addAll(bomb.explosion());
+                b.remove();
             }
         }
-        bombs1 = new ArrayList<>(tmpBomb);
+        
         Map<PlayerID, Bonus> playerBonuses = null;
         
         List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
@@ -468,11 +474,11 @@ public final class GameState {
                     if(b.ownerId().equals(p.id())){
                         nbrBombs++;
                     }
-                    if(b.position().equals(p.position())){
+                    if(b.position().equals(p.position().containingCell())){
                         taken = true;
                     }
                 }
-                if(p.isAlive() && nbrBombs <= p.maxBombs() && !taken){
+                if(p.isAlive() && nbrBombs < p.maxBombs() && !taken){
                     newBombs.add(new Bomb(p.id(), p.position().containingCell(), Ticks.BOMB_FUSE_TICKS, p.bombRange()));
                 }
             }   
