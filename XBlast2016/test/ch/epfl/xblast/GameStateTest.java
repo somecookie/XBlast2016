@@ -154,6 +154,9 @@ public class GameStateTest {
 
         Set<PlayerID> bombDropEvents = new HashSet<>();
         bombDropEvents.add(PlayerID.PLAYER_1); bombDropEvents.add(PlayerID.PLAYER_2);
+        
+        Set<PlayerID> bombDropEvents1 = new HashSet<>(bombDropEvents);
+        
         Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
         
         List<Bomb> bombs = new ArrayList<>();
@@ -181,6 +184,13 @@ public class GameStateTest {
         g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
         b = g.bombedCells().values();
         assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
+        
+        bombDropEvents1.add(PlayerID.PLAYER_3);
+        g = new GameState(0, board, players, bombs, explosions, blasts);
+        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents1));
+        b = g.bombedCells().values();
+        assertEquals(1, g.bombedCells().size());
+        assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
     }
    
     

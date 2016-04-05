@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
+
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.ArgumentChecker;
 import ch.epfl.xblast.Cell;
@@ -27,6 +29,8 @@ import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.Lists;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.SubCell;
+import ch.epfl.xblast.server.Player.DirectedPosition;
+import ch.epfl.xblast.server.Player.LifeState;
 
 public final class GameState {
 
@@ -229,6 +233,68 @@ public final class GameState {
        return blastedCells(blasts);
     }
     
+    private static List<Cell> bonus(Board board){
+        List<Cell> bonus = new ArrayList<>();
+        for (int i = 0; i < Board.ROWS; i++) {
+            for (int j = 0; j < Board.COLUMNS; j++) {
+                Cell c = new Cell(j,i);
+                if(board.blockAt(c).isBonus()){
+                    bonus.add(c);
+                }
+            }
+        }
+        return bonus;
+    }
+    
+    /**
+     * méthode qui retourne un set des bonus qui ont été consommés par les joueurs.
+     * @param board0
+     * @param blastedCells1
+     * @param players
+     * @return
+     */
+    private static Set<Cell> consumedBonuses(List<Cell> bonus, List<Player> players){
+        
+        Set<Cell> consumedBonuses = new HashSet<>();
+        for(Player p : players){
+            for(Cell b : bonus){
+                if(p.position().equals(SubCell.centralSubCellOf(b))){
+                    consumedBonuses.add(b);
+                }
+            }
+        }
+        return consumedBonuses;
+        
+    }
+    
+    /**
+     * Méthode qui retourne le joueur qui n'a pas la priorité lors d'un conflit entre 2 joueurs.
+     * @param p1
+     * @param p2
+     * @param currentPermut
+     * @return
+     */
+    private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
+        int a = currentPermut.indexOf(p1);
+        int b = currentPermut.indexOf(p2);
+        
+        return (a<b)? p2:p1;
+    }
+    
+    /**
+     * Méthode qui retourne le joueur qui a la priorité lors d'un conflit entre 2 joueurs.
+     * @param p1
+     * @param p2
+     * @param currentPermut
+     * @return
+     */
+    private static Player priority(Player p1, Player p2, List<PlayerID> currentPermut){
+        int a = currentPermut.indexOf(p1);
+        int b = currentPermut.indexOf(p2);
+        
+        return (a>b)? p2:p1;
+    }
+
 
     /**
      * Retourne l'état du jeu pour le coup d'horloge suivant, en fonction de l'actuel et des événements donnés (speedChangeEvents et bombDropEvents)
@@ -244,25 +310,12 @@ public final class GameState {
 
         List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
         
-        List<Cell> bonus = new ArrayList<>();
-        for (int i = 0; i < Board.ROWS; i++) {
-            for (int j = 0; j < Board.COLUMNS; j++) {
-                Cell c = new Cell(j,i);
-                if(board.blockAt(c).isBonus()){
-                    bonus.add(c);
-                }
-            }
-        }
-        
-        Set<Cell> consumedBonuses = new HashSet<>();
-        for (int i = 0; i < players.size(); i++) {
-            for (int j = 0; j < bonus.size(); j++) {
-                if (players.get(i).position().equals(SubCell.centralSubCellOf(bonus.get(j)))) {
-                    consumedBonuses.add(bonus.get(j));
-                }
-            }
-        }
+        List<Cell> bonus = bonus(board);
+        Set<Cell> consumedBonuses = consumedBonuses(bonus, players);
+        Map<PlayerID, Bonus> playerBonuses = new HashMap<>();
+
         Board board1 = nextBoard(board, consumedBonuses, blastedCells(blasts1));
+        
         List<Sq<Sq<Cell>>> explosions1 = nextExplosions(explosions);
         
         List<Bomb> bombs1 = new ArrayList<>();
@@ -273,14 +326,7 @@ public final class GameState {
                 for(Player p2 : players){
                     if (bombDropEvents.contains(p2.id())) {
                         if(!p1.id().equals(p2.id()) && p1.position().containingCell().equals(p2.position().containingCell())){
-                            int i = permut.get(ticks%permut.size()).indexOf(p1.id());
-                            int j = permut.get(ticks%permut.size()).indexOf(p2.id());
-                            if(i > j){
-                                bombDropEvents.remove(p1.id());
-                            }
-                            else{
-                                bombDropEvents.remove(p2.id());
-                            }
+                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())).id());
                         }
                     }
                 }
@@ -307,8 +353,6 @@ public final class GameState {
                 b.remove();
             }
         }
-        
-        Map<PlayerID, Bonus> playerBonuses = null;
         
         List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
         
@@ -407,7 +451,58 @@ public final class GameState {
     private static List<Player> nextPlayers(List<Player> players0, Map<PlayerID, Bonus> playerBonuses, Set<Cell>bombedCells1,
             Board board1, Set<Cell> blastedCells1,Map<PlayerID, Optional<Direction>> speedChangeEvents) {
         
-        return players0;
+        List<Player> players1 = new ArrayList<>();     
+       
+        for(Player p : players0){
+            Sq<DirectedPosition> directedPos;
+            
+            if(speedChangeEvents.containsKey(p.id())){
+                Optional<Direction> dir = speedChangeEvents.get(p.id());
+                directedPos = directedPos(p, dir);
+                }
+            
+
+            }
+            
+            
+        
+        
+
+         
+        
+        return players1;
+        
+    }
+    
+    /**
+     * Calcule une nouvelle séquence de position dirigée
+     * @param p
+     * @param dir
+     * @return
+     */
+    private static Sq<DirectedPosition> directedPos(Player p, Optional<Direction> dir){
+        Sq<DirectedPosition> directedPos;
+        if(!dir.isPresent()){
+            directedPos = DirectedPosition.stopped(p.directedPositions().head());
+        }
+        else if(dir.get().equals(p.direction().opposite())){
+            directedPos = DirectedPosition.moving(new DirectedPosition(p.position(), dir.get()));
+        }
+        else{
+            if (p.position().equals(SubCell.centralSubCellOf(p.position().containingCell()))) {
+                directedPos = DirectedPosition.moving(new DirectedPosition(p.position(),dir.get()));
+            }
+            else{
+                Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
+                SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
+                Sq<DirectedPosition> fromCentral = DirectedPosition.moving(new DirectedPosition(central, dir.get()));
+                
+                directedPos = toCentral.concat(fromCentral);
+            }
+        }
+        
+        return directedPos;
+        
     }
 
     /**
