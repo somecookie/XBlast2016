@@ -5,6 +5,8 @@
  */
 package ch.epfl.xblast.server;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,11 +17,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import javax.swing.plaf.ViewportUI;
+
+import org.junit.Test;
 import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
 
 import ch.epfl.cs108.Sq;
@@ -31,6 +37,7 @@ import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.SubCell;
 import ch.epfl.xblast.server.Player.DirectedPosition;
 import ch.epfl.xblast.server.Player.LifeState;
+import ch.epfl.xblast.server.Player.LifeState.State;
 
 public final class GameState {
 
@@ -454,22 +461,33 @@ public final class GameState {
         List<Player> players1 = new ArrayList<>();     
        
         for(Player p : players0){
-            Sq<DirectedPosition> directedPos;
+            Sq<DirectedPosition> directedPos = p.directedPositions();
             
             if(speedChangeEvents.containsKey(p.id())){
                 Optional<Direction> dir = speedChangeEvents.get(p.id());
                 directedPos = directedPos(p, dir);
                 }
-            
 
+            if(!blocked(p, directedPos, board1, bombedCells1)){
+                directedPos = directedPos.tail();
             }
             
+            Sq<LifeState> lifeStates = p.lifeStates();
+            if(blastedCells1.contains(directedPos.head().position().containingCell()) && p.lifeState().state().equals(State.VULNERABLE)){
+                lifeStates = p.statesForNextLife();
+            }
             
-        
-        
-
-         
-        
+            if(playerBonuses.containsKey(p.id())){
+                Set<Entry<PlayerID, Bonus>> bonus = playerBonuses.entrySet();
+                for(Entry<PlayerID, Bonus> b : bonus){
+                    if(b.getKey().equals(p.id())){
+                        b.getValue().applyTo(p);
+                    }
+                }
+            }
+            players1.add(new Player(p.id(), lifeStates, directedPos, p.maxBombs(), p.bombRange()));
+        }
+            
         return players1;
         
     }
@@ -485,7 +503,7 @@ public final class GameState {
         if(!dir.isPresent()){
             directedPos = DirectedPosition.stopped(p.directedPositions().head());
         }
-        else if(dir.get().equals(p.direction().opposite())){
+        else if(dir.get().isParallelTo(p.direction())){
             directedPos = DirectedPosition.moving(new DirectedPosition(p.position(), dir.get()));
         }
         else{
@@ -504,6 +522,39 @@ public final class GameState {
         return directedPos;
         
     }
+    /**
+     * méthode qui vérifie si un joueur est bloqué lorsqu'il veut se déplacer
+     * @param p
+     * @param directedPos
+     * @param board1
+     * @param bombs
+     * @return
+     */
+    private static boolean blocked(Player p, Sq<DirectedPosition> directedPos, Board board1, Set<Cell> bombs){
+        Direction dir = directedPos.head().direction();
+        Cell pos = p.position().containingCell();
+        if(!p.lifeState().canMove()){
+            return true;
+        }
+        
+        if(p.position().isCentral()){
+            Cell c = pos.neighbor(dir);
+            if(board1.blockAt(c).castsShadow()){
+                return true;
+            }
+        }
+        
+        if( bombs.contains(pos) && p.position().distanceToCentral() < 6){
+            SubCell nextCentral = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
+            if(pos.equals(nextCentral.containingCell())){
+                return true;
+            }
+        }
+        
+        return false;
+
+    }
+    
 
     /**
      * Calcule les explosions pour le prochain état en fonction des actuelles

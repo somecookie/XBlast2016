@@ -44,7 +44,7 @@ public enum Block {
      * @return true sii un joueur peut aller sur le block
      */
     public boolean canHostPlayer() {
-        if (this.equals(FREE) || this.isBonus()) {
+        if (this.isFree() || this.isBonus()) {
             return true;
         }
         return false;
