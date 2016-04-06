@@ -5,12 +5,11 @@
  */
 package ch.epfl.xblast.server;
 
-import static org.junit.Assert.assertTrue;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,12 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-
-import javax.swing.plaf.ViewportUI;
-
-import org.junit.Test;
-import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
-
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.ArgumentChecker;
 import ch.epfl.xblast.Cell;
@@ -273,6 +266,20 @@ public final class GameState {
         return consumedBonuses;
         
     }
+   
+    /**
+     * Méthode qui retourne le joueur qui n'a pas la priorité lors d'un conflit entre 2 joueurs.
+     * @param p1
+     * @param p2
+     * @param currentPermut
+     * @return
+     */
+    private static Player priority(Player p1, Player p2, List<PlayerID> currentPermut){
+        int a = currentPermut.indexOf(p1.id());
+        int b = currentPermut.indexOf(p2.id());
+        
+        return (a>b)? p2:p1;
+    }
     
     /**
      * Méthode qui retourne le joueur qui n'a pas la priorité lors d'un conflit entre 2 joueurs.
@@ -282,24 +289,21 @@ public final class GameState {
      * @return
      */
     private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
-        int a = currentPermut.indexOf(p1);
-        int b = currentPermut.indexOf(p2);
+        int a = currentPermut.indexOf(p1.id());
+        int b = currentPermut.indexOf(p2.id());
         
         return (a<b)? p2:p1;
     }
     
-    /**
-     * Méthode qui retourne le joueur qui a la priorité lors d'un conflit entre 2 joueurs.
-     * @param p1
-     * @param p2
-     * @param currentPermut
-     * @return
-     */
-    private static Player priority(Player p1, Player p2, List<PlayerID> currentPermut){
-        int a = currentPermut.indexOf(p1);
-        int b = currentPermut.indexOf(p2);
+    private static  List<Player> playerOnACell(Cell c, List<Player> players){
+        List<Player> listOfPlayers = new ArrayList<>();
+        for(Player p : players){
+            if(c.equals(p.position().containingCell())){
+                listOfPlayers.add(p);
+            }
+        }
         
-        return (a>b)? p2:p1;
+        return listOfPlayers;
     }
 
 
@@ -314,12 +318,30 @@ public final class GameState {
      */
     public GameState next(Map<PlayerID, Optional<Direction>> speedChangeEvents, Set<PlayerID> bombDropEvents) {
         
-
+        List<PlayerID> currentPermut = permut.get(ticks%permut.size());
         List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
         
         List<Cell> bonus = bonus(board);
         Set<Cell> consumedBonuses = consumedBonuses(bonus, players);
         Map<PlayerID, Bonus> playerBonuses = new HashMap<>();
+        
+        for(Cell c : consumedBonuses){
+            List<Player> conflict = playerOnACell(c, players);
+            Bonus b = board.blockAt(c).associatedBonus();
+            if(conflict.size() == 1){
+                playerBonuses.put(conflict.get(0).id(), b);
+            }
+            else{
+                Player prio = conflict.get(0);
+                for (int i = 1; i < conflict.size(); i++) {
+                    
+                    prio = priority(prio, conflict.get(i), currentPermut);
+                }
+                playerBonuses.put(prio.id(), b);
+            }
+        }
+        
+
 
         Board board1 = nextBoard(board, consumedBonuses, blastedCells(blasts1));
         
@@ -332,8 +354,10 @@ public final class GameState {
             if(bombDropEvents.contains(p1.id())){
                 for(Player p2 : players){
                     if (bombDropEvents.contains(p2.id())) {
-                        if(!p1.id().equals(p2.id()) && p1.position().containingCell().equals(p2.position().containingCell())){
-                            bombDropEvents.remove(noPriority(p1, p2, permut.get(ticks%permut.size())).id());
+                        if(!p1.id().equals(p2.id()) && 
+                                p1.position().containingCell().equals(p2.position().containingCell())){
+                           
+                            bombDropEvents.remove(noPriority(p1, p2, currentPermut).id());
                         }
                     }
                 }
@@ -361,6 +385,7 @@ public final class GameState {
             }
         }
         
+        // calculer conflits déplacements!!
         List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
         
         return new GameState(ticks+1, board1, players1, bombs1, explosions1, blasts1);

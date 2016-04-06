@@ -39,6 +39,7 @@ public class GameStateTest {
         return Board.ofQuadrantNWBlocksWalled(board);
     }
     private static Board oneElementBoard(Block b){
+        //Cell (7,6)
         List<Block> free = Collections.nCopies(13, Block.FREE);
         List<Block> a = Collections.nCopies(6, Block.FREE);
         List<Block> notFree = new ArrayList<>(a);
@@ -260,6 +261,28 @@ public class GameStateTest {
         bombDropEvents.add(PlayerID.PLAYER_1);
         g = g.next(speedChangeEvents, bombDropEvents);
         GameStatePrinter.printGameStateWithoutPlayers(g);
+    }
+    
+    @Test
+    public void conflictOnBonus(){
+        Board board = oneElementBoard(Block.BONUS_RANGE);
+        List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 5, new Cell(7, 6), 5, 5),
+                new Player(PlayerID.PLAYER_2, 5, new Cell(7, 6), 5, 5),
+                new Player(PlayerID.PLAYER_3, 5, new Cell(7, 6), 5, 5),
+                new Player(PlayerID.PLAYER_4, 5, new Cell(7, 6), 5, 5)));
+
+        List<Bomb> bombs = new ArrayList<>();
+        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
+        List<Sq<Cell>> blasts = new ArrayList<>();
+        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
+        Set<PlayerID> bombDropEvents = new HashSet<>();
+        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
+        System.out.println(board.blockAt(new Cell(7,6)));
+        g = g.next(speedChangeEvents, bombDropEvents);
+        for (int i = 0; i < 4; i++) {
+            System.out.println(g.players().get(i).maxBombs());
+            
+        }
     }
 
     
