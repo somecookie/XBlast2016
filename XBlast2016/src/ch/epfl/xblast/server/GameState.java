@@ -21,6 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+
+import javax.lang.model.element.NestingKind;
+
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.ArgumentChecker;
 import ch.epfl.xblast.Cell;
@@ -120,7 +123,7 @@ public final class GameState {
      *          Temps restant avant la fin du jeu
      */
     public double remainingTime() {
-        return (Ticks.TOTAL_TICKS - ticks)/ Ticks.TICKS_PER_SECOND;
+        return ((double)Ticks.TOTAL_TICKS - ticks)/ Ticks.TICKS_PER_SECOND;
     }
 
     /**
@@ -184,7 +187,7 @@ public final class GameState {
         
         List<Sq<Cell>> blasts1 = new LinkedList<>();
         for (Sq<Cell> bla: blasts0) {
-            if(!bla.isEmpty() && board0.blockAt(bla.head()).isFree()){
+            if(!bla.tail().isEmpty() && board0.blockAt(bla.head()).isFree()){
                 blasts1.add(bla.tail());
             }
         }
@@ -259,6 +262,7 @@ public final class GameState {
         for(Player p : players){
             for(Cell b : bonus){
                 if(p.position().equals(SubCell.centralSubCellOf(b))){
+                
                     consumedBonuses.add(b);
                 }
             }
@@ -379,7 +383,7 @@ public final class GameState {
         Iterator<Bomb> b = bombs1.iterator();
         while(b.hasNext()){
             Bomb bomb = b.next();
-            if(blasts1.contains(bomb.position())){
+            if(blastedCells(blasts1).contains(bomb.position())){
                 explosions1.addAll(bomb.explosion());
                 b.remove();
             }
@@ -462,7 +466,7 @@ public final class GameState {
                         board1.add(newBonus);
                     }
                     else{
-                        board1.add(board0.blocksAt(c));
+                        board1.add(board0.blocksAt(c).tail());
                     }
                 }
             }
@@ -488,25 +492,31 @@ public final class GameState {
         for(Player p : players0){
             Sq<DirectedPosition> directedPos = p.directedPositions();
             
-            if(speedChangeEvents.containsKey(p.id())){
+            if(p.isAlive() && speedChangeEvents.containsKey(p.id())){
                 Optional<Direction> dir = speedChangeEvents.get(p.id());
                 directedPos = directedPos(p, dir);
-                }
-
+            }
             if(!blocked(p, directedPos, board1, bombedCells1)){
                 directedPos = directedPos.tail();
             }
             
             Sq<LifeState> lifeStates = p.lifeStates();
-            if(blastedCells1.contains(directedPos.head().position().containingCell()) && p.lifeState().state().equals(State.VULNERABLE)){
+            if(blastedCells1.contains(p.position().containingCell()) && p.lifeState().state().equals(State.VULNERABLE)){
+                
                 lifeStates = p.statesForNextLife();
+            }
+            else{
+                lifeStates = lifeStates.tail();
             }
             
             if(playerBonuses.containsKey(p.id())){
                 Set<Entry<PlayerID, Bonus>> bonus = playerBonuses.entrySet();
                 for(Entry<PlayerID, Bonus> b : bonus){
+ 
                     if(b.getKey().equals(p.id())){
-                        b.getValue().applyTo(p);
+
+                        p = b.getValue().applyTo(p);
+                        
                     }
                 }
             }
@@ -525,23 +535,33 @@ public final class GameState {
      */
     private static Sq<DirectedPosition> directedPos(Player p, Optional<Direction> dir){
         Sq<DirectedPosition> directedPos;
-        if(!dir.isPresent()){
-            directedPos = DirectedPosition.stopped(p.directedPositions().head());
+        if(dir == null){
+            return p.directedPositions();
+
+        }
+        else if(!dir.isPresent()){
+            if(p.position().isCentral()){
+                directedPos = DirectedPosition.stopped(p.directedPositions().head());
+            }
+            else{
+                Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
+                SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
+                Sq<DirectedPosition> fromCentral = DirectedPosition.stopped(new DirectedPosition(central, p.direction()));
+
+                directedPos = toCentral.concat(fromCentral);
+            }
+            
         }
         else if(dir.get().isParallelTo(p.direction())){
             directedPos = DirectedPosition.moving(new DirectedPosition(p.position(), dir.get()));
         }
         else{
-            if (p.position().equals(SubCell.centralSubCellOf(p.position().containingCell()))) {
-                directedPos = DirectedPosition.moving(new DirectedPosition(p.position(),dir.get()));
-            }
-            else{
-                Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
-                SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
-                Sq<DirectedPosition> fromCentral = DirectedPosition.moving(new DirectedPosition(central, dir.get()));
-                
-                directedPos = toCentral.concat(fromCentral);
-            }
+     
+            Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
+            SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
+            Sq<DirectedPosition> fromCentral = DirectedPosition.moving(new DirectedPosition(central, dir.get()));
+
+            directedPos = toCentral.concat(fromCentral);
         }
         
         return directedPos;
@@ -558,24 +578,28 @@ public final class GameState {
     private static boolean blocked(Player p, Sq<DirectedPosition> directedPos, Board board1, Set<Cell> bombs){
         Direction dir = directedPos.head().direction();
         Cell pos = p.position().containingCell();
+        
         if(!p.lifeState().canMove()){
+           
             return true;
         }
         
+        if( bombs.contains(pos) && p.position().distanceToCentral() <= 6){
+            SubCell nextSub = p.position().neighbor(p.direction());
+            if(p.position().distanceToCentral() > nextSub.distanceToCentral()){
+                
+                return true;
+            }
+        }
+        
         if(p.position().isCentral()){
+           
             Cell c = pos.neighbor(dir);
             if(board1.blockAt(c).castsShadow()){
                 return true;
             }
         }
-        
-        if( bombs.contains(pos) && p.position().distanceToCentral() < 6){
-            SubCell nextCentral = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
-            if(pos.equals(nextCentral.containingCell())){
-                return true;
-            }
-        }
-        
+
         return false;
 
     }

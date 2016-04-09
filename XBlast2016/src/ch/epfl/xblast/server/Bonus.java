@@ -13,7 +13,7 @@ public enum Bonus {
         public Player applyTo(Player player) {
             Player p = player;
             if (p.maxBombs() < 9) {
-                p.withMaxBombs(p.maxBombs() + 1);
+               return p.withMaxBombs(p.maxBombs() + 1);
             }
             return p;
         }
@@ -24,7 +24,7 @@ public enum Bonus {
         public Player applyTo(Player player) {
             Player p = player;
             if (p.bombRange() < 9) {
-                p.withBombRange(p.bombRange() + 1);
+                return p.withBombRange(p.bombRange() + 1);
             }
             return p;
         }

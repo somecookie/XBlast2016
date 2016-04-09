@@ -67,10 +67,11 @@ public final class SubCell {
      * @return vrai sii le case est une sous-case centrale (boolean)
      */
     public boolean isCentral() {
-        if (this.equals(centralSubCellOf(containingCell()))) {
-            return true;
-        }
-        return false;
+//        if (this.equals(centralSubCellOf(containingCell()))) {
+//            return true;
+//        }
+//        return false;
+        return distanceToCentral() == 0;
     }
 
     /**

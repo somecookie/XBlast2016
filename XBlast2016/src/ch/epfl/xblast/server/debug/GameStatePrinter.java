@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.Cell;
+import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.Block;
 import ch.epfl.xblast.server.Board;
 import ch.epfl.xblast.server.Bomb;
@@ -48,8 +49,15 @@ public final class GameStatePrinter {
                 Block b = board.blockAt(c);
                 System.out.print(stringForBlock(b));
             }
-            System.out.println();
+         System.out.println();
         }
+
+        for(Player p: s.players()){
+        	stringForState(p);
+        	
+        }
+        System.out.println("temps restant: "+s.remainingTime()+", Ticks: "+s.ticks());
+          
     }
     
     public static void printGameStateWithoutPlayers(GameState s) {
@@ -61,12 +69,12 @@ public final class GameStatePrinter {
             xLoop: for (int x = 0; x < Cell.COLUMNS; ++x) {
                 Cell c = new Cell(x, y);
                 
-                for (Cell bbs: bomb.keySet()) {
-                    if (bbs.equals(c)) {
-                        System.out.print(stringForBomb(bbs));
-                        continue xLoop;
-                    }
-                }
+//                for (Cell bbs: bomb.keySet()) {
+//                    if (bbs.equals(c)) {
+//                        System.out.print(stringForBomb(bbs));
+//                        continue xLoop;
+//                    }
+//                }
                 
                 for (Cell bla : blasts) {
                     if (bla.equals(c)) {
@@ -111,6 +119,28 @@ public final class GameStatePrinter {
     }
     private static String stringForBlast(Cell c){
         return "°°";
+    }
+    
+    private static void stringForState(Player p){
+    	System.out.println(stringForID(p.id())+" : "+p.lives()+" vies, "+p.lifeState().state());
+    	System.out.println("bombes max: "+p.maxBombs()+", portée: "+p.bombRange());
+    	System.out.println("position(Cell): "+p.position().containingCell()+"position(SubCell): "+p.position()+", direction:"+p.direction());
+    }
+    private static String stringForID(PlayerID id){
+    	switch(id){
+    	case PLAYER_1:
+    		return "J1";
+    	
+    	case PLAYER_2:
+    		return "J2";
+    	
+    	case PLAYER_3:
+    		return "J3";    	
+    	case PLAYER_4:
+    		return "J4";
+    	default:
+    		throw new Error();
+    	}
     }
     
 }

@@ -2,9 +2,7 @@ package ch.epfl.xblast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -41,19 +39,7 @@ public class CellTest {
             pred = c;
         }
     }
-    
-    @Test
-    public void spiralOrderInitailisation(){
-        List<Cell> spir = new ArrayList<>();
-        spir = Cell.SPIRAL_ORDER;
-        for(Cell c: spir){
-            System.out.println(c);
-        }
-        assertEquals(new Cell(5,0), spir.get(5));
-        assertEquals(new Cell(14,6), spir.get(20));
-        assertEquals(new Cell(10,12), spir.get(30));
-        assertEquals(new Cell(8,6), spir.get(Cell.COUNT-1));
-    }
+
     @Test
     public void constructorCorrectlyNormalizesCoordinates() {
         for (int i = -2; i <= 2; ++i) {
@@ -62,15 +48,46 @@ public class CellTest {
             assertEquals(12, c.y());
         }
     }
-
-    @Test
-    public void neighborsOfOriginAreCorrect() {
-        Cell c = new Cell(0, 0);
-        assertEquals(new Cell( 0, 12), c.neighbor(Direction.N));
-        assertEquals(new Cell( 1,  0), c.neighbor(Direction.E));
-        assertEquals(new Cell( 0,  1), c.neighbor(Direction.S));
-        assertEquals(new Cell(14,  0), c.neighbor(Direction.W));
-    }
+    
+	@Test
+	public void equalsCorrect() {
+		Cell c1 = new Cell(0,0);
+		Cell c2 = new Cell(0,1);
+		Cell c4 = new Cell(1,0);
+		Cell c3 = new Cell(0,0);
+		assertFalse(c1.equals(c2));
+		assertFalse(c1.equals(c4));
+		assertFalse(c4.equals(c2));
+		assertTrue(c1.equals(c3));
+	}
+    
+	@Test
+	public void neighborOfCornerCorrect() {
+		Cell NE = new Cell(14,  0);
+		Cell NW = new Cell( 0,  0);
+		Cell SE = new Cell(14, 12);
+		Cell SW = new Cell( 0, 12);
+		
+		assertEquals(new Cell( 0, 12), NW.neighbor(Direction.N));
+        assertEquals(new Cell( 1,  0), NW.neighbor(Direction.E));
+        assertEquals(new Cell( 0,  1), NW.neighbor(Direction.S));
+        assertEquals(new Cell(14,  0), NW.neighbor(Direction.W));
+        
+        assertEquals(SE, NE.neighbor(Direction.N));
+        assertEquals(NW, NE.neighbor(Direction.E));
+        assertEquals(new Cell(14, 1), NE.neighbor(Direction.S));
+        assertEquals(new Cell(13, 0), NE.neighbor(Direction.W));
+        
+        assertEquals(new Cell( 0, 11), SW.neighbor(Direction.N));
+        assertEquals(new Cell( 1, 12), SW.neighbor(Direction.E));
+        assertEquals(NW, SW.neighbor(Direction.S));
+        assertEquals(SE, SW.neighbor(Direction.W));
+        
+        assertEquals(new Cell(14, 11), SE.neighbor(Direction.N));
+        assertEquals(SW, SE.neighbor(Direction.E));
+        assertEquals(NE, SE.neighbor(Direction.S));
+        assertEquals(new Cell(13, 12), SE.neighbor(Direction.W));
+	}
 
     @Test
     public void oppositeNeighborOfNeighborIsThis() {
@@ -80,4 +97,21 @@ public class CellTest {
             }
         }
     }
+    
+	@Test(expected = UnsupportedOperationException.class)
+	public void isRowMajorOrderModifiable(){
+		Cell.ROW_MAJOR_ORDER.set(0, new Cell(1,0));
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void isSpiralOrderModifiable(){
+		 Cell.SPIRAL_ORDER.set(0, new Cell(1,0));
+	}
+	
+	@Test
+	public void constantsAreCorrect() {
+	    assertEquals(15, Cell.COLUMNS);
+	    assertEquals(13, Cell.ROWS);
+	    assertEquals(15*13, Cell.COUNT);
+	}
 }
