@@ -14,7 +14,7 @@ public  final class Cell {
     private final int y;
 
     /**
-     * Normalise les coordonnées x et y données et construit une case avec ces dernières
+     * Normalise les coordonnées x et y données et construit une case avec ces dernières.
      * @param x
      *          Coordonnée x donnée
      * @param y
@@ -26,23 +26,24 @@ public  final class Cell {
     }
 
     /**
-     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "sipral" 
+     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "sipral".
      * (dans le sens des aiguilles d'une montre depuis la case en haut a gauche)
-     * @return Tableau de cases (ArrayList<Cell>)
+     * @return spiral (ArrayList<Cell>)
+     *          Tableau de cases
      */
-    private static ArrayList <Cell> SpiralOrder() {
+    private static ArrayList<Cell> SpiralOrder() {
         ArrayList<Integer> ix = new ArrayList<>();
         ArrayList<Integer> iy = new ArrayList<>();
         ArrayList<Cell> spiral = new ArrayList<Cell>();
         boolean horizontal = true;
-        
+
         for (int i = 0; i < COLUMNS; i++) {
             ix.add(i); 
         }
         for (int i = 0; i < ROWS; i++) {
             iy.add(i);
         }
- 
+
         while(ix.isEmpty() == false  && iy.isEmpty()== false){
             ArrayList<Integer> i1 = new ArrayList<>();
             ArrayList<Integer> i2 = new ArrayList<>();
@@ -56,7 +57,6 @@ public  final class Cell {
                 }
                 c2 = iy.get(0);
                 iy.remove(0);
-            
             }
             else{
                 for (int i = 0; i < iy.size(); i++) {
@@ -88,15 +88,16 @@ public  final class Cell {
             }
             horizontal = !horizontal;
         }
-        
+
         return spiral;
     }
 
     /**
-     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "normal"
-     * @return Tableau de cases (ArrayList<Cell>)
+     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "normal".
+     * @return currentRowMaj (ArrayList<Cell>)
+     *          Tableau de cases
      */
-    private static ArrayList <Cell> rowMajorOrder() {
+    private static ArrayList<Cell> rowMajorOrder() {
         ArrayList<Cell> currentRowMaj = new ArrayList<>();
         for (int i = 0; i < COUNT; i++) {
             currentRowMaj.add(null);
@@ -109,18 +110,42 @@ public  final class Cell {
         }
         return currentRowMaj;
     }
+
+    /**
+     * Retourne l'index de la case dans l'ordre de lecture.
+     * @return rowMajorIndex (int)
+     *          Index de la case dans l'ordre de lecture
+     */
     public int rowMajorIndex(){
        return (y()*COLUMNS +x());
     }
 
+    /**
+     * Retourne la coordonnée x normalisée de la case.
+     * @return x (int)
+     *          Coordonnée x normalisée
+     */
     public int x(){
         return x;
     }
 
+    /**
+     * Retourne la coordonnée y normalisée de la case.
+     * @return y (int)
+     *          Coordonnée y normalisée
+     */
     public int y(){
         return y;
     }
 
+    /**
+     * Retourne la case voisine, dans la direction donnée ;
+     * sachant que le plateau de jeu est (conceptuellement) torique, cette voisine existe toujours.
+     * @param dir
+     *          Direction donnée dans laquelle se trouve le voisin que l'on retourne
+     * @return neighbor (Cell)
+     *          Cellule voisine dans la direction donnée
+     */
     public Cell neighbor(Direction dir){
         switch(dir){
         case N:
