@@ -110,7 +110,7 @@ public  final class Cell {
         return currentRowMaj;
     }
     public int rowMajorIndex(){
-       return (y*COLUMNS +x);
+       return (y()*COLUMNS +x());
     }
 
     public int x(){
@@ -125,31 +125,31 @@ public  final class Cell {
         switch(dir){
         case N:
             if(y == 0){
-                return new Cell(x, 12);
+                return new Cell(x(), 12);
             }
             else{
-                return new Cell(x, y-1);
+                return new Cell(x(), y-1);
             }
         case E:
             if(x == 14){
-                return new Cell(0, y);
+                return new Cell(0, y());
             }
             else{
-                return new Cell(x+1,y);
+                return new Cell(x()+1,y());
             }
         case S:
             if(y == 12){
-                return new Cell(x, 0);
+                return new Cell(x(), 0);
             }
             else{
-                return new Cell(x, y+1);
+                return new Cell(x(), y()+1);
             }
         case W:
             if(x == 0){
-                return new Cell(14, y);
+                return new Cell(14, y());
             }
             else{
-                return new Cell(x-1, y);
+                return new Cell(x()-1, y());
             }
         default:
             throw new Error();   
@@ -158,23 +158,13 @@ public  final class Cell {
 
     @Override
     public boolean equals(Object that){
-        if(that == null){
-            return false;
-        }
-        else{
-            if(that.getClass()!= getClass()){
-                return false;
-            }
-            else{
-                Cell c = (Cell) that;
-                return (x == c.x && y == c.y);
-            }
-        }
+    	return (that instanceof Cell) && (((Cell) that).x() == x
+    			&& ((Cell) that).y() == y);
     }
 
     @Override
     public String toString(){
-        return "("+x+", "+y+")";
+        return "("+x()+", "+y()+")";
     }
 
     @Override

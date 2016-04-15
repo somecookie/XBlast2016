@@ -33,10 +33,7 @@ public enum Block {
      * @return true sii le block est libre
      */
     public boolean isFree() {
-        if (this.equals(FREE)) {
-            return true;
-        }
-        return false;
+        return (this.equals(FREE));
     }
 
     /**
@@ -44,10 +41,7 @@ public enum Block {
      * @return true sii un joueur peut aller sur le block
      */
     public boolean canHostPlayer() {
-        if (this.isFree() || this.isBonus()) {
-            return true;
-        }
-        return false;
+        return (this.isFree() || this.isBonus());
     }
 
     /**
@@ -55,22 +49,16 @@ public enum Block {
      * @return true sii le block met une ombre sur le plateau de jeu
      */
     public boolean castsShadow() {
-        if (this.equals(INDESTRUCTIBLE_WALL)||this.equals(DESTRUCTIBLE_WALL)|| this.equals(CRUMBLING_WALL)) {
-            return true;
-        }
-        return false;
+        return (this == INDESTRUCTIBLE_WALL)||(this==DESTRUCTIBLE_WALL)|| (this==CRUMBLING_WALL) ;
+        
     }
 
     /**
      * 
-     * @return
+     * @return boolean
      */
     public boolean isBonus() {
-        if (maybeAssociatedBonus != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return (maybeAssociatedBonus != null);
     }
 
     /**
@@ -84,5 +72,4 @@ public enum Block {
             throw new NoSuchElementException("La case ne contient pas de bonus!");
         }
     }
-
 }

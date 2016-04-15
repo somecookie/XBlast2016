@@ -45,7 +45,6 @@ public final class GameState {
     private final List<Sq<Cell>> blasts;
     private final static List<List <PlayerID>> permut = Collections.unmodifiableList(Lists.permutations(Arrays.asList(PlayerID.values())));
     private static final Random RANDOM = new Random(2016);
-    private static Set<Cell> touchedBonus = new HashSet<>();
 
     /**
      * Construit l'état du jeu pour le coup d'horloge, le plateau de jeu, les joueurs, les bombes, les explosions et les particules
@@ -111,7 +110,7 @@ public final class GameState {
      *          sii le jeu es fini (il ne reste pas plus d'un joueur ou Ticks.TOTAL_TICKS est écoulé)
      */
     public boolean isGameOver() {
-        if (Ticks.TOTAL_TICKS == ticks || alivePlayers().size() <= 1) {
+        if (Ticks.TOTAL_TICKS+1 == ticks || alivePlayers().size() <= 1) {
             return true;
             }
             return false;
@@ -132,12 +131,20 @@ public final class GameState {
      *          Identité du dernier joueur vivant ou rien s'il n'y a pas de vainqueur
      */
     public Optional<PlayerID> winner() {
-        if (alivePlayers().size() == 1) {
-            return  Optional.of(players.get(0).id());
-        } else {
-            return Optional.empty();
-        }
-    }
+    		Optional<PlayerID> winner = Optional.empty();
+    		if(alivePlayers().size() != 1){
+    			return winner;
+    		}
+    		else{
+    			for(Player p:players){
+    				if(p.lives()>0){
+    					winner = Optional.of(p.id());
+    				}
+    			}
+    			return winner;
+    		}
+    	}
+    
 
     /**
      * Retourne le plateau de jeu
@@ -270,47 +277,19 @@ public final class GameState {
         return consumedBonuses;
         
     }
-   
-    /**
-     * Méthode qui retourne le joueur qui n'a pas la priorité lors d'un conflit entre 2 joueurs.
-     * @param p1
-     * @param p2
-     * @param currentPermut
-     * @return
-     */
-    private static Player priority(Player p1, Player p2, List<PlayerID> currentPermut){
-        int a = currentPermut.indexOf(p1.id());
-        int b = currentPermut.indexOf(p2.id());
-        
-        return (a>b)? p2:p1;
-    }
     
-    /**
-     * Méthode qui retourne le joueur qui n'a pas la priorité lors d'un conflit entre 2 joueurs.
-     * @param p1
-     * @param p2
-     * @param currentPermut
-     * @return
-     */
-    private static Player noPriority(Player p1, Player p2, List<PlayerID> currentPermut){
-        int a = currentPermut.indexOf(p1.id());
-        int b = currentPermut.indexOf(p2.id());
-        
-        return (a<b)? p2:p1;
-    }
-    
-    private static  List<Player> playerOnACell(Cell c, List<Player> players){
-        List<Player> listOfPlayers = new ArrayList<>();
-        for(Player p : players){
-            if(c.equals(p.position().containingCell())){
-                listOfPlayers.add(p);
-            }
+    private static List<Player> sortedPlayers(List<PlayerID> currentPermut, List<Player> player){
+      List<Player> prioList = new ArrayList<>();
+        for(PlayerID id : currentPermut){
+        	for(Player p : player){
+        		if(id.equals(p.id())){
+        			prioList.add(p);
+        		}		
+        	}
         }
-        
-        return listOfPlayers;
+		return prioList;
     }
-
-
+    
     /**
      * Retourne l'état du jeu pour le coup d'horloge suivant, en fonction de l'actuel et des événements donnés (speedChangeEvents et bombDropEvents)
      * @param speedChangeEvents
@@ -323,29 +302,22 @@ public final class GameState {
     public GameState next(Map<PlayerID, Optional<Direction>> speedChangeEvents, Set<PlayerID> bombDropEvents) {
         
         List<PlayerID> currentPermut = permut.get(ticks%permut.size());
+        List<Player> sortedPlayers = sortedPlayers(currentPermut, players());
+        
         List<Sq<Cell>> blasts1 = nextBlasts(blasts, board, explosions);
         
         List<Cell> bonus = bonus(board);
         Set<Cell> consumedBonuses = consumedBonuses(bonus, players);
+        Set<Cell> consumedBonusesBis = new HashSet<>(consumedBonuses);
         Map<PlayerID, Bonus> playerBonuses = new HashMap<>();
         
-        for(Cell c : consumedBonuses){
-            List<Player> conflict = playerOnACell(c, players);
-            Bonus b = board.blockAt(c).associatedBonus();
-            if(conflict.size() == 1){
-                playerBonuses.put(conflict.get(0).id(), b);
-            }
-            else{
-                Player prio = conflict.get(0);
-                for (int i = 1; i < conflict.size(); i++) {
-                    
-                    prio = priority(prio, conflict.get(i), currentPermut);
-                }
-                playerBonuses.put(prio.id(), b);
-            }
+        for(Player p : sortedPlayers){
+        	if(consumedBonusesBis.contains(p.position().containingCell())){
+        		Bonus b = board.blockAt(p.position().containingCell()).associatedBonus();
+        		playerBonuses.put(p.id(), b);
+        		consumedBonusesBis.remove(p.position().containingCell());
+        	}
         }
-        
-
 
         Board board1 = nextBoard(board, consumedBonuses, blastedCells(blasts1));
         
@@ -354,21 +326,7 @@ public final class GameState {
         List<Bomb> bombs1 = new ArrayList<>();
         List<Bomb> tmpBomb = new ArrayList<>(bombs);
 
-        for (Player p1 : players) {
-            if(bombDropEvents.contains(p1.id())){
-                for(Player p2 : players){
-                    if (bombDropEvents.contains(p2.id())) {
-                        if(!p1.id().equals(p2.id()) && 
-                                p1.position().containingCell().equals(p2.position().containingCell())){
-                           
-                            bombDropEvents.remove(noPriority(p1, p2, currentPermut).id());
-                        }
-                    }
-                }
-            }
-        }
-        
-        tmpBomb.addAll(newlyDroppedBombs(players, bombDropEvents, bombs));
+        tmpBomb.addAll(newlyDroppedBombs(sortedPlayers, bombDropEvents, bombs));
         
         for(Bomb b : tmpBomb){
             if(b.fuseLength() == 1){
@@ -388,11 +346,10 @@ public final class GameState {
                 b.remove();
             }
         }
+
+        List<Player> players1 = nextPlayers(players(), playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
         
-        // calculer conflits déplacements!!
-        List<Player> players1 = nextPlayers(players, playerBonuses, bombedCells(bombs1).keySet(), board1, blastedCells(blasts1), speedChangeEvents);
-        
-        return new GameState(ticks+1, board1, players1, bombs1, explosions1, blasts1);
+        return new GameState(ticks()+1, board1, players1, bombs1, explosions1, blasts1);
     }
     
     /**
@@ -409,11 +366,14 @@ public final class GameState {
      */
     private static Board nextBoard(Board board0, Set<Cell> consumedBonuses, Set<Cell> blastedCells1) {
         List<Sq<Block>> board1 = new ArrayList<>();
+        List<Cell> rowMajor = Cell.ROW_MAJOR_ORDER;
         
-        for (int i = 0; i < Board.ROWS; i++) {
-            for (int j = 0; j < Board.COLUMNS; j++) {
-                Cell c = new Cell(j, i);
-                if (board0.blockAt(c).equals(Block.DESTRUCTIBLE_WALL) && blastedCells1.contains(c)) {
+        for(Cell c : rowMajor){
+        	if(consumedBonuses.contains(c)){
+        		board1.add(Sq.constant(Block.FREE));
+        	}
+        	else if(blastedCells1.contains(c)){
+        		if (board0.blockAt(c).equals(Block.DESTRUCTIBLE_WALL)) {
                     int random = RANDOM.nextInt(3);
                     Sq<Block> newWall = Sq.repeat(Ticks.WALL_CRUMBLING_TICKS, Block.CRUMBLING_WALL);
                     
@@ -432,46 +392,22 @@ public final class GameState {
                     }
                     board1.add(newWall);
                 }
-                else if(board0.blockAt(c).equals(Block.CRUMBLING_WALL)){
-                   
-                    board1.add(board0.blocksAt(c).tail());
-                    
-                }
-                else if(board0.blockAt(c).isBonus() && blastedCells1.contains(c)){
-                    Sq<Block> newBonus;
-                    if (touchedBonus.contains(c)) {
-                        newBonus = board0.blocksAt(c).tail();
-                        if (newBonus.head().equals(Block.FREE)) {
-                            touchedBonus.remove(c);
-                        }
-                    }
-                    else{
-                        
-                        newBonus = board0.blocksAt(c).limit(Ticks.BONUS_DISAPPEARING_TICKS);
-                        newBonus = newBonus.concat(Sq.constant(Block.FREE));
-                        touchedBonus.add(c);
-                    }
-                    board1.add(newBonus);
-                }
-                else if(consumedBonuses.contains(c)){
-                    board1.add(Sq.constant(Block.FREE));
+                else if(board0.blockAt(c).isBonus()){
+                	Sq<Block> newBonus;
+                	newBonus = board0.blocksAt(c).limit(Ticks.BONUS_DISAPPEARING_TICKS);
+                	newBonus = newBonus.concat(Sq.constant(Block.FREE));
+                	board1.add(newBonus);
                 }
                 else{
-                    if (touchedBonus.contains(c)) {
-                        Sq<Block> newBonus;
-                        newBonus = board0.blocksAt(c).tail();
-                        if (newBonus.head().equals(Block.FREE)) {
-                            touchedBonus.remove(c);
-                        }
-                        board1.add(newBonus);
-                    }
-                    else{
-                        board1.add(board0.blocksAt(c).tail());
-                    }
+                	board1.add(board0.blocksAt(c).tail());
                 }
-            }
+        	}
+        	else{
+        		board1.add(board0.blocksAt(c).tail());
+        	}
         }
-        return new Board(board1);
+    	   return new Board(board1); 
+    
     }
 
     /**
@@ -490,18 +426,21 @@ public final class GameState {
         List<Player> players1 = new ArrayList<>();     
        
         for(Player p : players0){
-            Sq<DirectedPosition> directedPos = p.directedPositions();
+      
+            Sq<DirectedPosition> directedPos1 = p.directedPositions();
             
-            if(p.isAlive() && speedChangeEvents.containsKey(p.id())){
+            if(speedChangeEvents.containsKey(p.id())){
                 Optional<Direction> dir = speedChangeEvents.get(p.id());
-                directedPos = directedPos(p, dir);
+                directedPos1 = nextDirectedPos(p, dir);
             }
-            if(!blocked(p, directedPos, board1, bombedCells1)){
-                directedPos = directedPos.tail();
+
+
+            if(!blocked(p, directedPos1, board1, bombedCells1)){
+                directedPos1 = directedPos1.tail();
             }
             
             Sq<LifeState> lifeStates = p.lifeStates();
-            if(blastedCells1.contains(p.position().containingCell()) && p.lifeState().state().equals(State.VULNERABLE)){
+            if(blastedCells1.contains(directedPos1.head().position().containingCell()) && p.lifeState().state().equals(State.VULNERABLE)){
                 
                 lifeStates = p.statesForNextLife();
             }
@@ -520,7 +459,7 @@ public final class GameState {
                     }
                 }
             }
-            players1.add(new Player(p.id(), lifeStates, directedPos, p.maxBombs(), p.bombRange()));
+            players1.add(new Player(p.id(), lifeStates, directedPos1, p.maxBombs(), p.bombRange()));
         }
             
         return players1;
@@ -533,27 +472,26 @@ public final class GameState {
      * @param dir
      * @return
      */
-    private static Sq<DirectedPosition> directedPos(Player p, Optional<Direction> dir){
-        Sq<DirectedPosition> directedPos;
-        if(dir == null){
-            return p.directedPositions();
-
-        }
-        else if(!dir.isPresent()){
+    private static Sq<DirectedPosition> nextDirectedPos(Player p, Optional<Direction> dir){
+        Sq<DirectedPosition> directedPos1;
+       
+        if(!dir.isPresent()){
             if(p.position().isCentral()){
-                directedPos = DirectedPosition.stopped(p.directedPositions().head());
+                directedPos1 = DirectedPosition.stopped(p.directedPositions().head());
             }
             else{
-                Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
-                SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
-                Sq<DirectedPosition> fromCentral = DirectedPosition.stopped(new DirectedPosition(central, p.direction()));
 
-                directedPos = toCentral.concat(fromCentral);
+                Sq<DirectedPosition> toCentral = p.directedPositions().takeWhile(c -> !c.position().isCentral());
+                DirectedPosition central = p.directedPositions().findFirst(c -> c.position().isCentral());
+                Sq<DirectedPosition> fromCentral = DirectedPosition.stopped(new DirectedPosition(central.position(),central.direction()));
+
+                directedPos1 = toCentral.concat(fromCentral);
+                
             }
             
         }
         else if(dir.get().isParallelTo(p.direction())){
-            directedPos = DirectedPosition.moving(new DirectedPosition(p.position(), dir.get()));
+            directedPos1 = DirectedPosition.moving(new DirectedPosition(p.position(), dir.get()));
         }
         else{
      
@@ -561,10 +499,10 @@ public final class GameState {
             SubCell central = p.directedPositions().findFirst(c -> c.position().isCentral()).position();
             Sq<DirectedPosition> fromCentral = DirectedPosition.moving(new DirectedPosition(central, dir.get()));
 
-            directedPos = toCentral.concat(fromCentral);
+            directedPos1 = toCentral.concat(fromCentral);
         }
         
-        return directedPos;
+        return directedPos1;
         
     }
     /**
@@ -577,31 +515,27 @@ public final class GameState {
      */
     private static boolean blocked(Player p, Sq<DirectedPosition> directedPos, Board board1, Set<Cell> bombs){
         Direction dir = directedPos.head().direction();
-        Cell pos = p.position().containingCell();
+        SubCell pos =directedPos.head().position();
         
         if(!p.lifeState().canMove()){
-           
             return true;
         }
         
-        if( bombs.contains(pos) && p.position().distanceToCentral() <= 6){
-            SubCell nextSub = p.position().neighbor(p.direction());
-            if(p.position().distanceToCentral() > nextSub.distanceToCentral()){
-                
+        if( bombs.contains(pos.containingCell()) && pos.distanceToCentral() == 6){
+            SubCell nextSub = pos.neighbor(dir);
+            if(pos.distanceToCentral() > nextSub.distanceToCentral()){
                 return true;
             }
         }
         
         if(p.position().isCentral()){
            
-            Cell c = pos.neighbor(dir);
-            if(board1.blockAt(c).castsShadow()){
+            Cell c = pos.containingCell().neighbor(dir);
+            if(!board1.blockAt(c).canHostPlayer()){
                 return true;
             }
         }
-
         return false;
-
     }
     
 
@@ -635,7 +569,7 @@ public final class GameState {
         List<Bomb> newBombs = new ArrayList<>();
         
         for(Player p : players0){
-            if(bombDropEvents.contains(p.id())){
+            if(p.isAlive() && bombDropEvents.contains(p.id())){
                 boolean taken = false;
                 int nbrBombs = 0;
                 
@@ -647,7 +581,7 @@ public final class GameState {
                         taken = true;
                     }
                 }
-                if(p.isAlive() && nbrBombs < p.maxBombs() && !taken){
+                if(nbrBombs < p.maxBombs() && !taken){
                     newBombs.add(new Bomb(p.id(), p.position().containingCell(), Ticks.BOMB_FUSE_TICKS, p.bombRange()));
                 }
             }   

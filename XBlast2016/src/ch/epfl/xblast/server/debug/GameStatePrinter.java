@@ -31,17 +31,17 @@ public final class GameStatePrinter {
                         continue xLoop;
                     }
                 }
-                
-                for (Cell bbs: bomb.keySet()) {
-                    if (bbs.equals(c)) {
-                        System.out.print(stringForBomb(bbs));
+
+                for (Cell bla : blasts) {
+                    if (bla.equals(c)) {
+                        System.out.print(stringForBlast(bla));
                         continue xLoop;
                     }
                 }
                 
-                for (Cell bla : blasts) {
-                    if (bla.equals(c)) {
-                        System.out.print(stringForBlast(bla));
+                for (Cell bbs: bomb.keySet()) {
+                    if (bbs.equals(c)) {
+                        System.out.print(stringForBomb(bbs));
                         continue xLoop;
                     }
                 }

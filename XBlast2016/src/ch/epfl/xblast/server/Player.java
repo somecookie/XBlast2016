@@ -102,11 +102,8 @@ public final class Player {
      * Retourne vrai si le joueur est vivant et faux s'il est mort
      * @return boolean
      */
-    public boolean isAlive(){
-        if(lives() > 0){
-            return true;
-        }
-        return false;
+    public boolean isAlive(){ 
+    	return (lives()> 0);
     }
     
     /**
@@ -147,7 +144,7 @@ public final class Player {
      * @return Player
      */
     public Player withMaxBombs(int newMaxBombs){
-        return new Player(id, lifeStates, directedPos, newMaxBombs,bombRange);
+        return new Player(id(), lifeStates(), directedPositions(), newMaxBombs,bombRange());
     }
     
     /**
@@ -163,7 +160,7 @@ public final class Player {
      * @return Player 
      */
     public Player withBombRange(int newBombRange){
-        return new Player(id, lifeStates, directedPos, maxBombs, newBombRange);
+        return new Player(id(), lifeStates(), directedPositions(), maxBombs(), newBombRange);
     }
     
     /**
@@ -171,7 +168,7 @@ public final class Player {
      * @return
      */
     public Bomb newBomb(){
-        return new Bomb(id, position().containingCell(), Ticks.BOMB_FUSE_TICKS, bombRange);
+        return new Bomb(id(), position().containingCell(), Ticks.BOMB_FUSE_TICKS, bombRange());
     }
     
     private static Sq<LifeState> SqCreator(int lives){
@@ -220,10 +217,7 @@ public final class Player {
          * @return boolean
          */
         public boolean canMove(){
-            if(state.equals(State.INVULNERABLE)|| state.equals(State.VULNERABLE)){
-                return true;
-            }
-            return false;
+            return (state.equals(State.INVULNERABLE)|| state.equals(State.VULNERABLE));
         }
         
         public enum State{
@@ -267,7 +261,7 @@ public final class Player {
         }
         
         public DirectedPosition withPosition(SubCell newPosition){
-            return new DirectedPosition(newPosition, direction);
+            return new DirectedPosition(newPosition, direction());
         }
         
         public Direction direction(){
@@ -275,7 +269,7 @@ public final class Player {
         }
         
         public DirectedPosition withDirection(Direction newDirection){
-            return new DirectedPosition(position, newDirection);
+            return new DirectedPosition(position(), newDirection);
         }
     }
 }

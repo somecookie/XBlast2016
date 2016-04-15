@@ -99,7 +99,7 @@ public final class Bomb {
      */
     private Sq<Sq<Cell>> explosionArmTowards(Direction dir) {
         Sq<Cell> pos = Sq.iterate(position, c -> c.neighbor(dir)).limit(range);
-        Sq<Sq<Cell>> arm = Sq.repeat(Ticks.EXPLOSION_TICKS-range, pos);
+        Sq<Sq<Cell>> arm = Sq.repeat(Ticks.EXPLOSION_TICKS, pos);
         return arm;
         
     }

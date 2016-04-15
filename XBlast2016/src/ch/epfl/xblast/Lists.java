@@ -24,8 +24,9 @@ public final class Lists {
         }
         else {
             ArrayList<T> newL = new ArrayList<T>(l);
-            Collections.reverse(l);
-            newL.addAll(l.subList(1,l.size()));
+            ArrayList<T> lBis = new ArrayList<>(l);
+            Collections.reverse(lBis);
+            newL.addAll(lBis.subList(1,lBis.size()));
             List<T> imuL = Collections.unmodifiableList(new ArrayList<>(newL));
             return imuL;
         }
@@ -37,15 +38,16 @@ public final class Lists {
      * @return
      */
     public static <T> List<List<T>> permutations(List<T> l){
+    	List<T> newl = new ArrayList<>(l);
         List<List<T>> permut = new ArrayList<>();
         
-        if(l.isEmpty() || l.size() == 1){
-            permut.add(l);
+        if(newl.isEmpty() || newl.size() == 1){
+            permut.add(newl);
             return permut;
         }
         else{
-            T head = l.get(0);
-            List<T> tail = l.subList(1, l.size());
+            T head = newl.get(0);
+            List<T> tail = newl.subList(1, newl.size());
             List<List<T>> prevPermut = permutations(tail);
             for (int i = 0; i < prevPermut.size(); i++) {
                 for (int j = 0; j <= prevPermut.get(i).size() ; j++) {

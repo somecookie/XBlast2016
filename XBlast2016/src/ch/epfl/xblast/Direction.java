@@ -19,16 +19,10 @@ public enum Direction {
     }
     
     public boolean isHorizontal(){
-        if(this.equals(E) || this.equals(W)){
-            return true;
-        }
-        return false;
+        return (this.equals(E) || this.equals(W));
     }
     
     public boolean isParallelTo(Direction that){
-        if (that.equals(this) || that.equals(this.opposite())){
-            return true;
-        }
-        return false;
+        return (that.equals(this) || that.equals(this.opposite()));
     }
 }

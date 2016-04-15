@@ -24,22 +24,22 @@ public class RandomGame {
 		        List<Player> players = new ArrayList<>(Arrays.asList(p,p2,p3,p4));
 		        GameState g = new GameState(board, players);
 		        RandomEventGenerator events = new RandomEventGenerator(2016, 30, 100);
-
-		        for (int i = 0; i < 304; i++) {
+		        Scanner keyb = new Scanner(System.in);
+		        while(g.ticks() != 650){
 		            g = g.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
-                }
-		        
-		        while(!g.isGameOver()){
-		            g = g.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
-		            GameStatePrinter.printGameState(g);
-                    
-		            Scanner keyb = new Scanner(System.in);
-		            String s = keyb.nextLine();
-
+//		            GameStatePrinter.printGameState(g);
+//
 //		            Thread.sleep(50);
 		            System.out.println("\033[H\033[2J");
 		        }
+		        GameStatePrinter.printGameState(g);
 		        
+		        while(!g.isGameOver()){
+		        	String s = keyb.nextLine();
+		        	g = g.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
+		        	GameStatePrinter.printGameState(g);
+		        }
+		       
 		        System.out.println(g.winner());
 		        
 		

@@ -59,7 +59,7 @@ public final class SubCell {
      */
     public int distanceToCentral(){
         SubCell central = centralSubCellOf(this.containingCell());
-        return Math.abs(x - central.x()) + Math.abs(y - central.y());
+        return Math.abs(x() - central.x()) + Math.abs(y() - central.y());
     }
 
     /**
@@ -67,10 +67,6 @@ public final class SubCell {
      * @return vrai sii le case est une sous-case centrale (boolean)
      */
     public boolean isCentral() {
-//        if (this.equals(centralSubCellOf(containingCell()))) {
-//            return true;
-//        }
-//        return false;
         return distanceToCentral() == 0;
     }
 
@@ -81,29 +77,29 @@ public final class SubCell {
      * @return sous-case voisine (SubCell)
      */
     public SubCell neighbor(Direction d) {
-        int yY = y, xX = x;
+        int yY = y(), xX = x();
 
         switch (d) {
         case N:
-            if (y == 0) {
+            if (y() == 0) {
                 yY = 208;
             }
-            return new SubCell(x, yY-1);
+            return new SubCell(x(), yY-1);
         case E:
-            if (x == 239) {
+            if (x() == 239) {
                 xX = -1;
             }
-            return new SubCell(xX+1, y);
+            return new SubCell(xX+1, y());
         case S:
-            if (y == 207) {
+            if (y() == 207) {
                 yY = -1;
             }
-            return new SubCell(x, yY+1);
+            return new SubCell(x(), yY+1);
         case W:
-            if (x == 0) {
+            if (x() == 0) {
                 xX = 240;
             }
-            return new SubCell(xX-1, y);
+            return new SubCell(xX-1, y());
           default:
               throw new Error();
         }
@@ -114,34 +110,25 @@ public final class SubCell {
      * @return case dans laquelle la sous-case se trouve (Cell)
      */
     public Cell containingCell() {
-        int xCell = (x - (x % 16))/16;
-        int yCell = (y - (y % 16))/16;
+        int xCell = (x() - (x() % 16))/16;
+        int yCell = (y() - (y() % 16))/16;
         return new Cell(xCell, yCell);
     }
 
     @Override
     public boolean equals(Object that) {
-        if(that == null){
-            return false;
-        }
-        else{
-            if(that.getClass()!= getClass()){
-                return false;
-            }
-            else{
-                SubCell c = (SubCell) that;
-                return (x == c.x() && y == c.y());
-            }
-        }
+        
+    	return (that instanceof SubCell)
+    			&& (((SubCell)that).x() == x() && ((SubCell)that).y() == y());
     }
 
     @Override
     public String toString() {
-        return "(" + x + " ," + y + ")";
+        return "(" + x() + " ," + y() + ")";
     }
 
     @Override
     public int hashCode() {
-        return  y*SUBCOLUMNS+x;
+        return  y()*SUBCOLUMNS+x();
         }
 }
