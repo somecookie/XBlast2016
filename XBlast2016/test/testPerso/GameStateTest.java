@@ -146,56 +146,7 @@ public class GameStateTest {
         assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
         
     }
-    
-    @Test
-    public void testOn2PlayersDeposing(){
-        Board board = oneElementBoard(Block.FREE);
-        List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 5, new Cell(5, 5), 5, 5),
-                new Player(PlayerID.PLAYER_2, 5, new Cell(5, 5), 5, 5),
-                new Player(PlayerID.PLAYER_3, 5, new Cell(5, 5), 5, 5),
-                new Player(PlayerID.PLAYER_4, 5, new Cell(5, 5), 5, 5)));
-        
 
-        Set<PlayerID> bombDropEvents = new HashSet<>();
-        bombDropEvents.add(PlayerID.PLAYER_1); bombDropEvents.add(PlayerID.PLAYER_2);
-        
-        Set<PlayerID> bombDropEvents1 = new HashSet<>(bombDropEvents);
-        
-        Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
-        
-        List<Bomb> bombs = new ArrayList<>();
-        List<Sq<Sq<Cell>>> explosions = new ArrayList<>();
-        List<Sq<Cell>> blasts = new ArrayList<>();
-        
-        GameState g = new GameState(0, board, players, bombs, explosions, blasts);
-        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-        Collection<Bomb> b = g.bombedCells().values();
-        assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
-     
-        
-        g = new GameState(2, board, players, bombs, explosions, blasts);
-        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-        b = g.bombedCells().values();
-        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
-        
-        
-        g = new GameState(23, board, players, bombs, explosions, blasts);
-        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-        b = g.bombedCells().values();
-        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
-        
-        g = new GameState(27, board, players, bombs, explosions, blasts);
-        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents));
-        b = g.bombedCells().values();
-        assertEquals(PlayerID.PLAYER_2, b.iterator().next().ownerId());
-        
-        bombDropEvents1.add(PlayerID.PLAYER_3);
-        g = new GameState(0, board, players, bombs, explosions, blasts);
-        g = g.next(speedChangeEvents, new HashSet<>(bombDropEvents1));
-        b = g.bombedCells().values();
-        assertEquals(1, g.bombedCells().size());
-        assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
-    }
    
     
     @Test

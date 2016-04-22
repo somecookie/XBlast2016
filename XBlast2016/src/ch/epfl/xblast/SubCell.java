@@ -11,8 +11,9 @@ package ch.epfl.xblast;
  */
 public final class SubCell {
     private final int x, y;
-    public static final int SUBCOLUMNS = 240;
-    public static final int SUBROWS = 208;
+    private static final int GANULARITY = 16;
+    private static final int SUBCOLUMNS = GANULARITY*Cell.COLUMNS;
+    private static final int SUBROWS = GANULARITY*Cell.ROWS;
 
     /**
      * Normalise les coordonnées x et y données et construit une sous-case avec ses dernières
@@ -32,8 +33,8 @@ public final class SubCell {
      * @return la sous-case centrale de la case donnée comme argument
      */
     public static SubCell centralSubCellOf(Cell cell){
-        int y = (cell.y()) * 16 + 8;
-        int x = (cell.x()) * 16 + 8;
+        int y = (cell.y()) * GANULARITY + (GANULARITY/2);
+        int x = (cell.x()) * GANULARITY + (GANULARITY/2);
         return new SubCell(x, y);
     }
 
@@ -75,34 +76,22 @@ public final class SubCell {
      * @param d
      *          Direction donnée
      * @return sous-case voisine (SubCell)
+     * @author Eleonore Pochon (262959)
      */
     public SubCell neighbor(Direction d) {
-        int yY = y(), xX = x();
-
-        switch (d) {
-        case N:
-            if (y() == 0) {
-                yY = 208;
+    	
+            switch (d) {
+            case N:
+                return new SubCell(x(), y() - 1);
+            case S:
+                return new SubCell(x(), y() + 1);
+            case E:
+                return new SubCell(x() + 1, y());
+            case W:
+                return new SubCell(x() - 1, y());
+            default:
+                throw new Error();
             }
-            return new SubCell(x(), yY-1);
-        case E:
-            if (x() == 239) {
-                xX = -1;
-            }
-            return new SubCell(xX+1, y());
-        case S:
-            if (y() == 207) {
-                yY = -1;
-            }
-            return new SubCell(x(), yY+1);
-        case W:
-            if (x() == 0) {
-                xX = 240;
-            }
-            return new SubCell(xX-1, y());
-          default:
-              throw new Error();
-        }
     }
 
     /**
@@ -110,8 +99,8 @@ public final class SubCell {
      * @return case dans laquelle la sous-case se trouve (Cell)
      */
     public Cell containingCell() {
-        int xCell = (x() - (x() % 16))/16;
-        int yCell = (y() - (y() % 16))/16;
+        int xCell = (x() - (x() % GANULARITY))/GANULARITY;
+        int yCell = (y() - (y() % GANULARITY))/GANULARITY;
         return new Cell(xCell, yCell);
     }
 
