@@ -3,10 +3,14 @@ package ch.epfl.xblast.server;
 public enum BlockImage {
 	IRON_FLOOR, IRON_FLOOR_S, DARK_BLOCK, EXTRA, EXTRA_O, BONUS_BOMB, BONUS_RANGE;
 	
+	/**
+	 * return the byte code corresponding to this
+	 * @return byte, the byte code of the BlockImage
+	 */
 	public byte byteImage(){
 		switch(this){
 		case IRON_FLOOR:
-			return (byte)000;
+			return 000;
 		case IRON_FLOOR_S:
 			return 001;
 		case DARK_BLOCK:

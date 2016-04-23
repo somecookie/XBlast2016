@@ -18,7 +18,7 @@ public class BoardPainterTest {
 	@Test
 	public void testOnByteForCell(){
 		Board b = Util.board();
-		Cell c1 = new Cell(2, 0); //Free
+		Cell c1 = new Cell(2, 1); //Free
 		Cell c2 = new Cell(1, 1); //shaded Free
 		Cell c3 = new Cell(0,0); // indestructible wall
 		Cell c4 = new Cell(3,2); // destructible wall
@@ -26,7 +26,7 @@ public class BoardPainterTest {
 		Map<Block, BlockImage> pallet = Util.pallet();
 		
 		BoardPainter bp = new BoardPainter(pallet, BlockImage.IRON_FLOOR_S);
-		
+
 		assertEquals((byte)000, bp.byteForCell(b, c1));
 		assertEquals((byte)001, bp.byteForCell(b, c2));
 		assertEquals((byte)002, bp.byteForCell(b, c3));
