@@ -146,7 +146,8 @@ public class GameStateTest {
         assertEquals(PlayerID.PLAYER_1, b.iterator().next().ownerId());
         
     }
-
+    
+   
    
     
     @Test

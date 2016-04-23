@@ -69,12 +69,12 @@ public final class GameStatePrinter {
             xLoop: for (int x = 0; x < Cell.COLUMNS; ++x) {
                 Cell c = new Cell(x, y);
                 
-                for (Cell bbs: bomb.keySet()) {
-                    if (bbs.equals(c)) {
-                        System.out.print(stringForBomb(bbs));
-                        continue xLoop;
-                    }
-                }
+//                for (Cell bbs: bomb.keySet()) {
+//                    if (bbs.equals(c)) {
+//                        System.out.print(stringForBomb(bbs));
+//                        continue xLoop;
+//                    }
+//                }
                 
                 for (Cell bla : blasts) {
                     if (bla.equals(c)) {
@@ -115,7 +115,7 @@ public final class GameStatePrinter {
     }
     
     private static String stringForBomb(Cell c){
-        return "óó";
+        return "BB";
     }
     private static String stringForBlast(Cell c){
         return "°°";
