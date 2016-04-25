@@ -1,3 +1,8 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Eleonore Pochon (262959)
+ */
+
 package ch.epfl.xblast.server;
 
 import java.util.Collections;
@@ -8,35 +13,41 @@ import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Direction;
 
 public final class BoardPainter {
-	
+
 	private final Map<Block, BlockImage> pallet;
 	private final BlockImage shadedFree;
-	
+
 	/**
 	 * Constructor of the class BoardPainter.
-	 * @param p, the pallet, which is represented by a map, matching each block with its BlockImage.
-	 * @param sFree, the BlockImage representing the shaded Free blocks.
+	 * 
+	 * @param p,
+	 *            the pallet, which is represented by a map, matching each block
+	 *            with its BlockImage.
+	 * @param sFree,
+	 *            the BlockImage representing the shaded Free blocks.
 	 */
-	public BoardPainter(Map<Block, BlockImage> p, BlockImage sFree){
+	public BoardPainter(Map<Block, BlockImage> p, BlockImage sFree) {
 		pallet = Collections.unmodifiableMap(new HashMap<>(p));
 		shadedFree = sFree;
 	}
+
 	/**
-	 * Given a board and a cell, return the octet identifying the image of the block for the cell c
+	 * Given a board and a cell, return the octet identifying the image of the
+	 * block for the cell c
+	 * 
 	 * @param board
-	 * @param c, the position of the block (from the board) we want to calculate the image byte code.
+	 * @param c,
+	 *            the position of the block (from the board) we want to
+	 *            calculate the image byte code.
 	 * @return byte, the byte code of the block
 	 */
-	public byte byteForCell(Board board, Cell c){
+	public byte byteForCell(Board board, Cell c) {
 		Block b = board.blockAt(c);
-		if(b.isFree() && board.blockAt(c.neighbor(Direction.W)).castsShadow()){
+		if (b.isFree() && board.blockAt(c.neighbor(Direction.W)).castsShadow()) {
 			return shadedFree.byteImage();
-		}
-		else{
+		} else {
 			return pallet.get(b).byteImage();
 		}
 	}
 
-	
 }
-
