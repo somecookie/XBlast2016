@@ -22,8 +22,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-import javax.lang.model.element.NestingKind;
-
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.ArgumentChecker;
 import ch.epfl.xblast.Cell;
