@@ -2,12 +2,16 @@
  * @author Ricardo Ferreira Ribeiro (250798)
  * @author Eleonore Pochon (262959)
  */
-package ch.epfl.xblast.server;
+package ch.epfl.xblast.server.image;
 
 import java.util.Set;
 
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Direction;
+import ch.epfl.xblast.server.Block;
+import ch.epfl.xblast.server.Board;
+import ch.epfl.xblast.server.Bomb;
+import ch.epfl.xblast.server.GameState;
 
 public final class ExplosionPainter {
 

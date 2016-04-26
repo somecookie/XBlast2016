@@ -10,7 +10,7 @@ import org.junit.Test;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.Bomb;
-import ch.epfl.xblast.server.ExplosionPainter;
+import ch.epfl.xblast.server.image.ExplosionPainter;
 
 public class ExplosionPainterTest {
 

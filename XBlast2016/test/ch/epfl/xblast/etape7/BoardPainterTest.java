@@ -13,8 +13,8 @@ import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.server.Block;
 import ch.epfl.xblast.server.Board;
-import ch.epfl.xblast.server.BlockImage;
-import ch.epfl.xblast.server.BoardPainter;
+import ch.epfl.xblast.server.image.BlockImage;
+import ch.epfl.xblast.server.image.BoardPainter;
 
 public class BoardPainterTest {
 

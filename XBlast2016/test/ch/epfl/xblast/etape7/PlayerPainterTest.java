@@ -12,7 +12,7 @@ import ch.epfl.xblast.server.Player;
 import ch.epfl.xblast.server.Player.DirectedPosition;
 import ch.epfl.xblast.server.Player.LifeState;
 import ch.epfl.xblast.server.Player.LifeState.State;
-import ch.epfl.xblast.server.PlayerPainter;
+import ch.epfl.xblast.server.image.PlayerPainter;
 
 public class PlayerPainterTest {
 

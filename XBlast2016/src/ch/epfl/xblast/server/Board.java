@@ -1,6 +1,6 @@
 /**
  * @author Ricardo Ferreira Ribeiro (250798)
- * @author Clarise Estelle Fleurimont (246866)
+ * @author Clarisse Estelle Fleurimont (246866)
  * @date 29 févr. 2016
  */
 /**

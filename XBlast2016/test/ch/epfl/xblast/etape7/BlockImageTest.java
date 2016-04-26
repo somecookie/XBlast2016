@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import ch.epfl.xblast.server.BlockImage;
+import ch.epfl.xblast.server.image.BlockImage;
 
 public class BlockImageTest {
 
