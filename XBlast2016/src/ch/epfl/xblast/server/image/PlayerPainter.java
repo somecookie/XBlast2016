@@ -6,7 +6,6 @@
 package ch.epfl.xblast.server.image;
 
 import ch.epfl.xblast.server.Player;
-import ch.epfl.xblast.server.Player.LifeState;
 import ch.epfl.xblast.server.Player.LifeState.State;
 
 public final class PlayerPainter {

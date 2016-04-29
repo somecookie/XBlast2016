@@ -46,9 +46,9 @@ public final class BoardPainter {
 	public byte byteForCell(Board board, Cell c) {
 		Block b = board.blockAt(c);
 		if (b.isFree() && board.blockAt(c.neighbor(Direction.W)).castsShadow()) {
-			return shadedFree.byteImage();
+			return (byte) shadedFree.ordinal();
 		} else {
-			return pallet.get(b).byteImage();
+			return (byte) pallet.get(b).ordinal();
 		}
 	}
 
