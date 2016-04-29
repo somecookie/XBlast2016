@@ -13,9 +13,10 @@ public final class Lists {
     private Lists() {}
 
     /**
-     * Retourne une version symétrique de la liste donnée.
-     * Lève l'exception IllegalArgumentException si celle-ci est vide.
+     * Return the symmetric version of a given list
+     * @throw  the IllegalArgumentException if the list is empty
      * @param l
+     * 		  the given list
      * @return
      */
     public static <T> List<T> mirrored(List<T> l) {
@@ -33,8 +34,9 @@ public final class Lists {
     }
     
     /**
-     * retourne les permutations de la liste donnée en argument, dans un ordre quelconque.
+     * Return the permutations of the given list in a random order
      * @param l
+     * 		  the given list
      * @return
      */
     public static <T> List<List<T>> permutations(List<T> l){

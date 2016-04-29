@@ -8,68 +8,69 @@ package ch.epfl.xblast.server;
 import java.util.NoSuchElementException;
 
 /**
- * Définit les différents types de blocs.
+ * Define the different block's type
  */
 public enum Block {
-    /**
-     * FREE, qui représente un bloc libre, INDESTRUCTIBLE_WALL, qui représente un mur indestructible,
-     * DESTRUCTIBLE_WALL qui représente un mur destructible, 
-     * CRUMBLING_WALL, qui représente un mur (destructible) en train de s'écrouler.
-     */
-    FREE, INDESTRUCTIBLE_WALL, DESTRUCTIBLE_WALL, CRUMBLING_WALL, BONUS_BOMB(Bonus.INC_BOMB), BONUS_RANGE(Bonus.INC_RANGE);
 
-    private Bonus maybeAssociatedBonus;
+	FREE, INDESTRUCTIBLE_WALL, DESTRUCTIBLE_WALL, CRUMBLING_WALL, BONUS_BOMB(Bonus.INC_BOMB), BONUS_RANGE(
+			Bonus.INC_RANGE);
 
-    private Block(Bonus maybeAssociatedBonus) {
-        this.maybeAssociatedBonus = maybeAssociatedBonus;
-    }
+	private Bonus maybeAssociatedBonus;
 
-    private Block() {
-      this.maybeAssociatedBonus = null;
-    }
+	private Block(Bonus maybeAssociatedBonus) {
+		this.maybeAssociatedBonus = maybeAssociatedBonus;
+	}
 
-    /**
-     * Methode testant si le block est libre ou non
-     * @return true sii le block est libre
-     */
-    public boolean isFree() {
-        return (this.equals(FREE));
-    }
+	private Block() {
+		this.maybeAssociatedBonus = null;
+	}
 
-    /**
-     * Méthode testant si le block peut "acceuilire" un joueur
-     * @return true sii un joueur peut aller sur le block
-     */
-    public boolean canHostPlayer() {
-        return (this.isFree() || this.isBonus());
-    }
+	/**
+	 * Check if the block is free or not
+	 * 
+	 * @return true iff the block is free, otherwise false
+	 */
+	public boolean isFree() {
+		return (this.equals(FREE));
+	}
 
-    /**
-     * Méthode testant si le block met une ombre sur le plateau
-     * @return true sii le block met une ombre sur le plateau de jeu
-     */
-    public boolean castsShadow() {
-        return (this == INDESTRUCTIBLE_WALL)||(this==DESTRUCTIBLE_WALL)|| (this==CRUMBLING_WALL) ;
-        
-    }
+	/**
+	 * Check if the block is free or has a bonus (= can host a player)
+	 * 
+	 * @return true iff the player can go on the block, otherwise false
+	 */
+	public boolean canHostPlayer() {
+		return (this.isFree() || this.isBonus());
+	}
 
-    /**
-     * 
-     * @return boolean
-     */
-    public boolean isBonus() {
-        return (maybeAssociatedBonus != null);
-    }
+	/**
+	 * Check if the block can cast a shadow (if the block is a wall,
+	 * destructible, indestructible, crumbling)
+	 * 
+	 * @return true if the block can cast a shadow, otherwise false
+	 */
+	public boolean castsShadow() {
+		return (this == INDESTRUCTIBLE_WALL) || (this == DESTRUCTIBLE_WALL) || (this == CRUMBLING_WALL);
 
-    /**
-     * 
-     * @return
-     */
-    public Bonus associatedBonus() {
-        if (isBonus()) {
-            return maybeAssociatedBonus;
-        } else {
-            throw new NoSuchElementException("La case ne contient pas de bonus!");
-        }
-    }
+	}
+
+	/**
+	 * Check if there is a bonus on the cell or not
+	 * 
+	 * @return true if the block is a bonus, otherwise false
+	 */
+	public boolean isBonus() {
+		return (maybeAssociatedBonus != null);
+	}
+
+	/**
+	 * @return the bonus corresponding to the block
+	 */
+	public Bonus associatedBonus() {
+		if (isBonus()) {
+			return maybeAssociatedBonus;
+		} else {
+			throw new NoSuchElementException("La case ne contient pas de bonus!");
+		}
+	}
 }

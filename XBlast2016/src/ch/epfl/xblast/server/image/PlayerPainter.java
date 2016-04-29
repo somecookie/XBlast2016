@@ -12,26 +12,39 @@ import ch.epfl.xblast.server.Player.LifeState.State;
 public final class PlayerPainter {
 
 	public final static byte BYTE_FOR_DEATH = 15;
-
+	
+	/**
+	 * Constructor of the player painter, it's empty because the class isn't instanciable
+	 */
 	private PlayerPainter() {
-
+		
 	}
-
+	
+	/**Calculate the image do we have to use for the player
+	 * 
+	 * @param ticks
+	 * 		  the actual ticks
+	 * @param player
+	 * 		  the player used for the image
+	 * @return the corresponding image in byte
+	 */
 	public static byte byteForPlayer(int ticks, Player player) {
 		byte byteForPlayer = 0;
 		State playerState = player.lifeState().state();
 		int position;
-
+		
+		//Choose the id of the player and its corresponding image
 		byteForPlayer += player.id().ordinal() * 20;
 
 		if (player.lifeState().canMove()) {
-
+			
+			//of we have to use the black or white image
 			if (playerState == State.INVULNERABLE && ((ticks % 1) == 1)) {
 				byteForPlayer = 80;
 			}
 
 			byteForPlayer += player.direction().ordinal() * 3;
-
+			//Calculate the feet's position
 			if (player.direction().isHorizontal()) {
 				position = player.position().x();
 			} else {
@@ -52,12 +65,14 @@ public final class PlayerPainter {
 			}
 
 		} else {
+			//the case when the player is dying 
 			if (playerState == State.DYING) {
 				if (player.lives() <= 1) {
 					return (byte) 13;
 				} else {
 					return (byte) 12;
 				}
+			 //the case when the player is dead
 			} else {
 				byteForPlayer = BYTE_FOR_DEATH;
 			}

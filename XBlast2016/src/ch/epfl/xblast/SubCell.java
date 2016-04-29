@@ -6,20 +6,17 @@
 package ch.epfl.xblast;
 
 
-/**
- * Immuable. Represente une sous-case. Elle offre une unique méthode publiques et statique
- */
 public final class SubCell {
     private final int x, y;
     public static final int SUBCOLUMNS = 240;
     public static final int SUBROWS = 208;
 
     /**
-     * Normalise les coordonnées x et y données et construit une sous-case avec ses dernières
+     * Normalize the given coordinates x and y and constructs a sub cell with that coordinates
      * @param x
-     *          coordonnée x donnée
+     *          given coordinate x
      * @param y
-     *          coordonnée x donnée
+     *          given coordinate y
      */
     public SubCell(int x, int y){
         this.x = Math.floorMod(x, SUBCOLUMNS);
@@ -27,9 +24,10 @@ public final class SubCell {
     }
 
     /**
-     * Retourne la sous-case centrale de la case donnée
+     * Return the central sub cell of the given cell
      * @param cell
-     * @return la sous-case centrale de la case donnée comme argument
+     * 		  the given cell
+     * @return the central sub cell of the argument cell
      */
     public static SubCell centralSubCellOf(Cell cell){
         int y = (cell.y()) * 16 + 8;
@@ -38,7 +36,7 @@ public final class SubCell {
     }
 
     /**
-     * Retourne la coordonnée x normalisée de la sous-case
+     * Return the normalized coordinate x of the sub cell
      * @return x (int)
      */
     public int x(){
@@ -46,7 +44,7 @@ public final class SubCell {
     }
 
     /**
-     * Retourne la coordonnée y normalisée de la sous-case
+     * Return the normalized coordinate y of the sub cell
      * @return y (int)
      */
     public int y(){
@@ -54,7 +52,7 @@ public final class SubCell {
     }
 
     /**
-     * Retourne la distance de la sous-case en construction à la sous-case centrale la plus proche 
+     * Return the distance from the sub cell in construction to the nearest central sub cell
      * @return distance (int)
      */
     public int distanceToCentral(){
@@ -63,18 +61,18 @@ public final class SubCell {
     }
 
     /**
-     * Retourne vrai sii la sous-case en construction est une sous-case centrale
-     * @return vrai sii le case est une sous-case centrale (boolean)
+     * Return true iff the sub cell is in construction is a central sub cell
+     * @return true iff the cell is central sub cell(boolean)
      */
     public boolean isCentral() {
         return distanceToCentral() == 0;
     }
 
     /**
-     * Retourne la sous-case voisine de la sous-case en construction, dans la direction donnée
+     * Return the sub cell's neighbor to the sub cell in construction, in the given direction
      * @param d
-     *          Direction donnée
-     * @return sous-case voisine (SubCell)
+     *        the given direction
+     * @return neighbor sub cell (SubCell)
      */
     public SubCell neighbor(Direction d) {
         int yY = y(), xX = x();
@@ -106,8 +104,8 @@ public final class SubCell {
     }
 
     /**
-     * Retourne la case dans laquelle la souscase en construction se situe
-     * @return case dans laquelle la sous-case se trouve (Cell)
+     * Return the cell where stands the sub cell in construction
+     * @return the cell where stands the sub cell (Cell)
      */
     public Cell containingCell() {
         int xCell = (x() - (x() % 16))/16;

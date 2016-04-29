@@ -9,13 +9,13 @@ public final class ArgumentChecker {
     private ArgumentChecker(){}
 
     /**
-     * Retourne la valeur donnée si elle est positive ou nulle, et lève l'exception IllegalArgumentException sinon.
+     * Return the given value if it's positive or null, otherwise throw the IllegalArgumentException 
      * @param value
-     *          La valeur donnée sous forme de int
+     *          the given value in integer
      * @throws IllegalArgumentException
-     *          Sii la valeur donnée est négative
+     *          Iff the given value is negative
      * @return value (int)
-     *          La valeur donnée sii celle-ci est positive ou nulle
+     *          the given value if it's positive or null
      */
     public static int requireNonNegative(int value) {
         if (value < 0) {

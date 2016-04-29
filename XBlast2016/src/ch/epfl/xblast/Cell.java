@@ -14,11 +14,11 @@ public  final class Cell {
     private final int y;
 
     /**
-     * Normalise les coordonnées x et y données et construit une case avec ces dernières.
+     * Normalize the given coordinates x and y and constructs a sub cell with that coordinates
      * @param x
-     *          Coordonnée x donnée
+     *          given coordinate x
      * @param y
-     *          Coordonnée y donnée
+     *          given coordinate y
      */
     public Cell(int x, int y){
         this.x = Math.floorMod(x, COLUMNS);
@@ -26,10 +26,10 @@ public  final class Cell {
     }
 
     /**
-     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "sipral".
-     * (dans le sens des aiguilles d'une montre depuis la case en haut a gauche)
+     * Create a table in a form of cell's ArrayList in the spiral order (like the hand of the clock)
+     * 
      * @return spiral (ArrayList<Cell>)
-     *          Tableau de cases
+     *          cell's table
      */
     private static ArrayList<Cell> SpiralOrder() {
         ArrayList<Integer> ix = new ArrayList<>();
@@ -93,9 +93,10 @@ public  final class Cell {
     }
 
     /**
-     * Crée un tableau de cases sous formes d'ArrayList de Cell dans l'ordre "normal".
-     * @return currentRowMaj (ArrayList<Cell>)
-     *          Tableau de cases
+     * Initialize the row major order array list, used to create the
+     * unmodifiable List ROW_MAJOR_ORDER
+     * 
+     * @return an array of all cells in the row major order
      */
     private static ArrayList<Cell> rowMajorOrder() {
         ArrayList<Cell> currentRowMaj = new ArrayList<>();
@@ -112,39 +113,35 @@ public  final class Cell {
     }
 
     /**
-     * Retourne l'index de la case dans l'ordre de lecture.
-     * @return rowMajorIndex (int)
-     *          Index de la case dans l'ordre de lecture
+     * Returns the index of the cell, the number of it in row major ordering
+     * 
+     * @return the index of the cell
      */
     public int rowMajorIndex(){
        return (y()*COLUMNS +x());
     }
 
     /**
-     * Retourne la coordonnée x normalisée de la case.
+     * Return the normalized coordinate x of the cell
      * @return x (int)
-     *          Coordonnée x normalisée
      */
     public int x(){
         return x;
     }
 
     /**
-     * Retourne la coordonnée y normalisée de la case.
+     * Return the normalized coordinate y of the cell
      * @return y (int)
-     *          Coordonnée y normalisée
      */
     public int y(){
         return y;
     }
 
     /**
-     * Retourne la case voisine, dans la direction donnée ;
-     * sachant que le plateau de jeu est (conceptuellement) torique, cette voisine existe toujours.
+     * Return the cell's neighbor to the cell in construction, in the given direction
      * @param dir
-     *          Direction donnée dans laquelle se trouve le voisin que l'on retourne
-     * @return neighbor (Cell)
-     *          Cellule voisine dans la direction donnée
+     *        the given direction
+     * @return neighbor cell (Cell)
      */
     public Cell neighbor(Direction dir){
         switch(dir){
