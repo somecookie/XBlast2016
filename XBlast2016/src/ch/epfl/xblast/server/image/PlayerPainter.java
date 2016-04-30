@@ -38,7 +38,7 @@ public final class PlayerPainter {
 		if (player.lifeState().canMove()) {
 			
 			//of we have to use the black or white image
-			if (playerState == State.INVULNERABLE && ((ticks % 1) == 1)) {
+			if (playerState == State.INVULNERABLE && ((ticks % 2) == 1)) {
 				byteForPlayer = 80;
 			}
 

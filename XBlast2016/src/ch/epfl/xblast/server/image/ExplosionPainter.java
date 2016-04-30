@@ -35,9 +35,9 @@ public final class ExplosionPainter {
 	 */
 	public static byte byteForBomb(Bomb bomb) {
 		if (Integer.bitCount(bomb.fuseLength()) == 1) {
-			return (byte) 20;
-		} else {
 			return (byte) 21;
+		} else {
+			return (byte) 20;
 		}
 	}
 
@@ -58,15 +58,18 @@ public final class ExplosionPainter {
 	public static byte byteForBlast(boolean northCellIsBlasted, boolean eastCellIsBlasted, boolean southCellIsBlasted,
 			boolean westCellIsBlasted) {
 		byte byteForBlast = 0;
-		boolean[] neighboorBlast = { northCellIsBlasted, eastCellIsBlasted, southCellIsBlasted, westCellIsBlasted };
 
-		for (int i = 0; i < neighboorBlast.length;) {
-			byteForBlast = (byte) (byteForBlast << 1);
-			if (byteForBlast == (byte) byteForBlast | (neighboorBlast[i])) {
-				return 1;
-			} else {
-				return 0;
-			}
+		if (northCellIsBlasted){
+			byteForBlast += 8;
+		}
+		if (eastCellIsBlasted){
+			byteForBlast += 4;
+		}
+		if (southCellIsBlasted){
+			byteForBlast += 2;
+		}
+		if (westCellIsBlasted){
+			byteForBlast += 1;
 		}
 
 		return byteForBlast;

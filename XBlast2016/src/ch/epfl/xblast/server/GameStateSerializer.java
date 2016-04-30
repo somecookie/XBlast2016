@@ -36,7 +36,6 @@ public final class GameStateSerializer {
 		serialized.addAll(serialBoard);
 		
 		for (Cell c : rowMajor) {
-			int i = 0;
 			if(bombedCells.containsKey(c)){
 				Bomb bomb = bombedCells.get(c);
 				serialExpNdBombs.add(ExplosionPainter.byteForBomb(bomb));
