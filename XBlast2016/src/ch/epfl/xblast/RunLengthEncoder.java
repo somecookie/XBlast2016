@@ -48,14 +48,21 @@ public final class RunLengthEncoder {
 						for (int i = 0; i < count; i++) {
 							encoded.add(previous);
 						}
-						count = 1;
-						previous = b;
+						if(!nE.hasNext()){
+							encoded.add(b);
+						}else{
+							count = 1;
+							previous = b;
+						}
 					}else{
 						Byte length = (byte) -(count-2);
 						encoded.add(length);
 						encoded.add(previous);
-						count = 1;
-						previous = b;
+						if(nE.hasNext()){
+							count = 1;
+							previous = b;
+						}
+						
 					}
 				}
 			}

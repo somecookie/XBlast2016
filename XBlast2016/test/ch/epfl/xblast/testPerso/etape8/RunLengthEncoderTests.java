@@ -77,6 +77,7 @@ public class RunLengthEncoderTests {
 		List<Byte> l = Collections.nCopies(131, d);
 		List<Byte> e = expectedForEncoding.get(4);
 		l = RunLengthEncoder.encode(l);
+		System.out.println(l);
 		assertEquals(e.size(), l.size());
 		for (int i = 0; i < e.size(); i++) {
 			assertEquals(e.get(i), l.get(i));

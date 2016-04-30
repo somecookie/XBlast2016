@@ -64,11 +64,21 @@ public class Test {
         GameState g = new GameState(0, b, players(), bombs , explosions , blasts);
         Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
         Set<PlayerID> bombDropEvents = new HashSet<>();
+        Map<Cell, Bomb> bombedCells = g.bombedCells();
+        Set<Cell> blastedCells = g.blastedCells();
         
         for (int i = 0; i <100; i++) {
             GameStatePrinter.printGameStateWithoutPlayers(g);
+            for(Cell c: blastedCells)
+            	System.out.println("blasts in: "+c);
+            
+            for(Map.Entry<Cell, Bomb> e : bombedCells.entrySet())
+            	System.out.println("bombs in: "+e.getKey());
+            
 
             g = g.next(speedChangeEvents, bombDropEvents);
+            bombedCells = g.bombedCells();
+            blastedCells = g.blastedCells();
         }
     }
 
