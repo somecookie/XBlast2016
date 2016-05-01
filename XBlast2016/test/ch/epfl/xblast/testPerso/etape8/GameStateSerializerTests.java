@@ -38,7 +38,7 @@ public class GameStateSerializerTests {
 		List<Byte> actual = GameStateSerializer.serialize(lev.boardPainter(), lev.initialState);
 		assertEquals(expected.size(), actual.size());
 		for (int i = 0; i < expected.size(); i++) {
-			assertEquals(expected.get(i), actual.get(i));
+			assertEquals(expected.get(i).intValue(), actual.get(i).intValue());
 		}
 	}
 
