@@ -58,20 +58,19 @@ public final class ExplosionPainter {
 	public static byte byteForBlast(boolean northCellIsBlasted, boolean eastCellIsBlasted, boolean southCellIsBlasted,
 			boolean westCellIsBlasted) {
 		byte byteForBlast = 0;
-
-		if (northCellIsBlasted){
+		if (northCellIsBlasted) {
 			byteForBlast += 8;
 		}
-		if (eastCellIsBlasted){
+		if (eastCellIsBlasted) {
 			byteForBlast += 4;
 		}
-		if (southCellIsBlasted){
+		if (southCellIsBlasted) {
 			byteForBlast += 2;
 		}
-		if (westCellIsBlasted){
+		if (westCellIsBlasted) {
 			byteForBlast += 1;
 		}
-
+		
 		return byteForBlast;
 
 	}
@@ -81,9 +80,9 @@ public final class ExplosionPainter {
 	 * neighbors
 	 * 
 	 * @param cell
-	 * 		  the cell's containing a blast
+	 *            the cell's containing a blast
 	 * @param gameState
-	 * 		  the actual game state
+	 *            the actual game state
 	 * @return
 	 */
 	public static byte byteForBlast(Cell cell, GameState gameState) {
@@ -91,9 +90,9 @@ public final class ExplosionPainter {
 		Board board = gameState.board();
 		Block currentBlock = board.blockAt(cell);
 
-		if (!currentBlock.isFree())
+		if (!currentBlock.isFree()){
 			return BYTE_FOR_EMPTY;
-
+		}
 		boolean northCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.N)));
 		boolean eastCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.E)));
 		boolean southCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.S)));
