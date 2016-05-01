@@ -90,12 +90,10 @@ public final class ExplosionPainter {
 		Board board = gameState.board();
 		Block currentBlock = board.blockAt(cell);
 
-		if (!currentBlock.isFree()){
+		if (!currentBlock.isFree()|| !blastedCells.contains(board.blockAt(cell))){
 			return BYTE_FOR_EMPTY;
 		}
-		if(!blastedCells.contains(board.blockAt(cell))){
-			return BYTE_FOR_EMPTY;
-		}
+	
 		boolean northCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.N)));
 		boolean eastCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.E)));
 		boolean southCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.S)));

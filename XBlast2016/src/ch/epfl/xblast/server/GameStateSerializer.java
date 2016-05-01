@@ -63,7 +63,7 @@ public final class GameStateSerializer {
 		Byte remainingTime = (byte)Math.floor(gs.remainingTime()/2.);
 		
 		serialized.add(remainingTime);
-		System.out.println(serialized);
+
 
 		return serialized;
 
