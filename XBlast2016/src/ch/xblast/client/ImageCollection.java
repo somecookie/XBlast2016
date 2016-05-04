@@ -10,45 +10,78 @@ import java.util.NoSuchElementException;
 
 import javax.imageio.ImageIO;
 
+/*
+ * Represent an images' collection from a repertoire , the images are indexed by an
+ * integer
+ */
 public final class ImageCollection {
+
 	private final String dirName;
 	private final File dir;
 	private final Map<Integer, Image> images;
-	
-	
 
+	/**
+	 * 
+	 * @param name
+	 */
 	public ImageCollection(String name) {
 		dirName = name;
-		try{
+		try {
 			dir = new File(ImageCollection.class.getClassLoader().getResource(dirName).toURI());
 			images = loadingImages(dir);
-			
-		}
-		catch(URISyntaxException e){
+
+		} catch (URISyntaxException e) {
 			throw new Error();
 		}
 	}
-	
-	public Image image(int index){
-		if(images.containsKey(index)){
+
+	/**
+	 * Get the image for a given index, in form of a sub classes image, we use
+	 * that method in the case when we're not sure that the index is valid. If
+	 * the image doesn't correspond to the index in the collections return null.
+	 * 
+	 * @param index
+	 *            the given index
+	 * @return the corresponding image to the index if it's the case
+	 */
+	public Image image(int index) {
+		if (images.containsKey(index)) {
 			return images.get(index);
 		}
 		return null;
 	}
-	
-	public Image imageOrNull(int index){
+
+	/**
+	 * Get the image for a given index, in form of a sub classes image, we use
+	 * that method in the case when we're sure that the index is valid. If the
+	 * image doesn't correspond to the index in the collections throw no such
+	 * element exception.
+	 * 
+	 * @param index
+	 *            the given index
+	 * @return the corresponding image to the index if it's the case
+	 */
+	public Image imageOrNull(int index) {
 		Image image = image(index);
-		if(image == null){
+		if (image == null) {
 			throw new NoSuchElementException();
 		}
 		return image;
 	}
-	
-	private static Map<Integer, Image> loadingImages(File dir){
+
+	/**
+	 * Can load the images from a repertoire who permits the access of the
+	 * images
+	 * 
+	 * @param dir
+	 *            the given file
+	 * @return the loaded images
+	 */
+	private static Map<Integer, Image> loadingImages(File dir) {
 		Map<Integer, Image> images = new HashMap<>();
 		File[] pathNames = dir.listFiles();
 
-		for(File p : pathNames){
+		for (File p : pathNames) {
 
 			try {
 				Image image = ImageIO.read(p);

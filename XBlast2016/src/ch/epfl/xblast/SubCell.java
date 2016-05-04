@@ -8,8 +8,9 @@ package ch.epfl.xblast;
 
 public final class SubCell {
     private final int x, y;
-    public static final int SUBCOLUMNS = 240;
-    public static final int SUBROWS = 208;
+    private static final int SUBCOLUMNS = 240;
+    private static final int SUBROWS = 208;
+    private static final int GRANULARITY = 16;
 
     /**
      * Normalize the given coordinates x and y and constructs a sub cell with that coordinates
@@ -30,8 +31,8 @@ public final class SubCell {
      * @return the central sub cell of the argument cell
      */
     public static SubCell centralSubCellOf(Cell cell){
-        int y = (cell.y()) * 16 + 8;
-        int x = (cell.x()) * 16 + 8;
+        int y = (cell.y()) * GRANULARITY + (GRANULARITY/2);
+        int x = (cell.x()) * GRANULARITY + (GRANULARITY/2);
         return new SubCell(x, y);
     }
 
@@ -80,22 +81,22 @@ public final class SubCell {
         switch (d) {
         case N:
             if (y() == 0) {
-                yY = 208;
+                yY = SUBROWS;
             }
             return new SubCell(x(), yY-1);
         case E:
-            if (x() == 239) {
+            if (x() == SUBCOLUMNS-1) {
                 xX = -1;
             }
             return new SubCell(xX+1, y());
         case S:
-            if (y() == 207) {
+            if (y() == SUBROWS-1) {
                 yY = -1;
             }
             return new SubCell(x(), yY+1);
         case W:
             if (x() == 0) {
-                xX = 240;
+                xX = SUBCOLUMNS;
             }
             return new SubCell(xX-1, y());
           default:
@@ -108,8 +109,8 @@ public final class SubCell {
      * @return the cell where stands the sub cell (Cell)
      */
     public Cell containingCell() {
-        int xCell = (x() - (x() % 16))/16;
-        int yCell = (y() - (y() % 16))/16;
+        int xCell = (x() - (x() % GRANULARITY))/GRANULARITY;
+        int yCell = (y() - (y() % GRANULARITY))/GRANULARITY;
         return new Cell(xCell, yCell);
     }
 

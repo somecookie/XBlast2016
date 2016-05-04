@@ -58,7 +58,7 @@ public final class GameState {
 	 * @param explosions
 	 *            actual explosions
 	 * @param blasts
-	 *            balsts on the board
+	 *            blasts on the board
 	 * @throws IllegalArgumentException
 	 *             if the ticks is negative or if the player's list doesn't
 	 *             contain 4 elements

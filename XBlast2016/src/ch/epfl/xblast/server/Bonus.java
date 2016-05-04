@@ -7,26 +7,27 @@ package ch.epfl.xblast.server;
 
 
 public enum Bonus {
+	
 
     INC_BOMB {
         @Override
         public Player applyTo(Player player) {
-            Player p = player;
-            if (p.maxBombs() < 9) {
-               return p.withMaxBombs(p.maxBombs() + 1);
+        	int maxBomb = 9;
+            if (player.maxBombs() < maxBomb) {
+               return player.withMaxBombs(player.maxBombs() + 1);
             }
-            return p;
+            return player.withMaxBombs(player.maxBombs());
         }
       },
 
       INC_RANGE {
         @Override
         public Player applyTo(Player player) {
-            Player p = player;
-            if (p.bombRange() < 9) {
-                return p.withBombRange(p.bombRange() + 1);
+            int maxBombsRange = 9;
+            if (player.bombRange() < maxBombsRange) {
+                return player.withBombRange(player.bombRange() + 1);
             }
-            return p;
+            return player.withBombRange(player.bombRange());
         }
       };
 

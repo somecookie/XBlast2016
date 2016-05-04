@@ -16,7 +16,7 @@ import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Lists;
 
-public class Board {
+public final class Board {
 	public static final int COLUMNS = 15;
 	public static final int ROWS = 13;
 	public static final int COUNT = COLUMNS * ROWS;
@@ -66,7 +66,7 @@ public class Board {
 	 *             if the list is not constitute of 11 rows of 13 elements each
 	 */
 	public static Board ofInnerBlocksWalled(List<List<Block>> innerBlocks) {
-		checkBlockMatrix(innerBlocks, 11, 13);
+		checkBlockMatrix(innerBlocks, ROWS-2, COLUMNS-2);
 
 		List<List<Block>> platEnCstr = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class Board {
 	 *             if the list isn't constitute of 6 lists of 7 elements each
 	 */
 	public static Board ofQuadrantNWBlocksWalled(List<List<Block>> quadrantNWBlocks) {
-		checkBlockMatrix(quadrantNWBlocks, 6, 7);
+		checkBlockMatrix(quadrantNWBlocks, (ROWS-1)/2, (COLUMNS-1)/2);
 		List<List<Block>> platEnCstr = new ArrayList<>();
 		for (int i = 0; i < quadrantNWBlocks.size(); i++) {
 			List<Block> tmp = Lists.mirrored(quadrantNWBlocks.get(i));
