@@ -8,7 +8,12 @@ public final class RunLengthEncoder {
 	
 	private RunLengthEncoder(){}
 	
-	static public List<Byte> encode(List<Byte> notEncoded){
+	/**
+	 * 
+	 * @param notEncoded
+	 * @return
+	 */
+	public static List<Byte> encode(List<Byte> notEncoded){
 		List<Byte> encoded = new ArrayList<>();
 
 		if(notEncoded.isEmpty() || notEncoded.size() <= 2){
@@ -71,7 +76,12 @@ public final class RunLengthEncoder {
 		return encoded;
 	}
 	
-	static public List<Byte> decode(List<Byte> encoded){
+	/**
+	 * 
+	 * @param encoded
+	 * @return
+	 */
+	public static List<Byte> decode(List<Byte> encoded){
 		List<Byte> notEncoded = new ArrayList<>();
 		if(encoded.isEmpty()){
 			return encoded;
