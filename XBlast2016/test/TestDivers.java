@@ -7,17 +7,18 @@ import ch.epfl.xblast.RunLengthEncoder;
 public class TestDivers {
 
 	public static void main(String[] args) {
-		List<Integer> l = Arrays.asList(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 
-				0, 0, 0, 0, 3, 1, 3, 1, 0, 0, 0, 0, 1, 1, 3, 1, 3, 1, 3, 1, 1, 0, 0, 0, 0, 1, 3, 1, 3, 0, 0, 0, 0, 
-				1, 1, 1, 3, 1, 3, 1, 3, 1, 1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 
-				3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 0, 0, 3, 1, 3, 1, 0, 0, 1, 1, 3, 1, 1, 0, 0, 1, 3, 1, 3, 0, 0, 1, 1, 1, 
-				3, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 3, 2, 1, 2
-				);
+		List<Integer> l = Arrays.asList(1,2,3,4,5,6,7,8,9);
 		
-		List<Byte> newL = toByte(l);
-		newL = RunLengthEncoder.encode(newL);
-		System.out.println(newL);
+		try{
+			for(Integer i : l){
+				if(i == 4){
+					throw new IllegalArgumentException();
+				}
+				System.out.println(i);
+			}
+		}catch(IllegalArgumentException e){
+
+		}
 
 	}
 	
