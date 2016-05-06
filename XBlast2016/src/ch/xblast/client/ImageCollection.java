@@ -44,7 +44,7 @@ public final class ImageCollection {
 	 *            the given index
 	 * @return the corresponding image to the index if it's the case
 	 */
-	public Image image(int index) {
+	public Image imageOrNull(int index) {
 		if (images.containsKey(index)) {
 			return images.get(index);
 		}
@@ -56,12 +56,13 @@ public final class ImageCollection {
 	 * that method in the case when we're sure that the index is valid. If the
 	 * image doesn't correspond to the index in the collections throw no such
 	 * element exception.
+	 * Only for the images of the players or the bombs and explosions.
 	 * 
 	 * @param index
 	 *            the given index
 	 * @return the corresponding image to the index if it's the case
 	 */
-	public Image imageOrNull(int index) {
+	public Image image(int index) {
 		Image image = image(index);
 		if (image == null) {
 			throw new NoSuchElementException();

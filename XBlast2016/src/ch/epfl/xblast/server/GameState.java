@@ -110,10 +110,7 @@ public final class GameState {
 	 * @return true if the game is over, otherwise false
 	 */
 	public boolean isGameOver() {
-		if (Ticks.TOTAL_TICKS + 1 == ticks || alivePlayers().size() <= 1) {
-			return true;
-		}
-		return false;
+		return (Ticks.TOTAL_TICKS + 1 == ticks || alivePlayers().size() <= 1); 
 	}
 
 	/**
@@ -134,9 +131,9 @@ public final class GameState {
 	public Optional<PlayerID> winner() {
 		if (alivePlayers().size() == 1) {
 			return Optional.of(alivePlayers().get(0).id());
-		} else {
-			return Optional.empty();
 		}
+			
+		return Optional.empty();
 
 	}
 
