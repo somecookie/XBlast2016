@@ -35,7 +35,7 @@ public class GameStateSerializerTests {
 	@Test
 	public void testOnDefaultInitialGameState(){
 		Level lev = Level.DEFAULT_LEVEL; 
-		List<Byte> actual = GameStateSerializer.serialize(lev.boardPainter(), lev.initialState);
+		List<Byte> actual = GameStateSerializer.serialize(lev.boardPainter(), lev.initialState());
 		assertEquals(expected.size(), actual.size());
 		for (int i = 0; i < expected.size(); i++) {
 			assertEquals(expected.get(i).intValue(), actual.get(i).intValue());

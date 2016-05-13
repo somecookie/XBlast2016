@@ -28,6 +28,7 @@ public final class ImageCollection {
 		dirName = name;
 		try {
 			dir = new File(ImageCollection.class.getClassLoader().getResource(dirName).toURI());
+		
 			images = loadingImages(dir);
 
 		} catch (URISyntaxException e) {
@@ -63,7 +64,7 @@ public final class ImageCollection {
 	 * @return the corresponding image to the index if it's the case
 	 */
 	public Image image(int index) {
-		Image image = image(index);
+		Image image = imageOrNull(index);
 		if (image == null) {
 			throw new NoSuchElementException();
 		}

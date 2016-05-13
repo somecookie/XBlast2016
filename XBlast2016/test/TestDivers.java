@@ -1,23 +1,63 @@
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import ch.epfl.xblast.Cell;
-import ch.epfl.xblast.RunLengthEncoder;
+import ch.epfl.xblast.PlayerID;
+import ch.epfl.xblast.server.GameStateSerializer;
+import ch.epfl.xblast.server.Level;
+import ch.epfl.xblast.server.debug.GameStatePrinter;
+import ch.epfl.xblast.server.debug.RandomEventGenerator;
+import ch.epfl.xblast.server.image.BoardPainter;
+import ch.xblast.client.GameState;
+import ch.xblast.client.GameStateDeserializer;
+import ch.xblast.client.XblastComponent;
 
 public class TestDivers {
 
-	public static void main(String[] args) {
-		List<Cell> spiral = Cell.SPIRAL_ORDER;
-		List<Cell> rowMajorE = Cell.ROW_MAJOR_ORDER;
-		List<Cell> rowMajorA = spiralToRowMajorOrder(spiral);
-		for (int i = 0; i < rowMajorE.size(); i++) {
-			if(!rowMajorA.get(i).equals(rowMajorE.get(i)))
-				System.out.println("bug");
-		}
-		System.out.println("done");
-	}
+    private static void createUI(XblastComponent xb) {
+        JFrame window = new JFrame("Image viewer");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        xb.setSize(xb.getPreferredSize());
+        
+        window.add(xb);
+        
+        window.pack();
+        window.setVisible(true);
+    }
+    
+    public static void main(String[] args) throws InterruptedException {
+    	Level l = Level.DEFAULT_LEVEL;
+    	BoardPainter bp = l.boardPainter();
+    	ch.epfl.xblast.server.GameState gs = l.initialState();
+        List<Byte> serial = GameStateSerializer.serialize(bp, gs);
+    	GameState g = GameStateDeserializer.deserializerGameState(serial);
+    	
+    	XblastComponent xb = new XblastComponent();
+    	xb.setGameState(g, PlayerID.PLAYER_1);
+    	
+    	SwingUtilities.invokeLater(() -> createUI(xb));
+
+    	
+    	RandomEventGenerator events = new RandomEventGenerator(2016, 30, 100);
+
+	        while(!gs.isGameOver()){
+	            gs = gs.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
+	            serial = GameStateSerializer.serialize(bp, gs);
+	            g = GameStateDeserializer.deserializerGameState(serial);
+	            xb.setGameState(g, PlayerID.PLAYER_1);
+	            Thread.sleep(50);
+	        }
+	        GameStatePrinter.printGameState(gs);
+	       
+	        System.out.println(gs.winner());
+    	
+
+    }
 	
 	public static List<Byte> toByte(List<Integer> l){
 		List<Byte> newL = new ArrayList<>();

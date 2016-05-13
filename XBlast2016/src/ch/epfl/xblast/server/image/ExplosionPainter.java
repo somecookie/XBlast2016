@@ -70,7 +70,7 @@ public final class ExplosionPainter {
 		if (westCellIsBlasted) {
 			byteForBlast += 1;
 		}
-		
+
 		return byteForBlast;
 
 	}
@@ -90,16 +90,14 @@ public final class ExplosionPainter {
 		Board board = gameState.board();
 		Block currentBlock = board.blockAt(cell);
 
-		if (!currentBlock.isFree()|| !blastedCells.contains(board.blockAt(cell))){
+		if (!currentBlock.isFree() || !blastedCells.contains(cell)) {
 			return BYTE_FOR_EMPTY;
 		}
-	
+
 		boolean northCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.N)));
 		boolean eastCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.E)));
 		boolean southCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.S)));
 		boolean westCellIsBlasted = blastedCells.contains(board.blockAt(cell.neighbor(Direction.W)));
-		
-		
 
 		return byteForBlast(northCellIsBlasted, eastCellIsBlasted, southCellIsBlasted, westCellIsBlasted);
 	}

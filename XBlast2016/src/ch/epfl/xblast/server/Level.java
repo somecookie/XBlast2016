@@ -15,8 +15,8 @@ import ch.epfl.xblast.server.Board;
 
 public final class Level {
 
-	public final BoardPainter boardPainter;
-	public final GameState initialState;
+	private final BoardPainter boardPainter;
+	private final GameState initialState;
 	public final static Level DEFAULT_LEVEL = defaultLevelGenerator();
 
 	/**

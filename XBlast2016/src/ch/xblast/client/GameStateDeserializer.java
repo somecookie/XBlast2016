@@ -30,7 +30,7 @@ public final class GameStateDeserializer {
 		int endBoard = compressedBoardSize+1;
 		int startExplosions = compressedBoardSize+2;
 		int endExplosions = startExplosions+compressedExplosionSize;
-		int startPlayers = endExplosions+1;
+		int startPlayers = endExplosions;
 		int endPlayers = size-1;
 		
 		List<Byte> serializedBoard = serializedState.subList(1, endBoard);
@@ -83,7 +83,7 @@ public final class GameStateDeserializer {
 		List<Byte> desE = RunLengthEncoder.decode(serializedExplosions);
 		
 		for(Byte b: desE){
-			deserializedExplosions.add(explosionImageCollection.image(b));
+			deserializedExplosions.add(explosionImageCollection.imageOrNull(b));
 		}
 		return deserializedExplosions;
 	}
@@ -96,10 +96,9 @@ public final class GameStateDeserializer {
 		for (int i = 0; i < nbrPlayer; i++) {
 			PlayerID id = players[i];
 			int lives = Byte.toUnsignedInt(serializedPlayer.get(i*nbrPlayer));
-			int x = Byte.toUnsignedInt(serializedPlayer.get((i+1)*nbrPlayer));
-			int y = Byte.toUnsignedInt(serializedPlayer.get((i+2)*nbrPlayer));
-			Image image = playerImageCollection.image(Byte.toUnsignedInt(serializedPlayer.get((i+3)*4)));
-			
+			int x = Byte.toUnsignedInt(serializedPlayer.get(i*nbrPlayer+1));
+			int y = Byte.toUnsignedInt(serializedPlayer.get(i*nbrPlayer+2));
+			Image image = playerImageCollection.imageOrNull(Byte.toUnsignedInt(serializedPlayer.get(i*nbrPlayer+3)));
 			deserializedPlayer.add(new Player(id, lives, new SubCell(x,y), image));
 		}
 		return deserializedPlayer;
@@ -119,8 +118,8 @@ public final class GameStateDeserializer {
 			playerFace = (lives > 0)? scoreImageCollection.image(i*2) : scoreImageCollection.image((i*2)+1);
 			desS.addAll(Arrays.asList(playerFace, textMiddle, textRight ));
 			
-			if(i == 2){
-				desS.addAll(Collections.nCopies(12, tileVoid));
+			if(i == 1){
+				desS.addAll(Collections.nCopies(8, tileVoid));
 			}
 		}
 		
@@ -133,7 +132,7 @@ public final class GameStateDeserializer {
 		Image ledOff = scoreImageCollection.image(20);
 		Image ledOn = scoreImageCollection.image(21);
 		int passedTime = TOTAL_TIME - remainingTime;
-		List<Image> time = Collections.nCopies(remainingTime, ledOn);
+		List<Image> time = new ArrayList<>(Collections.nCopies(remainingTime, ledOn));
 		List<Image> pTime = Collections.nCopies(passedTime, ledOff);
 		time.addAll(pTime);
 		
