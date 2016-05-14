@@ -11,6 +11,8 @@ import ch.epfl.xblast.server.Player.LifeState.State;
 public final class PlayerPainter {
 
 	public final static byte BYTE_FOR_DEATH = 15;
+	public final static byte BYTE_FOR_LOSING_LIFE = 12;
+	public final static byte BYTE_FOR_DYING = 13;
 	
 	/**
 	 * Constructor of the player painter, it's empty because the class isn't instanciable
@@ -67,9 +69,9 @@ public final class PlayerPainter {
 			//the case when the player is dying 
 			if (playerState == State.DYING) {
 				if (player.lives() <= 1) {
-					return (byte) 13;
+					return BYTE_FOR_DYING ;
 				} else {
-					return (byte) 12;
+					return BYTE_FOR_LOSING_LIFE;
 				}
 			 //the case when the player is dead
 			} else {

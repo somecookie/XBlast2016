@@ -1,3 +1,7 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Eleonore Pochon (262959)
+ */
 package ch.xblast.client;
 
 import java.awt.Color;
@@ -89,45 +93,45 @@ public final class XblastComponent extends JComponent {
 		int y = 0;
 		int col = 0;
 		int row = 0;
-		
+
 		Iterator<Image> board = gs.getBoard().iterator();
 		Iterator<Image> bomb = gs.getBombsAndExplosions().iterator();
-		
-		while(board.hasNext() && bomb.hasNext()){
-			if(col == Cell.COLUMNS){
+
+		while (board.hasNext() && bomb.hasNext()) {
+			if (col == Cell.COLUMNS) {
 				col = 0;
 				row++;
 			}
 
-			x = col*BLOCK_WIDTH ;
-			y = row*BLOCK_HEIGHT;
+			x = col * BLOCK_WIDTH;
+			y = row * BLOCK_HEIGHT;
 			Image bo = board.next();
 			Image bmb = bomb.next();
-			
+
 			g.drawImage(bo, x, y, null);
 			g.drawImage(bmb, x, y, null);
-			
+
 			col++;
 		}
-		
+
 		Iterator<Image> score = gs.getScores().iterator();
 		col = 0;
 		y += BLOCK_HEIGHT;
-		
-		while(score.hasNext()){
+
+		while (score.hasNext()) {
 			Image sc = score.next();
-			x = col*SCORE_WIDTH;
+			x = col * SCORE_WIDTH;
 			g.drawImage(sc, x, y, null);
 			col++;
 		}
-		
+
 		Iterator<Image> time = gs.getTime().iterator();
 		col = 0;
-		y+= SCORE_HEIGHT;
-		
-		while(time.hasNext()){
+		y += SCORE_HEIGHT;
+
+		while (time.hasNext()) {
 			Image t = time.next();
-			x = col*TIME_WIDTH;
+			x = col * TIME_WIDTH;
 			g.drawImage(t, x, y, null);
 			col++;
 		}

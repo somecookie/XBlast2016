@@ -1,3 +1,7 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Eleonore Pochon (262959)
+ */
 package ch.epfl.xblast;
 
 import java.util.ArrayList;

@@ -1,12 +1,13 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Eleonore Pochon (262959)
+ */
 package ch.xblast.client;
 
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.SubCell;
 
@@ -91,7 +92,8 @@ public final class GameState {
 			this.image = image;
 		}
 		
-		public int getLives(){
+		/* Getter for the class*/
+		public int getLives() {
 			return lives;
 		}
 

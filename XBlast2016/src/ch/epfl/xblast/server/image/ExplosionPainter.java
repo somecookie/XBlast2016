@@ -16,6 +16,8 @@ import ch.epfl.xblast.server.GameState;
 public final class ExplosionPainter {
 
 	public final static byte BYTE_FOR_EMPTY = 16;
+	public final static byte BLACK_BOMB = 20;
+	public final static byte WHITE_BOMB = 21;
 
 	/**
 	 * Constructor of the player painter, it's empty because the class isn't
@@ -35,9 +37,9 @@ public final class ExplosionPainter {
 	 */
 	public static byte byteForBomb(Bomb bomb) {
 		if (Integer.bitCount(bomb.fuseLength()) == 1) {
-			return (byte) 21;
+			return WHITE_BOMB;
 		} else {
-			return (byte) 20;
+			return BLACK_BOMB;
 		}
 	}
 
