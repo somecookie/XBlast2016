@@ -23,6 +23,7 @@ public final class GameStateDeserializer {
 	private static ImageCollection blockImageCollection = new ImageCollection("block");
 	private static ImageCollection explosionImageCollection = new ImageCollection("explosion");
 	private static ImageCollection scoreImageCollection = new ImageCollection("score");
+	
 	private GameStateDeserializer(){}
 
 	public static GameState deserializerGameState (List<Byte> serializedState){
@@ -31,15 +32,15 @@ public final class GameStateDeserializer {
 		int size = serializedState.size();
 		int compressedBoardSize = Byte.toUnsignedInt(serializedState.get(0));
 		int compressedExplosionSize = Byte.toUnsignedInt(serializedState.get(compressedBoardSize+1));
-		int endBoard = compressedBoardSize+1;
+		int endBoard = compressedBoardSize;
 		int startExplosions = compressedBoardSize+2;
-		int endExplosions = startExplosions+compressedExplosionSize;
-		int startPlayers = endExplosions;
-		int endPlayers = size-1;
+		int endExplosions = startExplosions+compressedExplosionSize-1;
+		int startPlayers = endExplosions+1;
+		int endPlayers = size-2;
 		
-		List<Byte> serializedBoard = serializedState.subList(1, endBoard);
-		List<Byte> serializedExplosions = serializedState.subList(startExplosions, endExplosions);
-		List<Byte> serializedPlayer = serializedState.subList(startPlayers, endPlayers);
+		List<Byte> serializedBoard = serializedState.subList(1, endBoard+1);
+		List<Byte> serializedExplosions = serializedState.subList(startExplosions, endExplosions+1);
+		List<Byte> serializedPlayer = serializedState.subList(startPlayers, endPlayers+1);
 		int remainingTime = Byte.toUnsignedInt(serializedState.get(size-1));
 		
 		List<Image> board = deserializerBoard(serializedBoard);

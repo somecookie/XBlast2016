@@ -4,16 +4,14 @@
  */
 package ch.xblast.client;
 
-import java.awt.Component;
-import java.awt.Window;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.peer.KeyboardFocusManagerPeer;
 import java.util.Map;
 import java.util.function.Consumer;
 import ch.epfl.xblast.PlayerAction;
 
-public class KeyboardEventHandler implements KeyListener, KeyboardFocusManagerPeer {
+public class KeyboardEventHandler extends KeyAdapter implements KeyListener {
 
 	private Map<Integer, PlayerAction> kb;
 	private Consumer<PlayerAction> c;
@@ -34,42 +32,9 @@ public class KeyboardEventHandler implements KeyListener, KeyboardFocusManagerPe
 	}
 
 	@Override
-	public void setCurrentFocusedWindow(Window win) {
-
-	}
-
-	@Override
-	public Window getCurrentFocusedWindow() {
-		return null;
-	}
-
-	@Override
-	public void setCurrentFocusOwner(Component comp) {
-
-	}
-
-	@Override
-	public Component getCurrentFocusOwner() {
-		return null;
-	}
-
-	@Override
-	public void clearGlobalFocusOwner(Window activeWindow) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-	}
-
-	@Override
 	public void keyPressed(KeyEvent e) {
 		if (kb.containsKey(e.getKeyCode())) {
 			c.accept(kb.get(e.getKeyCode()));
 		}
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-	}
-
 }

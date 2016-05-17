@@ -32,7 +32,6 @@ public final class ImageCollection {
 		dirName = name;
 		try {
 			dir = new File(ImageCollection.class.getClassLoader().getResource(dirName).toURI());
-		
 			images = loadingImages(dir);
 
 		} catch (URISyntaxException e) {
