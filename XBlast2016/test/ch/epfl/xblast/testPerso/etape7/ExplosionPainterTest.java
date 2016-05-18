@@ -74,7 +74,6 @@ public class ExplosionPainterTest {
 		Set<PlayerID> bombDropEvents = new HashSet<>();
 		
 		for (int i = 0; i < 5; i++) {
-			System.out.println(g.ticks());
 			g = g.next(speedChangeEvents, bombDropEvents);
 		}
 		

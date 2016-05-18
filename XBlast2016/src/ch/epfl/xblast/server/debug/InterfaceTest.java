@@ -60,12 +60,14 @@ public class InterfaceTest {
 
 		RandomEventGenerator events = new RandomEventGenerator(2016, 30, 100);
 
-		while (!gs.isGameOver()) {
+		while (!gs.isGameOver() || !gs.blastedCells().isEmpty()) {
 			gs = gs.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
 			serial = GameStateSerializer.serialize(bp, gs);
 			g = GameStateDeserializer.deserializerGameState(serial);
 			xbc.setGameState(g, PlayerID.PLAYER_1);
-			Thread.sleep(50);
+			Thread.sleep(20);
 		}
+		
+
 	}
 }
