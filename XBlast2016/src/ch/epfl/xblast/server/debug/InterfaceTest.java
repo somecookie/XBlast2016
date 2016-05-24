@@ -1,6 +1,7 @@
 package ch.epfl.xblast.server.debug;
 
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,26 +23,15 @@ import ch.epfl.xblast.*;
 
 public class InterfaceTest {
 
-	private static void createUI(XblastComponent xb) {
+	private static XblastComponent xbc;
+
+	private static void createUI() {
 		JFrame window = new JFrame("Image viewer");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		xb.setSize(xb.getPreferredSize());
+		xbc = new XblastComponent();
+		xbc.setSize(xbc.getPreferredSize());
 
-		window.add(xb);
-
-		window.pack();
-		window.setVisible(true);
-	}
-
-	public static void main(String[] args) throws InterruptedException {
-		Level l = Level.DEFAULT_LEVEL;
-		BoardPainter bp = l.boardPainter();
-		ch.epfl.xblast.server.GameState gs = l.initialState();
-		List<Byte> serial = GameStateSerializer.serialize(bp, gs);
-		GameState g = GameStateDeserializer.deserializerGameState(serial);
-
-		XblastComponent xbc = new XblastComponent();
 		Map<Integer, PlayerAction> kb = new HashMap<>();
 		kb.put(KeyEvent.VK_UP, PlayerAction.MOVE_N);
 		kb.put(KeyEvent.VK_RIGHT, PlayerAction.MOVE_E);
@@ -49,14 +39,28 @@ public class InterfaceTest {
 		kb.put(KeyEvent.VK_LEFT, PlayerAction.MOVE_E);
 		kb.put(KeyEvent.VK_SPACE, PlayerAction.DROP_BOMB);
 		kb.put(KeyEvent.VK_SHIFT, PlayerAction.STOP);
-		
+
 		Consumer<PlayerAction> c = System.out::println;
 		xbc.addKeyListener(new KeyboardEventHandler(kb, c));
-		xbc.requestFocusInWindow();
-		
-		xbc.setGameState(g, PlayerID.PLAYER_1);
 
-		SwingUtilities.invokeLater(() -> createUI(xbc));
+		window.getContentPane().add(xbc);
+		window.pack();
+		window.setVisible(true);
+
+		xbc.requestFocusInWindow();
+
+	}
+
+	public static void main(String[] args) throws InterruptedException, InvocationTargetException {
+		Level l = Level.DEFAULT_LEVEL;
+		BoardPainter bp = l.boardPainter();
+		ch.epfl.xblast.server.GameState gs = l.initialState();
+		List<Byte> serial = GameStateSerializer.serialize(bp, gs);
+		GameState g = GameStateDeserializer.deserializerGameState(serial);
+
+		SwingUtilities.invokeAndWait(() -> createUI());
+
+		xbc.setGameState(g, PlayerID.PLAYER_1);
 
 		RandomEventGenerator events = new RandomEventGenerator(2016, 30, 100);
 
@@ -65,9 +69,8 @@ public class InterfaceTest {
 			serial = GameStateSerializer.serialize(bp, gs);
 			g = GameStateDeserializer.deserializerGameState(serial);
 			xbc.setGameState(g, PlayerID.PLAYER_1);
-			Thread.sleep(20);
+			Thread.sleep(50);
 		}
-		
 
 	}
 }

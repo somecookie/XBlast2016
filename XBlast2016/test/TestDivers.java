@@ -21,34 +21,11 @@ import ch.xblast.client.KeyboardEventHandler;
 import ch.xblast.client.XblastComponent;
 
 public class TestDivers {
-
-
-	public static List<Byte> toByte(List<Integer> l) {
-		List<Byte> newL = new ArrayList<>();
-		for (Integer i : l) {
-			newL.add((byte) i.intValue());
-		}
-		return newL;
-
+	public static void main(String[] args) {
+		Map<Integer, Character> m = new HashMap<>();
+		m.put(5, 'c');
+		m.put(5, 'q');
+		m.put(6, '3');
+		System.out.println(m);
 	}
-
-	/**
-	 * Change the list's order , from the spiral order to the row major order
-	 * 
-	 * @param list
-	 *            the list we will transform
-	 * @return the transformed list
-	 */
-	public static List<Cell> spiralToRowMajorOrder(List<Cell> list) {
-
-		Cell[] rowMajorOrder = new Cell[list.size()];
-
-		int i = 0;
-		for (Cell cell : Cell.SPIRAL_ORDER) {
-			rowMajorOrder[cell.rowMajorIndex()] = list.get(i++);
-		}
-
-		return Arrays.asList(rowMajorOrder);
-	}
-
 }
