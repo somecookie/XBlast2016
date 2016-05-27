@@ -18,6 +18,7 @@ public final class GameState {
 	private final List<Image> bombsAndExplosions;
 	private final List<Image> scores;
 	private final List<Image> time;
+	private final int NBR_PLAYER = 4;
 
 	/**
 	 * Construct the game state for the client (then he would have a
@@ -39,13 +40,23 @@ public final class GameState {
 	public GameState(List<Player> players, List<Image> board, List<Image> bombsAndExplosions, List<Image> scores,
 			List<Image> time) {
 		this.players = Collections.unmodifiableList(new ArrayList<>(players));
+
+		if (players.size() != NBR_PLAYER) {
+			throw new IllegalArgumentException("There must be 4 players!");
+		} else {
+
+			for (int i = 0; i < players.size(); i++) {
+				if (players.get(i).id != PlayerID.values()[i])
+					throw new IllegalArgumentException("The players are not well sorted");
+			}
+		}
 		this.board = Collections.unmodifiableList(new ArrayList<>(board));
 		this.bombsAndExplosions = Collections.unmodifiableList(new ArrayList<>(bombsAndExplosions));
 		this.scores = Collections.unmodifiableList(new ArrayList<>(scores));
 		this.time = Collections.unmodifiableList(new ArrayList<>(time));
 	}
 
-	/*Getters for the class*/
+	/* Getters for the class */
 	public List<Player> getPlayers() {
 		return players;
 	}
@@ -92,8 +103,8 @@ public final class GameState {
 			this.position = position;
 			this.image = image;
 		}
- 
-		/*Getters for the class*/
+
+		/* Getters for the class */
 		public int getLives() {
 			return lives;
 		}
