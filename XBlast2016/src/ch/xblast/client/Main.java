@@ -25,6 +25,7 @@ import ch.epfl.xblast.Time;
 public class Main {
 
 	private static int MAX_BUFFER_SIZE = 410;
+	private static int PORT = 2016;
 	
 	/**
 	 * Trade that does the graphic interface
@@ -73,7 +74,7 @@ public class Main {
 		String hostName = (args.length <= 0) ? "localhost" : args[0];
 		DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
 		channel.configureBlocking(false);
-		SocketAddress hostAdress = new InetSocketAddress(hostName, 2016);
+		SocketAddress hostAdress = new InetSocketAddress(hostName, PORT);
 		ByteBuffer sendBuffer = ByteBuffer.allocate(1);
 		sendBuffer.put((byte) PlayerAction.JOIN_GAME.ordinal());
 

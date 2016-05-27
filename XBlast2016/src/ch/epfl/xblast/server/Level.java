@@ -84,7 +84,8 @@ public final class Level {
 		List<Player> players = new ArrayList<>();
 		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), INITIAL_BOMBS, INITIAL_RANGE));
 		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), INITIAL_BOMBS, INITIAL_RANGE));
-		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, INITIAL_RANGE));
 
 		GameState gameState = new GameState(board, players);
 

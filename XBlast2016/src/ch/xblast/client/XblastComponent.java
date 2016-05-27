@@ -35,7 +35,8 @@ public final class XblastComponent extends JComponent {
 	private final static int NB_PLAYERS = 4; 
 	private final static int PS_WIDTH = 960;
 	private final static int PS_HEIGHT = 688;
-	
+	private final static List<Integer> COORDINATES_LIFE_WIDTH = Arrays.asList(96, 240, 768, 912);
+	private final static int COORDINATES_LIFE_HEIGHT = 659;
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -88,8 +89,8 @@ public final class XblastComponent extends JComponent {
 	 * @param g
 	 */
 	private void livesPaint(Graphics2D g) {
-		List<Integer> x = Arrays.asList(96, 240, 768, 912);
-		int y = 659;
+		List<Integer> x = COORDINATES_LIFE_WIDTH;
+		int y = COORDINATES_LIFE_HEIGHT;
 
 		Font font = new Font("Arial", Font.BOLD, 25);
 		g.setColor(Color.WHITE);

@@ -29,6 +29,7 @@ public class Main {
 	private static Map<Byte, Optional<Direction>> directions = directions();
 	private static PlayerID[] ids = PlayerID.values();
 	private static PlayerAction[] plA = PlayerAction.values();
+	private static int PORT = 2016;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -36,7 +37,7 @@ public class Main {
 		Map<SocketAddress, PlayerID> players = new HashMap<>();
 
 		DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
-		channel.bind(new InetSocketAddress(2016));
+		channel.bind(new InetSocketAddress(PORT));
 
 		initialization(players, minPlayers, channel);
 
