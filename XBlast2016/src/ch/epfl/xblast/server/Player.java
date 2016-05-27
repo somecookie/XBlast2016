@@ -1,3 +1,7 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Clarisse Estelle Fleurimont (246866)
+ */
 package ch.epfl.xblast.server;
 
 import java.util.Objects;
@@ -191,6 +195,11 @@ public final class Player {
 		return new Bomb(id(), position().containingCell(), Ticks.BOMB_FUSE_TICKS, bombRange());
 	}
 
+	/**
+	 * Create a life state's sequence
+	 * @param lives
+	 * @return the sequence for life states
+	 */
 	private static Sq<LifeState> SqCreator(int lives) {
 		if (lives == 0) {
 			return Sq.constant(new LifeState(lives, State.DEAD));
@@ -208,7 +217,7 @@ public final class Player {
 		private final State state;
 
 		/**
-		 * Construc the width life's number/state with the given values
+		 * Construct the width life's number/state with the given values
 		 * 
 		 * @param lives
 		 * @param state
@@ -271,7 +280,7 @@ public final class Player {
 		 * 
 		 * @param p
 		 *            the given directed position
-		 * @return the inifnite sequence
+		 * @return the infinite sequence
 		 */
 		public static Sq<DirectedPosition> stopped(DirectedPosition p) {
 			return Sq.constant(p);
@@ -283,14 +292,14 @@ public final class Player {
 		 * element is the given directed position , the second is the neighbor's
 		 * sub cell from the first element in the "look" direction and so on
 		 * 
-		 * @return the infinite sequence of dircetd position
+		 * @return the infinite sequence of directed position
 		 */
 		public static Sq<DirectedPosition> moving(DirectedPosition p) {
 			return Sq.iterate(p, x -> x.withPosition(x.position().neighbor(x.direction())));
 
 		}
 
-		/* méthodes de consultation et de dérivation */
+		/*Getters and setters for the class*/
 
 		public SubCell position() {
 			return position;

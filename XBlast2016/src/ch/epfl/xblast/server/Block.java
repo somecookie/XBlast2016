@@ -70,7 +70,7 @@ public enum Block {
 		if (isBonus()) {
 			return maybeAssociatedBonus;
 		} else {
-			throw new NoSuchElementException("La case ne contient pas de bonus!");
+			throw new NoSuchElementException("The block doesn't contain a bonus.");
 		}
 	}
 }

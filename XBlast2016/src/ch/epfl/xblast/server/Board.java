@@ -3,9 +3,7 @@
  * @author Clarisse Estelle Fleurimont (246866)
  * @date 29 févr. 2016
  */
-/**
- * 
- */
+
 package ch.epfl.xblast.server;
 
 import java.util.ArrayList;
@@ -20,14 +18,14 @@ public final class Board {
 	public static final int COLUMNS = 15;
 	public static final int ROWS = 13;
 	public static final int COUNT = COLUMNS * ROWS;
-	private final List<Sq<Block>> plateau;
+	private final List<Sq<Block>> board;
 
 	public Board(List<Sq<Block>> blocks) {
 		if (blocks.size() != COUNT) {
 			throw new IllegalArgumentException(
-					"Argument invalide: nombre de blocs différent de 195 nombre de blocks obtenus :" + blocks.size());
+					"Illegal Argument: bloc's number different of 195 :" + blocks.size());
 		} else {
-			plateau = Collections.unmodifiableList(new ArrayList<>(blocks));
+			board = Collections.unmodifiableList(new ArrayList<>(blocks));
 		}
 	}
 
@@ -44,14 +42,14 @@ public final class Board {
 	public static Board ofRows(List<List<Block>> rows) {
 		checkBlockMatrix(rows, ROWS, COLUMNS);
 
-		List<Sq<Block>> platEnCstr = new ArrayList<>();
+		List<Sq<Block>> buildingBoard = new ArrayList<>();
 		for (int i = 0; i < rows.size(); i++) {
 			for (int j = 0; j < rows.get(i).size(); j++) {
-				platEnCstr.add(Sq.constant(rows.get(i).get(j)));
+				buildingBoard.add(Sq.constant(rows.get(i).get(j)));
 			}
 		}
 
-		return new Board(platEnCstr);
+		return new Board(buildingBoard);
 	}
 
 	/**
@@ -68,22 +66,22 @@ public final class Board {
 	public static Board ofInnerBlocksWalled(List<List<Block>> innerBlocks) {
 		checkBlockMatrix(innerBlocks, ROWS-2, COLUMNS-2);
 
-		List<List<Block>> platEnCstr = new ArrayList<>();
+		List<List<Block>> buildingBoard = new ArrayList<>();
 
 		for (int i = 0; i < innerBlocks.size(); i++) {
-			platEnCstr.add(new ArrayList<>());
-			platEnCstr.get(i).add(Block.INDESTRUCTIBLE_WALL);
+			buildingBoard.add(new ArrayList<>());
+			buildingBoard.get(i).add(Block.INDESTRUCTIBLE_WALL);
 			for (int j = 0; j < innerBlocks.get(i).size(); j++) {
-				platEnCstr.get(i).add(innerBlocks.get(i).get(j));
+				buildingBoard.get(i).add(innerBlocks.get(i).get(j));
 			}
-			platEnCstr.get(i).add(Block.INDESTRUCTIBLE_WALL);
+			buildingBoard.get(i).add(Block.INDESTRUCTIBLE_WALL);
 		}
 
-		List<Block> walls = Collections.nCopies(platEnCstr.get(0).size(), Block.INDESTRUCTIBLE_WALL);
-		platEnCstr.add(0, new ArrayList<>(walls));
-		platEnCstr.add(new ArrayList<>(walls));
+		List<Block> walls = Collections.nCopies(buildingBoard.get(0).size(), Block.INDESTRUCTIBLE_WALL);
+		buildingBoard.add(0, new ArrayList<>(walls));
+		buildingBoard.add(new ArrayList<>(walls));
 
-		return ofRows(platEnCstr);
+		return ofRows(buildingBoard);
 	}
 
 	/**
@@ -99,17 +97,17 @@ public final class Board {
 	 */
 	public static Board ofQuadrantNWBlocksWalled(List<List<Block>> quadrantNWBlocks) {
 		checkBlockMatrix(quadrantNWBlocks, (ROWS-1)/2, (COLUMNS-1)/2);
-		List<List<Block>> platEnCstr = new ArrayList<>();
+		List<List<Block>> buildingBoard = new ArrayList<>();
 		for (int i = 0; i < quadrantNWBlocks.size(); i++) {
 			List<Block> tmp = Lists.mirrored(quadrantNWBlocks.get(i));
-			platEnCstr.add(new ArrayList<>(tmp));
+			buildingBoard.add(new ArrayList<>(tmp));
 		}
 
-		for (int i = platEnCstr.size() - 2; i >= 0; i--) {
-			platEnCstr.add(new ArrayList<>(platEnCstr.get(i)));
+		for (int i = buildingBoard.size() - 2; i >= 0; i--) {
+			buildingBoard.add(new ArrayList<>(buildingBoard.get(i)));
 		}
 
-		return ofInnerBlocksWalled(platEnCstr);
+		return ofInnerBlocksWalled(buildingBoard);
 
 	}
 
@@ -129,17 +127,17 @@ public final class Board {
 	 */
 	public static void checkBlockMatrix(List<List<Block>> matrix, int rows, int columns) {
 		if (matrix == null || matrix.isEmpty()) {
-			throw new IllegalArgumentException("La list est vide!");
+			throw new IllegalArgumentException("The list is empty.");
 		}
 
 		int rowSize = matrix.size();
 		if (rowSize != rows) {
-			throw new IllegalArgumentException("Argument invalide: dervait avoir " + rows + "lignes et non " + rowSize);
+			throw new IllegalArgumentException("Illegal Argument: must have " + rows + "rows and not " + rowSize);
 		}
 		for (int i = 0; i < rowSize; i++) {
 			if (matrix.get(i).size() != columns) {
-				throw new IllegalArgumentException("Argument invalide: devrait avoir " + columns + " colonnes et non "
-						+ matrix.get(i).size() + " A  la ligne " + i);
+				throw new IllegalArgumentException("Illegal Argument: must have " + columns + " columns and not "
+						+ matrix.get(i).size() + " at rows " + i);
 			}
 		}
 	}
@@ -153,7 +151,7 @@ public final class Board {
 	 */
 	public Sq<Block> blocksAt(Cell c) {
 		int index = c.rowMajorIndex();
-		return plateau.get(index);
+		return board.get(index);
 	}
 
 	/**
@@ -166,6 +164,6 @@ public final class Board {
 	 */
 	public Block blockAt(Cell c) {
 		int index = c.rowMajorIndex();
-		return plateau.get(index).head();
+		return board.get(index).head();
 	}
 }

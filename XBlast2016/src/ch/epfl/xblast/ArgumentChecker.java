@@ -19,7 +19,7 @@ public final class ArgumentChecker {
      */
     public static int requireNonNegative(int value) {
         if (value < 0) {
-            throw new IllegalArgumentException("La valeur donnée doit être positive!");
+            throw new IllegalArgumentException("The given value has to be positive!");
         } else {
             return value;
         }
