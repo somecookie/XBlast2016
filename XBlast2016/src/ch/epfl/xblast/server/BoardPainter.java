@@ -3,7 +3,7 @@
  * @author Eleonore Pochon (262959)
  */
 
-package ch.epfl.xblast.server.image;
+package ch.epfl.xblast.server;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +11,6 @@ import java.util.Map;
 
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.Direction;
-import ch.epfl.xblast.server.Block;
-import ch.epfl.xblast.server.Board;
 
 public final class BoardPainter {
 

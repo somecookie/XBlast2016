@@ -21,10 +21,9 @@ import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.Block;
 import ch.epfl.xblast.server.Board;
 import ch.epfl.xblast.server.Bomb;
+import ch.epfl.xblast.server.ExplosionPainter;
 import ch.epfl.xblast.server.GameState;
 import ch.epfl.xblast.server.Player;
-import ch.epfl.xblast.server.image.ExplosionPainter;
-import ch.epfl.xblast.server.debug.*;
 
 public class ExplosionPainterTest {
 

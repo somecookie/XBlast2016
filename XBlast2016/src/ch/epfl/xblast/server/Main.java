@@ -21,7 +21,6 @@ import java.util.Set;
 import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.PlayerAction;
 import ch.epfl.xblast.PlayerID;
-import ch.epfl.xblast.server.image.BoardPainter;
 import ch.epfl.xblast.Time;
 
 public class Main {

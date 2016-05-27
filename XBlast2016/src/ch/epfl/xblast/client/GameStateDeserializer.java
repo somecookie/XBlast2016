@@ -2,7 +2,7 @@
  * @author Ricardo Ferreira Ribeiro (250798)
  * @author Eleonore Pochon (262959)
  */
-package ch.xblast.client;
+package ch.epfl.xblast.client;
 
 import java.awt.Image;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.RunLengthEncoder;
 import ch.epfl.xblast.SubCell;
-import ch.xblast.client.GameState.Player;
+import ch.epfl.xblast.client.GameState.Player;
 
 public final class GameStateDeserializer {
 

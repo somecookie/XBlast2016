@@ -3,9 +3,8 @@
  * @author Eleonore Pochon (262959)
  */
 
-package ch.epfl.xblast.server.image;
+package ch.epfl.xblast.server;
 
-import ch.epfl.xblast.server.Player;
 import ch.epfl.xblast.server.Player.LifeState.State;
 
 public final class PlayerPainter {

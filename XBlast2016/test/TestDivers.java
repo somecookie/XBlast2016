@@ -5,7 +5,7 @@ import java.util.List;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.SubCell;
-import ch.xblast.client.GameState.Player;
+import ch.epfl.xblast.client.GameState.Player;
 
 public class TestDivers {
 	public static void main(String[] args) {

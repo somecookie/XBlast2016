@@ -2,7 +2,7 @@
  * @author Ricardo Ferreira Ribeiro (250798)
  * @author Eleonore Pochon (262959)
  */
-package ch.xblast.client;
+package ch.epfl.xblast.client;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

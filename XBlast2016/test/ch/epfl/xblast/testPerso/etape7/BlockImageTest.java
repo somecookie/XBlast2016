@@ -1,11 +1,11 @@
 package ch.epfl.xblast.testPerso.etape7;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ch.epfl.xblast.server.image.BlockImage;
+import ch.epfl.xblast.server.BlockImage;
 
 public class BlockImageTest {
 

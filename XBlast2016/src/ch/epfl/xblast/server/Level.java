@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import ch.epfl.xblast.server.image.BlockImage;
-import ch.epfl.xblast.server.image.BoardPainter;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.Board;

@@ -1,6 +1,6 @@
 package ch.epfl.xblast.testPerso.etape7;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import ch.epfl.xblast.server.Player;
 import ch.epfl.xblast.server.Player.DirectedPosition;
 import ch.epfl.xblast.server.Player.LifeState;
 import ch.epfl.xblast.server.Player.LifeState.State;
-import ch.epfl.xblast.server.image.PlayerPainter;
+import ch.epfl.xblast.server.PlayerPainter;
 
 public class PlayerPainterTest {
 

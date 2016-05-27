@@ -11,9 +11,6 @@ import java.util.Map;
 
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.RunLengthEncoder;
-import ch.epfl.xblast.server.image.BoardPainter;
-import ch.epfl.xblast.server.image.ExplosionPainter;
-import ch.epfl.xblast.server.image.PlayerPainter;
 
 public final class GameStateSerializer {
 

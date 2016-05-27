@@ -1,4 +1,4 @@
-package ch.xblast.client;
+package ch.epfl.xblast.client;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;

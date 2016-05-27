@@ -2,7 +2,7 @@
  * @author Ricardo Ferreira Ribeiro (250798)
  * @author Eleonore Pochon (262959)
  */
-package ch.xblast.client;
+package ch.epfl.xblast.client;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,7 +20,7 @@ import ch.epfl.xblast.Cell;
 import javax.swing.JComponent;
 
 import ch.epfl.xblast.PlayerID;
-import ch.xblast.client.GameState.Player;
+import ch.epfl.xblast.client.GameState.Player;
 
 @SuppressWarnings("serial")
 public final class XblastComponent extends JComponent {

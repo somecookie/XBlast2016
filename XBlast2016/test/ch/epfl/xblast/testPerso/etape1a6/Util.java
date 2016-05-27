@@ -10,9 +10,9 @@ import java.util.Map;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.Block;
+import ch.epfl.xblast.server.BlockImage;
 import ch.epfl.xblast.server.Board;
 import ch.epfl.xblast.server.Player;
-import ch.epfl.xblast.server.image.BlockImage;
 
 public class Util {
     public static Board board(){

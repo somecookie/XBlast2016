@@ -1,6 +1,6 @@
 package ch.epfl.xblast.testPerso.etape7;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +12,9 @@ import org.junit.Test;
 import ch.epfl.cs108.Sq;
 import ch.epfl.xblast.Cell;
 import ch.epfl.xblast.server.Block;
+import ch.epfl.xblast.server.BlockImage;
 import ch.epfl.xblast.server.Board;
-import ch.epfl.xblast.server.image.BlockImage;
-import ch.epfl.xblast.server.image.BoardPainter;
+import ch.epfl.xblast.server.BoardPainter;
 
 public class BoardPainterTest {
 
