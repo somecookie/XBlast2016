@@ -197,6 +197,7 @@ public final class Player {
 
 	/**
 	 * Create a life state's sequence
+	 * 
 	 * @param lives
 	 * @return the sequence for life states
 	 */
@@ -299,7 +300,7 @@ public final class Player {
 
 		}
 
-		/*Getters and setters for the class*/
+		/* Getters and setters for the class */
 
 		public SubCell position() {
 			return position;

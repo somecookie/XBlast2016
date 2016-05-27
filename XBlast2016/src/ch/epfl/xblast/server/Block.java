@@ -31,7 +31,7 @@ public enum Block {
 	 * @return true iff the block is free, otherwise false
 	 */
 	public boolean isFree() {
-		return (this.equals(FREE));
+		return this == FREE;
 	}
 
 	/**
@@ -40,7 +40,7 @@ public enum Block {
 	 * @return true iff the player can go on the block, otherwise false
 	 */
 	public boolean canHostPlayer() {
-		return (this.isFree() || this.isBonus());
+		return this.isFree() || this.isBonus();
 	}
 
 	/**

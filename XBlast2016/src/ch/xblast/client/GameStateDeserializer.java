@@ -127,16 +127,15 @@ public final class GameStateDeserializer {
 	 */
 	private static List<Player> deserializerPlayer(List<Byte> serializedPlayer) {
 		PlayerID[] players = PlayerID.values();
-		int nbrPlayer = PlayerID.values().length;
 		List<Player> deserializedPlayer = new ArrayList<>();
 
-		for (int i = 0; i < nbrPlayer; i++) {
+		for (int i = 0; i < PlayerID.NB_PLAYERS; i++) {
 			PlayerID id = players[i];
-			int lives = Byte.toUnsignedInt(serializedPlayer.get(i * nbrPlayer));
-			int x = Byte.toUnsignedInt(serializedPlayer.get(i * nbrPlayer + 1));
-			int y = Byte.toUnsignedInt(serializedPlayer.get(i * nbrPlayer + 2));
+			int lives = Byte.toUnsignedInt(serializedPlayer.get(i * PlayerID.NB_PLAYERS));
+			int x = Byte.toUnsignedInt(serializedPlayer.get(i * PlayerID.NB_PLAYERS + 1));
+			int y = Byte.toUnsignedInt(serializedPlayer.get(i * PlayerID.NB_PLAYERS + 2));
 			Image image = playerImageCollection
-					.imageOrNull(Byte.toUnsignedInt(serializedPlayer.get(i * nbrPlayer + 3)));
+					.imageOrNull(Byte.toUnsignedInt(serializedPlayer.get(i * PlayerID.NB_PLAYERS + 3)));
 			deserializedPlayer.add(new Player(id, lives, new SubCell(x, y), image));
 		}
 		return deserializedPlayer;

@@ -153,7 +153,7 @@ public  final class Cell {
                 return new Cell(x(), y-1);
             }
         case E:
-            if(x == 14){
+			if (x == 14){
                 return new Cell(0, y());
             }
             else{

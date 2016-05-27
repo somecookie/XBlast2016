@@ -32,7 +32,6 @@ public final class XblastComponent extends JComponent {
 	private final static int SCORE_WIDTH = 48;
 	private final static int SCORE_HEIGHT = 48;
 	private final static int TIME_WIDTH = 16;
-	private final static int NB_PLAYERS = 4; 
 	private final static int PS_WIDTH = 960;
 	private final static int PS_HEIGHT = 688;
 	private final static List<Integer> COORDINATES_LIFE_WIDTH = Arrays.asList(96, 240, 768, 912);
@@ -64,8 +63,8 @@ public final class XblastComponent extends JComponent {
 		Comparator<Player> c1 = (p1, p2) -> Integer.compare(p1.getPosition().y(), p2.getPosition().y());
 		Comparator<Player> c2 = (p1, p2) -> {
 			int i = id.ordinal();
-			int a = Math.floorMod(i+1 + p1.getId().ordinal()+1, NB_PLAYERS);
-			int b = Math.floorMod(i+1 + p2.getId().ordinal()+1, NB_PLAYERS);
+			int a = Math.floorMod(i+1 + p1.getId().ordinal()+1, PlayerID.NB_PLAYERS);
+			int b = Math.floorMod(i+1 + p2.getId().ordinal()+1, PlayerID.NB_PLAYERS);
 
 			return Integer.compare(a, b);
 

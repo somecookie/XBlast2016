@@ -22,8 +22,7 @@ public final class Board {
 
 	public Board(List<Sq<Block>> blocks) {
 		if (blocks.size() != COUNT) {
-			throw new IllegalArgumentException(
-					"Illegal Argument: bloc's number different of 195 :" + blocks.size());
+			throw new IllegalArgumentException("Illegal Argument: bloc's number different of 195 :" + blocks.size());
 		} else {
 			board = Collections.unmodifiableList(new ArrayList<>(blocks));
 		}
@@ -64,7 +63,7 @@ public final class Board {
 	 *             if the list is not constitute of 11 rows of 13 elements each
 	 */
 	public static Board ofInnerBlocksWalled(List<List<Block>> innerBlocks) {
-		checkBlockMatrix(innerBlocks, ROWS-2, COLUMNS-2);
+		checkBlockMatrix(innerBlocks, ROWS - 2, COLUMNS - 2);
 
 		List<List<Block>> buildingBoard = new ArrayList<>();
 
@@ -96,7 +95,7 @@ public final class Board {
 	 *             if the list isn't constitute of 6 lists of 7 elements each
 	 */
 	public static Board ofQuadrantNWBlocksWalled(List<List<Block>> quadrantNWBlocks) {
-		checkBlockMatrix(quadrantNWBlocks, (ROWS-1)/2, (COLUMNS-1)/2);
+		checkBlockMatrix(quadrantNWBlocks, (ROWS - 1) / 2, (COLUMNS - 1) / 2);
 		List<List<Block>> buildingBoard = new ArrayList<>();
 		for (int i = 0; i < quadrantNWBlocks.size(); i++) {
 			List<Block> tmp = Lists.mirrored(quadrantNWBlocks.get(i));

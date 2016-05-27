@@ -39,7 +39,6 @@ public final class GameState {
 	private final List<Bomb> bombs;
 	private final List<Sq<Sq<Cell>>> explosions;
 	private final List<Sq<Cell>> blasts;
-	private final int NBR_PLAYER = 4;
 	private final static int SEED = 2016;
 	private final static List<List<PlayerID>> permut = Collections
 			.unmodifiableList(Lists.permutations(Arrays.asList(PlayerID.values())));
@@ -72,7 +71,7 @@ public final class GameState {
 
 		this.ticks = ArgumentChecker.requireNonNegative(ticks);
 
-		if (players.size() != NBR_PLAYER) {
+		if (players.size() != PlayerID.NB_PLAYERS) {
 			throw new IllegalArgumentException("There must be 4 players!");
 		} else {
 

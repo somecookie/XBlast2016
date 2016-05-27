@@ -18,7 +18,6 @@ public final class GameState {
 	private final List<Image> bombsAndExplosions;
 	private final List<Image> scores;
 	private final List<Image> time;
-	private final int NBR_PLAYER = 4;
 
 	/**
 	 * Construct the game state for the client (then he would have a
@@ -41,7 +40,7 @@ public final class GameState {
 			List<Image> time) {
 		this.players = Collections.unmodifiableList(new ArrayList<>(players));
 
-		if (players.size() != NBR_PLAYER) {
+		if (players.size() != PlayerID.NB_PLAYERS) {
 			throw new IllegalArgumentException("There must be 4 players!");
 		} else {
 

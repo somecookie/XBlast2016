@@ -25,15 +25,14 @@ import ch.epfl.xblast.server.image.BoardPainter;
 import ch.epfl.xblast.Time;
 
 public class Main {
-	private static int STD_PLAYERS = 4;
+
 	private static Map<Byte, Optional<Direction>> directions = directions();
-	private static PlayerID[] ids = PlayerID.values();
 	private static PlayerAction[] plA = PlayerAction.values();
 	private static int PORT = 2016;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 
-		int minPlayers = (args.length <= 0) ? STD_PLAYERS : Integer.parseInt(args[0]);
+		int minPlayers = (args.length <= 0) ? PlayerID.NB_PLAYERS : Integer.parseInt(args[0]);
 		Map<SocketAddress, PlayerID> players = new HashMap<>();
 
 		DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
@@ -150,7 +149,7 @@ public class Main {
 			senderAddress = channel.receive(buffer);
 
 			if (buffer.get(0) == (byte) PlayerAction.JOIN_GAME.ordinal() && !players.containsKey(senderAddress)) {
-				players.put(senderAddress, ids[players.size()]);
+				players.put(senderAddress, PlayerID.values()[players.size()]);
 			}
 			buffer.clear();
 		}

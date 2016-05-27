@@ -25,8 +25,8 @@ public final class ImageCollection {
 	private final Map<Integer, Image> images;
 
 	/**
-	 * The constructor takes as argument the repository's name containing the images, like the
-	 * bombs or explosions for example
+	 * The constructor takes as argument the repository's name containing the
+	 * images, like the bombs or explosions for example
 	 * 
 	 * @param name
 	 *            the given repository's name

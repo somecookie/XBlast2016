@@ -6,5 +6,7 @@
 package ch.epfl.xblast;
 
 public enum PlayerID {
-    PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4;
+	PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4;
+
+	public static int NB_PLAYERS = PlayerID.values().length;
 }
