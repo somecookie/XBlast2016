@@ -45,6 +45,7 @@ public final class GameState {
 		this.time = Collections.unmodifiableList(new ArrayList<>(time));
 	}
 
+	/*Getters for the class*/
 	public List<Player> getPlayers() {
 		return players;
 	}
@@ -91,8 +92,8 @@ public final class GameState {
 			this.position = position;
 			this.image = image;
 		}
-		
-		/* Getter for the class*/
+ 
+		/*Getters for the class*/
 		public int getLives() {
 			return lives;
 		}

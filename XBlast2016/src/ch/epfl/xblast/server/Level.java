@@ -18,6 +18,9 @@ public final class Level {
 	private final BoardPainter boardPainter;
 	private final GameState initialState;
 	public final static Level DEFAULT_LEVEL = defaultLevelGenerator();
+	public final static int NB_LIFES = 3;
+	public final static int INITIAL_BOMBS = 2;
+	public final static int INITIAL_RANGE = 3;
 
 	/**
 	 * Construct the level in function of the game state(state of the game) and
@@ -51,13 +54,15 @@ public final class Level {
 
 		return initialState;
 	}
-	/**Create the default level of the game
+
+	/**
+	 * Create the default level of the game
 	 * 
-	 * @return the level in function of the board painter and the initial game state
+	 * @return the level in function of the board painter and the initial game
+	 *         state
 	 */
 	private static Level defaultLevelGenerator() {
-		
-		// Create the board painter
+
 		Map<Block, BlockImage> imageMap = new HashMap<>();
 		imageMap.put(Block.FREE, BlockImage.IRON_FLOOR);
 		imageMap.put(Block.INDESTRUCTIBLE_WALL, BlockImage.DARK_BLOCK);
@@ -67,10 +72,7 @@ public final class Level {
 		imageMap.put(Block.BONUS_RANGE, BlockImage.BONUS_RANGE);
 		BlockImage sFree = BlockImage.IRON_FLOOR_S;
 		BoardPainter painter = new BoardPainter(imageMap, sFree);
-		
-		//Create the game state (in function of the board and the player's list
-		
-		//Create the board
+
 		Block __ = Block.FREE;
 		Block xx = Block.DESTRUCTIBLE_WALL;
 		Block XX = Block.INDESTRUCTIBLE_WALL;
@@ -78,13 +80,11 @@ public final class Level {
 				Arrays.asList(Arrays.asList(__, __, __, __, __, xx, __), Arrays.asList(__, XX, xx, XX, xx, XX, xx),
 						Arrays.asList(__, xx, __, __, __, xx, __), Arrays.asList(xx, XX, __, XX, XX, XX, XX),
 						Arrays.asList(__, xx, __, xx, __, __, __), Arrays.asList(xx, XX, xx, XX, xx, XX, __)));
-		
-		//Create the player's list
+
 		List<Player> players = new ArrayList<>();
-		players.add(new Player(PlayerID.PLAYER_1, 3, new Cell(1, 1), 2, 3));
-		players.add(new Player(PlayerID.PLAYER_2, 3, new Cell(13, 1), 2, 3));
-		players.add(new Player(PlayerID.PLAYER_3, 3, new Cell(13, 11), 2, 3));
-		players.add(new Player(PlayerID.PLAYER_4, 3, new Cell(1, 11), 2, 3));
+		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, INITIAL_RANGE));
 
 		GameState gameState = new GameState(board, players);
 

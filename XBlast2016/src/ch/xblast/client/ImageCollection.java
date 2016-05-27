@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
 /*
- * Represent an images' collection from a repertoire , the images are indexed by an
+ * Represent an images' collection from a repository , the images are indexed by an
  * integer
  */
 public final class ImageCollection {
@@ -25,8 +25,11 @@ public final class ImageCollection {
 	private final Map<Integer, Image> images;
 
 	/**
+	 * The constructor takes as argument the repository's name containing the images, like the
+	 * bombs or explosions for example
 	 * 
 	 * @param name
+	 *            the given repository's name
 	 */
 	public ImageCollection(String name) {
 		dirName = name;
@@ -59,8 +62,8 @@ public final class ImageCollection {
 	 * Get the image for a given index, in form of a sub classes image, we use
 	 * that method in the case when we're sure that the index is valid. If the
 	 * image doesn't correspond to the index in the collections throw no such
-	 * element exception.
-	 * Only for the images of the players or the bombs and explosions.
+	 * element exception. Only for the images of the players or the bombs and
+	 * explosions.
 	 * 
 	 * @param index
 	 *            the given index
@@ -75,7 +78,7 @@ public final class ImageCollection {
 	}
 
 	/**
-	 * Can load the images from a repertoire who permits the access of the
+	 * Can load the images from a repository who permits the access of the
 	 * images
 	 * 
 	 * @param dir

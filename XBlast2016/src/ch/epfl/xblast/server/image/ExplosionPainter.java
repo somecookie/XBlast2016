@@ -20,8 +20,7 @@ public final class ExplosionPainter {
 	public final static byte WHITE_BOMB = 21;
 
 	/**
-	 * Constructor of the player painter, it's empty because the class isn't
-	 * instanciable
+	 * Constructor empty because the class isn't instanciable
 	 */
 	private ExplosionPainter() {
 
@@ -57,7 +56,7 @@ public final class ExplosionPainter {
 	 *            if there is a blast on the West's cell
 	 * @return the corresponding blast in function of the directions
 	 */
-	public static byte byteForBlast(boolean northCellIsBlasted, boolean eastCellIsBlasted, boolean southCellIsBlasted,
+	private static byte byteForBlast(boolean northCellIsBlasted, boolean eastCellIsBlasted, boolean southCellIsBlasted,
 			boolean westCellIsBlasted) {
 		byte byteForBlast = 0;
 		if (northCellIsBlasted) {
@@ -95,7 +94,7 @@ public final class ExplosionPainter {
 		if (!currentBlock.isFree() || !blastedCells.contains(cell)) {
 			return BYTE_FOR_EMPTY;
 		}
-		
+
 		boolean northCellIsBlasted = blastedCells.contains(cell.neighbor(Direction.N));
 		boolean eastCellIsBlasted = blastedCells.contains(cell.neighbor(Direction.E));
 		boolean southCellIsBlasted = blastedCells.contains(cell.neighbor(Direction.S));

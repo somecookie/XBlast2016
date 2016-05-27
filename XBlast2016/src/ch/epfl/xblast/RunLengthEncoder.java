@@ -10,11 +10,13 @@ import java.util.List;
 
 public final class RunLengthEncoder {
 
+	/**
+	 * Constructor empty because the class isn't instanciable
+	 */
 	private RunLengthEncoder() {
 	}
 
 	/**
-	 * 
 	 * Return the coded list by "plage" or throw IllegalArgumentException if one
 	 * of the elements in the list is negative
 	 * 
@@ -25,7 +27,7 @@ public final class RunLengthEncoder {
 	public static List<Byte> encode(List<Byte> notEncoded) {
 		List<Byte> encoded = new ArrayList<>();
 
-		if (notEncoded.isEmpty() || notEncoded.size() <= 2) {
+		if (notEncoded.size() <= 2) {
 			return notEncoded;
 		} else {
 			int count = 0;

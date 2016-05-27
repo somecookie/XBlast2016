@@ -13,39 +13,40 @@ public final class PlayerPainter {
 	public final static byte BYTE_FOR_DEATH = 15;
 	public final static byte BYTE_FOR_LOSING_LIFE = 12;
 	public final static byte BYTE_FOR_DYING = 13;
-	
+	public final static byte WHITE_PLAYER = 80;
+
 	/**
-	 * Constructor of the player painter, it's empty because the class isn't instanciable
+	 * Constructor of the player painter, it's empty because the class isn't
+	 * instanciable
 	 */
 	private PlayerPainter() {
-		
+
 	}
-	
-	/**Calculate the image do we have to use for the player
+
+	/**
+	 * Calculate the image do we have to use for the player
 	 * 
 	 * @param ticks
-	 * 		  the actual ticks
+	 *            the actual ticks
 	 * @param player
-	 * 		  the player used for the image
+	 *            the player used for the image
 	 * @return the corresponding image in byte
 	 */
 	public static byte byteForPlayer(int ticks, Player player) {
 		byte byteForPlayer = 0;
 		State playerState = player.lifeState().state();
 		int position;
-		
-		//Choose the id of the player and its corresponding image
+
 		byteForPlayer += player.id().ordinal() * 20;
 
 		if (player.lifeState().canMove()) {
-			
-			//of we have to use the black or white image
+
 			if (playerState == State.INVULNERABLE && ((ticks % 2) == 1)) {
-				byteForPlayer = 80;
+				byteForPlayer = WHITE_PLAYER;
 			}
 
 			byteForPlayer += player.direction().ordinal() * 3;
-			//Calculate the feet's position
+
 			if (player.direction().isHorizontal()) {
 				position = player.position().x();
 			} else {
@@ -66,14 +67,12 @@ public final class PlayerPainter {
 			}
 
 		} else {
-			//the case when the player is dying 
 			if (playerState == State.DYING) {
 				if (player.lives() <= 1) {
-					return BYTE_FOR_DYING ;
+					return BYTE_FOR_DYING;
 				} else {
 					return BYTE_FOR_LOSING_LIFE;
 				}
-			 //the case when the player is dead
 			} else {
 				byteForPlayer = BYTE_FOR_DEATH;
 			}

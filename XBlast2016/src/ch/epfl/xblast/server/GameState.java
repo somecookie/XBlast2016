@@ -110,7 +110,7 @@ public final class GameState {
 	 * @return true if the game is over, otherwise false
 	 */
 	public boolean isGameOver() {
-		return (Ticks.TOTAL_TICKS + 1 == ticks || alivePlayers().size() <= 1); 
+		return (Ticks.TOTAL_TICKS + 1 == ticks || alivePlayers().size() <= 1);
 	}
 
 	/**
@@ -132,9 +132,8 @@ public final class GameState {
 		if (alivePlayers().size() == 1) {
 			return Optional.of(alivePlayers().get(0).id());
 		}
-			
-		return Optional.empty();
 
+		return Optional.empty();
 	}
 
 	/**
@@ -324,7 +323,7 @@ public final class GameState {
 		tmpBomb.addAll(newlyDroppedBombs(sortedPlayers, bombDropEvents, bombs));
 
 		for (Bomb b : tmpBomb) {
-			if (b.fuseLength() == 1) {
+			if (b.fuseLengths().tail().isEmpty()) {
 				explosions1.addAll(b.explosion());
 			} else {
 				bombs1.add(new Bomb(b.ownerId(), b.position(), b.fuseLength() - 1, b.range()));
@@ -348,18 +347,16 @@ public final class GameState {
 	}
 
 	/**
-	 * Calcule le prochain état du plateau en fonction du plateau actuel des
-	 * bonus consommés par les joueurs et les nouvelles particules d'explosion
-	 * donnés.
+	 * Calculate the next board in function of the actual board, the consumed
+	 * bonus and the new given blasted cells
 	 * 
 	 * @param board0
-	 *            Plateau actuel
+	 *            actual board
 	 * @param consumedBonuses
-	 *            Bonus consommés par les joueurs
+	 *            bonus consumed by the player
 	 * @param blastedCells1
-	 *            Nouvelles particules d'explosions
-	 * @return board1 (Board) Prochain état du plateau de jeu en fonction des
-	 *         paramètres donnés
+	 *            new blasted cells
+	 * @return board1 (Board) next board
 	 */
 	private static Board nextBoard(Board board0, Set<Cell> consumedBonuses, Set<Cell> blastedCells1) {
 		List<Sq<Block>> board1 = new ArrayList<>();
@@ -390,7 +387,7 @@ public final class GameState {
 					board1.add(newWall);
 				} else if (board0.blockAt(c).isBonus()) {
 					Sq<Block> newBonus;
-					newBonus = board0.blocksAt(c).limit(Ticks.BONUS_DISAPPEARING_TICKS);
+					newBonus = board0.blocksAt(c).tail().limit(Ticks.BONUS_DISAPPEARING_TICKS);
 					newBonus = newBonus.concat(Sq.constant(Block.FREE));
 					board1.add(newBonus);
 				} else {

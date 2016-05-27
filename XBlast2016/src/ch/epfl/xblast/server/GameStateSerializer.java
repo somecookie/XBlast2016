@@ -17,6 +17,9 @@ import ch.epfl.xblast.server.image.PlayerPainter;
 
 public final class GameStateSerializer {
 
+	/**
+	 * Constructor empty because the class isn't instanciable
+	 */
 	private GameStateSerializer() {
 	}
 
@@ -82,5 +85,4 @@ public final class GameStateSerializer {
 		return serialized;
 
 	}
-
 }

@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import ch.epfl.xblast.Cell;
 
-import javax.swing.CellEditor;
 import javax.swing.JComponent;
 
 import ch.epfl.xblast.PlayerID;
@@ -33,29 +32,39 @@ public final class XblastComponent extends JComponent {
 	private final static int SCORE_WIDTH = 48;
 	private final static int SCORE_HEIGHT = 48;
 	private final static int TIME_WIDTH = 16;
+	private final static int NB_PLAYERS = 4; 
+	private final static int PS_WIDTH = 960;
+	private final static int PS_HEIGHT = 688;
+	
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(960, 688);
+		return new Dimension(PS_WIDTH, PS_HEIGHT );
 	}
 
 	@Override
 	protected void paintComponent(Graphics g0) {
 		Graphics2D g = (Graphics2D) g0;
-
+		if(gs == null)
+			return;
 		statePaint(g);
 		livesPaint(g);
 		playerPaint(g);
 
 	}
 
+	/**
+	 * Construct the graph's interface for the players
+	 * 
+	 * @param g
+	 */
 	private void playerPaint(Graphics2D g) {
 
 		Comparator<Player> c1 = (p1, p2) -> Integer.compare(p1.getPosition().y(), p2.getPosition().y());
 		Comparator<Player> c2 = (p1, p2) -> {
 			int i = id.ordinal();
-			int a = Math.floorMod(i + p1.getId().ordinal(), 4);
-			int b = Math.floorMod(i + p2.getId().ordinal(), 4);
+			int a = Math.floorMod(i+1 + p1.getId().ordinal()+1, NB_PLAYERS);
+			int b = Math.floorMod(i+1 + p2.getId().ordinal()+1, NB_PLAYERS);
 
 			return Integer.compare(a, b);
 
@@ -73,6 +82,11 @@ public final class XblastComponent extends JComponent {
 
 	}
 
+	/**
+	 * Construct the graph's interface for the lives
+	 * 
+	 * @param g
+	 */
 	private void livesPaint(Graphics2D g) {
 		List<Integer> x = Arrays.asList(96, 240, 768, 912);
 		int y = 659;
@@ -88,6 +102,11 @@ public final class XblastComponent extends JComponent {
 
 	}
 
+	/**
+	 * Construct the graph's interface for the state
+	 * 
+	 * @param g
+	 */
 	private static void statePaint(Graphics2D g) {
 		int x = 0;
 		int y = 0;
@@ -137,6 +156,13 @@ public final class XblastComponent extends JComponent {
 		}
 	}
 
+	/**
+	 * Permit to change the game state printed by the component (that is
+	 * initially non-existent)
+	 * 
+	 * @param newGs
+	 * @param newId
+	 */
 	public void setGameState(GameState newGs, PlayerID newId) {
 		gs = newGs;
 		id = newId;

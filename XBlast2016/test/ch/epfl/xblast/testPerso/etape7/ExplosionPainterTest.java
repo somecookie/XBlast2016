@@ -47,16 +47,6 @@ public class ExplosionPainterTest {
 	}
 
 	@Test
-	public void byteForBlastTest() {
-		// N,E,S,W
-		assertEquals(0, ExplosionPainter.byteForBlast(false, false, false, false));
-		assertEquals(5, ExplosionPainter.byteForBlast(false, true, false, true));
-		assertEquals(9, ExplosionPainter.byteForBlast(true, false, false, true));
-		assertEquals(13, ExplosionPainter.byteForBlast(true, true, false, true));
-		assertEquals(15, ExplosionPainter.byteForBlast(true, true, true, true));
-	}
-
-	@Test
 	public void test() {
 		List<Player> players = new ArrayList<>(Arrays.asList(new Player(PlayerID.PLAYER_1, 3, new Cell(1, 1), 5, 5),
 				new Player(PlayerID.PLAYER_2, 3, new Cell(2, 2), 5, 5),

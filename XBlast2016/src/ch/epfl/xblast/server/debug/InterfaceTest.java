@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.GameStateSerializer;
@@ -36,7 +35,7 @@ public class InterfaceTest {
 		kb.put(KeyEvent.VK_UP, PlayerAction.MOVE_N);
 		kb.put(KeyEvent.VK_RIGHT, PlayerAction.MOVE_E);
 		kb.put(KeyEvent.VK_DOWN, PlayerAction.MOVE_S);
-		kb.put(KeyEvent.VK_LEFT, PlayerAction.MOVE_E);
+		kb.put(KeyEvent.VK_LEFT, PlayerAction.MOVE_W);
 		kb.put(KeyEvent.VK_SPACE, PlayerAction.DROP_BOMB);
 		kb.put(KeyEvent.VK_SHIFT, PlayerAction.STOP);
 
@@ -63,14 +62,14 @@ public class InterfaceTest {
 		xbc.setGameState(g, PlayerID.PLAYER_1);
 
 		RandomEventGenerator events = new RandomEventGenerator(2016, 30, 100);
-
+		long time = System.nanoTime();
 		while (!gs.isGameOver() || !gs.blastedCells().isEmpty()) {
 			gs = gs.next(events.randomSpeedChangeEvents(), events.randomBombDropEvents());
 			serial = GameStateSerializer.serialize(bp, gs);
 			g = GameStateDeserializer.deserializerGameState(serial);
-			xbc.setGameState(g, PlayerID.PLAYER_1);
-			Thread.sleep(50);
+			//xbc.setGameState(g, PlayerID.PLAYER_1);
+			//Thread.sleep(50);
 		}
-
+		System.out.println(System.nanoTime()-time);
 	}
 }

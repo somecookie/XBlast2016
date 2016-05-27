@@ -1,3 +1,7 @@
+/**
+ * @author Ricardo Ferreira Ribeiro (250798)
+ * @author Eleonore Pochon (262959)
+ */
 package ch.epfl.xblast.server;
 
 import java.io.IOException;
@@ -18,6 +22,7 @@ import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.PlayerAction;
 import ch.epfl.xblast.PlayerID;
 import ch.epfl.xblast.server.image.BoardPainter;
+import ch.epfl.xblast.Time;
 
 public class Main {
 	private static int STD_PLAYERS = 4;
@@ -53,18 +58,32 @@ public class Main {
 			sleepingTime = sleepingTime(startingTime, gS.ticks() + 1);
 
 			if (sleepingTime > 0) {
-				Thread.sleep(sleepingTime);
+
+				long millis = (long) Math.floor(sleepingTime / Time.US_PER_S);
+				int nanos = (int) (sleepingTime - millis * Time.US_PER_S);
+				Thread.sleep(millis, nanos);
 			}
 
 			readingNewInputs(channel, players, bombDropEvents, speedChangeEvents);
 
 			gS = gS.next(speedChangeEvents, bombDropEvents);
+			speedChangeEvents.clear();
+			bombDropEvents.clear();
 
 		}
 
-		System.out.println(gS.winner());
+		if (gS.winner().isPresent()) {
+			System.out.println("The winner is the player " + (gS.winner().get().ordinal() + 1));
+		} else {
+			System.out.println("It's a draw!!!");
+		}
 	}
 
+	/**
+	 * Calculate the player's action and its directions
+	 * 
+	 * @return the direction in function of the player's action
+	 */
 	private static Map<Byte, Optional<Direction>> directions() {
 		Map<Byte, Optional<Direction>> dir = new HashMap<>();
 
@@ -77,6 +96,19 @@ public class Main {
 		return dir;
 	}
 
+	/**
+	 * Do the game state as he can be sent to the client
+	 * 
+	 * @param channel
+	 *            the given channel
+	 * @param gS
+	 *            the game state that will be sent
+	 * @param bP
+	 *            the board painter that will be sent
+	 * @param players
+	 *            the given players
+	 * @throws IOException
+	 */
 	private static void sendGameState(DatagramChannel channel, GameState gS, BoardPainter bP,
 			Map<SocketAddress, PlayerID> players) throws IOException {
 
@@ -89,29 +121,49 @@ public class Main {
 		}
 
 		for (Entry<SocketAddress, PlayerID> p : players.entrySet()) {
+
 			byte id = (byte) p.getValue().ordinal();
 			buffer.put(0, id);
 			buffer.flip();
-
 			channel.send(buffer, p.getKey());
+
 		}
 	}
 
+	/**
+	 * Initialize the game (permit to add players to the game)
+	 * 
+	 * @param players
+	 * @param minPlayers
+	 * @param channel
+	 * @throws IOException
+	 */
 	private static void initialization(Map<SocketAddress, PlayerID> players, int minPlayers, DatagramChannel channel)
 			throws IOException {
 
 		ByteBuffer buffer = ByteBuffer.allocate(1);
 		SocketAddress senderAddress;
 
-		while (players.size() != minPlayers) {
+		while (players.size() < minPlayers) {
 
 			senderAddress = channel.receive(buffer);
-			if (buffer.get(0) == PlayerAction.JOIN_GAME.ordinal() && !players.containsValue(senderAddress)) {
+
+			if (buffer.get(0) == (byte) PlayerAction.JOIN_GAME.ordinal() && !players.containsKey(senderAddress)) {
 				players.put(senderAddress, ids[players.size()]);
 			}
+			buffer.clear();
 		}
 	}
 
+	/**
+	 * Read the inputs
+	 * 
+	 * @param channel
+	 * @param players
+	 * @param bombDropEvents
+	 * @param speedChangeEvents
+	 * @throws IOException
+	 */
 	private static void readingNewInputs(DatagramChannel channel, Map<SocketAddress, PlayerID> players,
 			Set<PlayerID> bombDropEvents, Map<PlayerID, Optional<Direction>> speedChangeEvents) throws IOException {
 
@@ -121,15 +173,16 @@ public class Main {
 
 		SocketAddress senderAddress = channel.receive(buffer);
 		while (senderAddress != null) {
-
 			id = players.get(senderAddress);
-			b = buffer.get(0);
+			buffer.flip();
+			b = buffer.get();
+			buffer.clear();
 
 			if (b == (byte) PlayerAction.DROP_BOMB.ordinal()) {
 				bombDropEvents.add(id);
 			} else if (plA[b].isMove()) {
 
-				Optional<Direction> dir = directions.get(buffer.get(0));
+				Optional<Direction> dir = directions.get(b);
 				speedChangeEvents.put(id, dir);
 			}
 
@@ -137,9 +190,16 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Calculate the sleeping time of the game
+	 * 
+	 * @param startingTime
+	 * @param nextTicks
+	 * @return
+	 */
 	private static long sleepingTime(long startingTime, int nextTicks) {
 
-		long nextTime = startingTime + nextTicks * Ticks.TICK_NANOSECOND_DURATION;
+		long nextTime = startingTime + (long) nextTicks * Ticks.TICK_NANOSECOND_DURATION;
 		long currentTime = System.nanoTime();
 		long diffTime = nextTime - currentTime;
 

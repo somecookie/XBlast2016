@@ -20,7 +20,7 @@ public final class BoardPainter {
 	private final BlockImage shadedFree;
 
 	/**
-	 * Constructor of the class BoardPainter.
+	 * Construct the board painter
 	 * 
 	 * @param p,
 	 *            the pallet, which is represented by a map, matching each block
