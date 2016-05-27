@@ -39,9 +39,11 @@ public final class GameState {
 	private final List<Bomb> bombs;
 	private final List<Sq<Sq<Cell>>> explosions;
 	private final List<Sq<Cell>> blasts;
+	private final int NBR_PLAYER = 4;
+	private final static int SEED = 2016;
 	private final static List<List<PlayerID>> permut = Collections
 			.unmodifiableList(Lists.permutations(Arrays.asList(PlayerID.values())));
-	private static final Random RANDOM = new Random(2016);
+	private static final Random RANDOM = new Random(SEED);
 
 	/**
 	 * Construct the game state in function of the ticks , the board, the
@@ -70,9 +72,16 @@ public final class GameState {
 
 		this.ticks = ArgumentChecker.requireNonNegative(ticks);
 
-		if (players.size() != 4) {
-			throw new IllegalArgumentException("Le nombre de joueurs doit être de 4");
+		if (players.size() != NBR_PLAYER) {
+			throw new IllegalArgumentException("There must be 4 players!");
+		} else {
+
+			for (int i = 0; i < players.size(); i++) {
+				if (players.get(i).id() != PlayerID.values()[i])
+					throw new IllegalArgumentException("The players are not well sorted");
+			}
 		}
+
 		this.players = Collections.unmodifiableList(new ArrayList<>(Objects.requireNonNull(players)));
 		this.board = Objects.requireNonNull(board);
 		this.bombs = Collections.unmodifiableList(new ArrayList<>(Objects.requireNonNull(bombs)));
@@ -166,7 +175,7 @@ public final class GameState {
 				alivePlayers.add(players.get(i));
 			}
 		}
-		return alivePlayers;
+		return Collections.unmodifiableList(new ArrayList<>(alivePlayers));
 	}
 
 	/**
@@ -212,7 +221,7 @@ public final class GameState {
 	 * @return bombedCells (Map<Cell, Bomb>)
 	 */
 	public Map<Cell, Bomb> bombedCells() {
-		return bombedCells(bombs);
+		return Collections.unmodifiableMap(new HashMap<>(bombedCells(bombs)));
 	}
 
 	private static Set<Cell> blastedCells(List<Sq<Cell>> blasts) {
@@ -231,7 +240,7 @@ public final class GameState {
 	 * @return blastedCells (Set<Cell>)
 	 */
 	public Set<Cell> blastedCells() {
-		return blastedCells(blasts);
+		return Collections.unmodifiableSet(new HashSet<>(blastedCells(blasts)));
 	}
 
 	private static List<Cell> bonus(Board board) {
@@ -382,7 +391,7 @@ public final class GameState {
 						break;
 					default:
 						throw new IllegalArgumentException(
-								"Le nombre aléatoire doit être compris entre 0 et 2 et ne peut donc pas être" + random);
+								"The random number must be between 0 and 2, but was " + random);
 					}
 					board1.add(newWall);
 				} else if (board0.blockAt(c).isBonus()) {
@@ -582,7 +591,7 @@ public final class GameState {
 					}
 				}
 				if (nbrBombs < p.maxBombs() && !taken) {
-					newBombs.add(new Bomb(p.id(), p.position().containingCell(), Ticks.BOMB_FUSE_TICKS, p.bombRange()));
+					newBombs.add(p.newBomb());
 				}
 			}
 		}

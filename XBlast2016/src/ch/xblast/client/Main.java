@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import ch.epfl.xblast.PlayerID;
-
-import javax.management.ServiceNotFoundException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
