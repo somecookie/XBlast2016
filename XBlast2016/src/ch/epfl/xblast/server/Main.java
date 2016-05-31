@@ -5,6 +5,7 @@
 package ch.epfl.xblast.server;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
@@ -18,6 +19,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import ch.epfl.xblast.Direction;
 import ch.epfl.xblast.PlayerAction;
 import ch.epfl.xblast.PlayerID;
@@ -29,9 +32,16 @@ public class Main {
 	private static PlayerAction[] plA = PlayerAction.values();
 	private static int PORT = 2016;
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException, InvocationTargetException {
+		int minPlayers = 0;
+		try {
+			minPlayers = Integer.parseInt(JOptionPane.showInputDialog(null,
+					"Enter the number of players needed to start a game", "Server", JOptionPane.QUESTION_MESSAGE));
+		} catch (NumberFormatException e) {
+			minPlayers = 1;
+		}
 
-		int minPlayers = (args.length <= 0) ? PlayerID.NB_PLAYERS : Integer.parseInt(args[0]);
+		minPlayers = (minPlayers <= 0) ? PlayerID.NB_PLAYERS : minPlayers;
 		Map<SocketAddress, PlayerID> players = new HashMap<>();
 
 		DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
@@ -39,7 +49,7 @@ public class Main {
 
 		initialization(players, minPlayers, channel);
 
-		Level level = Level.DEFAULT_LEVEL;
+		Level level = Level.HUNGER_GAMES;
 		GameState gS = level.initialState();
 		BoardPainter bP = level.boardPainter();
 		Map<PlayerID, Optional<Direction>> speedChangeEvents = new HashMap<>();
@@ -70,12 +80,15 @@ public class Main {
 			bombDropEvents.clear();
 
 		}
+		gS = gS.next(speedChangeEvents, bombDropEvents);
+		sendGameState(channel, gS, bP, players);
 
 		if (gS.winner().isPresent()) {
 			System.out.println("The winner is the player " + (gS.winner().get().ordinal() + 1));
 		} else {
 			System.out.println("It's a draw!!!");
 		}
+
 	}
 
 	/**
@@ -123,7 +136,7 @@ public class Main {
 
 			byte id = (byte) p.getValue().ordinal();
 			buffer.put(0, id);
-			buffer.flip();
+			buffer.rewind();
 			channel.send(buffer, p.getKey());
 
 		}
@@ -144,14 +157,16 @@ public class Main {
 		SocketAddress senderAddress;
 
 		while (players.size() < minPlayers) {
-
+			System.out.println("Waiting for connections: " + (minPlayers - players.size()) + " needed.");
 			senderAddress = channel.receive(buffer);
 
 			if (buffer.get(0) == (byte) PlayerAction.JOIN_GAME.ordinal() && !players.containsKey(senderAddress)) {
 				players.put(senderAddress, PlayerID.values()[players.size()]);
+				System.out.println(senderAddress + " is connected.");
 			}
 			buffer.clear();
 		}
+		System.out.println("Starting...");
 	}
 
 	/**
@@ -173,7 +188,7 @@ public class Main {
 		SocketAddress senderAddress = channel.receive(buffer);
 		while (senderAddress != null) {
 			id = players.get(senderAddress);
-			buffer.flip();
+			buffer.rewind();
 			b = buffer.get();
 			buffer.clear();
 

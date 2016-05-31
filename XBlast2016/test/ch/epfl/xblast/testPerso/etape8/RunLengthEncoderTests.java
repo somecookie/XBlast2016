@@ -28,7 +28,20 @@ public class RunLengthEncoderTests {
 			Arrays.asList(),
 			Arrays.asList((byte)-1, d, v, v, t, v, t, (byte) -4, q),
 			Arrays.asList((byte)-128, d, d),
-			Arrays.asList((byte)-128, d, (byte)-128,d)));
+			Arrays.asList((byte)-128, d, (byte)-128,d),
+			Arrays.asList((byte)-3,d,v)));
+	
+	@Test
+	public void bugInGame(){
+		List<Byte> l = new ArrayList<>(Arrays.asList(d,d,d,d,d,v));
+		List<Byte> e = expectedForEncoding.get(6);
+		l = RunLengthEncoder.encode(l);
+		assertEquals(e.size(), l.size());
+		for (int i = 0; i < e.size(); i++) {
+			assertEquals(e.get(i), l.get(i));
+		}
+		
+	}
 	@Test
 	public void normalEncode() {
 

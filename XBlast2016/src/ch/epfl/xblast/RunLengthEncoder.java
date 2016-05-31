@@ -76,6 +76,8 @@ public final class RunLengthEncoder {
 						if (nE.hasNext()) {
 							count = 1;
 							previous = b;
+						}else{
+							encoded.add(b);
 						}
 
 					}

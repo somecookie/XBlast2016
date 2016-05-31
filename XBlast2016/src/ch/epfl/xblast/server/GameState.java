@@ -42,7 +42,7 @@ public final class GameState {
 	private final static int SEED = 2016;
 	private final static List<List<PlayerID>> permut = Collections
 			.unmodifiableList(Lists.permutations(Arrays.asList(PlayerID.values())));
-	private static final Random RANDOM = new Random(SEED);
+	private static final Random RANDOM = new Random();
 
 	/**
 	 * Construct the game state in function of the ticks , the board, the

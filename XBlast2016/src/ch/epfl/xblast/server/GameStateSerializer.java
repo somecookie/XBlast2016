@@ -31,6 +31,7 @@ public final class GameStateSerializer {
 	 * @return the serialized state (List<Byte>)
 	 */
 	public static List<Byte> serialize(BoardPainter bp, GameState gs) {
+		
 		List<Byte> serialized = new ArrayList<>();
 		List<Byte> serialBoard = new ArrayList<>();
 		List<Byte> serialExpNdBombs = new ArrayList<>();
@@ -46,6 +47,7 @@ public final class GameStateSerializer {
 			serialBoard.add(bp.byteForCell(gs.board(), c));
 		}
 		serialBoard = RunLengthEncoder.encode(serialBoard);
+
 		serialized.add((byte) serialBoard.size());
 		serialized.addAll(serialBoard);
 
@@ -75,7 +77,7 @@ public final class GameStateSerializer {
 		}
 		serialized.addAll(serialPlayers);
 
-		Byte remainingTime = (byte) Math.floor(gs.remainingTime() / 2.);
+		Byte remainingTime = (byte) Math.floor(gs.remainingTime() / 5.);
 
 		serialized.add(remainingTime);
 

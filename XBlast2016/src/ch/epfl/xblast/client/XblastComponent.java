@@ -39,17 +39,20 @@ public final class XblastComponent extends JComponent {
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(PS_WIDTH, PS_HEIGHT );
+		return new Dimension(PS_WIDTH, PS_HEIGHT);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g0) {
 		Graphics2D g = (Graphics2D) g0;
-		if(gs == null)
-			return;
-		statePaint(g);
-		livesPaint(g);
-		playerPaint(g);
+		if (gs == null) {
+			g.setFont(new Font("Arial", Font.BOLD, 25));
+			g.drawString("Attempting to connect.", this.getWidth() / 2, this.getHeight() / 2);
+		} else {
+			statePaint(g);
+			livesPaint(g);
+			playerPaint(g);
+		}
 
 	}
 
@@ -63,8 +66,8 @@ public final class XblastComponent extends JComponent {
 		Comparator<Player> c1 = (p1, p2) -> Integer.compare(p1.getPosition().y(), p2.getPosition().y());
 		Comparator<Player> c2 = (p1, p2) -> {
 			int i = id.ordinal();
-			int a = Math.floorMod(i+1 + p1.getId().ordinal()+1, PlayerID.NB_PLAYERS);
-			int b = Math.floorMod(i+1 + p2.getId().ordinal()+1, PlayerID.NB_PLAYERS);
+			int a = Math.floorMod(i + 1 + p1.getId().ordinal() + 1, PlayerID.NB_PLAYERS);
+			int b = Math.floorMod(i + 1 + p2.getId().ordinal() + 1, PlayerID.NB_PLAYERS);
 
 			return Integer.compare(a, b);
 

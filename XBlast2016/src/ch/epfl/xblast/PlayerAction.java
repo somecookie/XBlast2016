@@ -5,7 +5,7 @@
 package ch.epfl.xblast;
 
 public enum PlayerAction {
-	JOIN_GAME, MOVE_N, MOVE_E, MOVE_S, MOVE_W, STOP, DROP_BOMB;
+	JOIN_GAME, MOVE_N, MOVE_E, MOVE_S, MOVE_W, STOP, DROP_BOMB, END_GAME, DRAW;
 
 	public boolean isMove() {
 

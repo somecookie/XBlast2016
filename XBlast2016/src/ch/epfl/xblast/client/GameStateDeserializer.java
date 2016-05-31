@@ -36,9 +36,9 @@ public final class GameStateDeserializer {
 	 * @param serializedState
 	 *            the given list that has to be deserialized
 	 * @return the different deserializered attributes of the game state
+	 * @throws InterruptedException
 	 */
 	public static GameState deserializerGameState(List<Byte> serializedState) {
-
 		// some indexes
 		int size = serializedState.size();
 		int compressedBoardSize = Byte.toUnsignedInt(serializedState.get(0));
@@ -53,7 +53,6 @@ public final class GameStateDeserializer {
 		List<Byte> serializedExplosions = serializedState.subList(startExplosions, endExplosions + 1);
 		List<Byte> serializedPlayer = serializedState.subList(startPlayers, endPlayers + 1);
 		int remainingTime = Byte.toUnsignedInt(serializedState.get(size - 1));
-
 		List<Image> board = deserializerBoard(serializedBoard);
 		List<Image> bombsAndExplosions = deserializerExplosions(serializedExplosions);
 		List<Player> players = deserializerPlayer(serializedPlayer);
@@ -70,8 +69,7 @@ public final class GameStateDeserializer {
 	 *            the list we will transform
 	 * @return the transformed list
 	 */
-	private static List<Byte> spiralToRowMajorOrder(List<Byte> list) {
-
+	private static List<Byte> spiralToRowMajorOrder(List<Byte> list) throws ArrayIndexOutOfBoundsException {
 		Byte[] rowMajorOrder = new Byte[list.size()];
 
 		int i = 0;
@@ -88,9 +86,12 @@ public final class GameStateDeserializer {
 	 * @param serializedBoard
 	 *            the given list that has to be deserialized
 	 * @return the deserialized board
+	 * @throws InterruptedException
 	 */
-	private static List<Image> deserializerBoard(List<Byte> serializedBoard) {
+	private static List<Image> deserializerBoard(List<Byte> serializedBoard){
 		List<Byte> desB = RunLengthEncoder.decode(serializedBoard);
+
+		desB = RunLengthEncoder.decode(serializedBoard);
 		desB = spiralToRowMajorOrder(desB);
 
 		List<Image> deserializedBoard = new ArrayList<>();

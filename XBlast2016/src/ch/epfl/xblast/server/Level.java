@@ -20,9 +20,14 @@ public final class Level {
 	private final BoardPainter boardPainter;
 	private final GameState initialState;
 	public final static Level DEFAULT_LEVEL = defaultLevelGenerator();
+	public final static Level ARENA = Arena();
+	public final static Level HUNGER_GAMES = hungerGames();
+	public final static Level EMPTY = empty();
+	public final static Level DEBUG = debug();
 	public final static int NB_LIFES = 3;
 	public final static int INITIAL_BOMBS = 2;
 	public final static int INITIAL_RANGE = 3;
+	public final static int MAX_BONUS = 9;
 
 	/**
 	 * Construct the level in function of the game state(state of the game) and
@@ -89,6 +94,122 @@ public final class Level {
 		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), INITIAL_BOMBS, INITIAL_RANGE));
 		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, INITIAL_RANGE));
 
+		GameState gameState = new GameState(board, players);
+
+		return new Level(painter, gameState);
+	}
+
+	private static Level hungerGames() {
+		Map<Block, BlockImage> imageMap = new HashMap<>();
+		imageMap.put(Block.FREE, BlockImage.IRON_FLOOR);
+		imageMap.put(Block.INDESTRUCTIBLE_WALL, BlockImage.DARK_BLOCK);
+		imageMap.put(Block.DESTRUCTIBLE_WALL, BlockImage.EXTRA);
+		imageMap.put(Block.CRUMBLING_WALL, BlockImage.EXTRA_O);
+		imageMap.put(Block.BONUS_BOMB, BlockImage.BONUS_BOMB);
+		imageMap.put(Block.BONUS_RANGE, BlockImage.BONUS_RANGE);
+		BlockImage sFree = BlockImage.IRON_FLOOR_S;
+		BoardPainter painter = new BoardPainter(imageMap, sFree);
+
+		Block __ = Block.FREE;
+		Block xx = Block.DESTRUCTIBLE_WALL;
+		Block XX = Block.INDESTRUCTIBLE_WALL;
+		Board board = Board.ofQuadrantNWBlocksWalled(
+				Arrays.asList(Arrays.asList(__, __, xx, xx, xx, xx, __), Arrays.asList(__, __, __, __, __, __, __),
+						Arrays.asList(xx, __, xx, xx, __, __, xx), Arrays.asList(xx, __, xx, __, __, xx, xx),
+						Arrays.asList(xx, __, xx, __, xx, xx, xx), Arrays.asList(xx, __, xx, __, xx, xx, xx)));
+
+		List<Player> players = new ArrayList<>();
+		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), INITIAL_BOMBS, INITIAL_RANGE));
+		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, INITIAL_RANGE));
+		GameState gameState = new GameState(board, players);
+
+		return new Level(painter, gameState);
+	}
+
+	private static Level Arena() {
+
+		Map<Block, BlockImage> imageMap = new HashMap<>();
+		imageMap.put(Block.FREE, BlockImage.IRON_FLOOR);
+		imageMap.put(Block.INDESTRUCTIBLE_WALL, BlockImage.DARK_BLOCK);
+		imageMap.put(Block.DESTRUCTIBLE_WALL, BlockImage.EXTRA);
+		imageMap.put(Block.CRUMBLING_WALL, BlockImage.EXTRA_O);
+		imageMap.put(Block.BONUS_BOMB, BlockImage.BONUS_BOMB);
+		imageMap.put(Block.BONUS_RANGE, BlockImage.BONUS_RANGE);
+		BlockImage sFree = BlockImage.IRON_FLOOR_S;
+		BoardPainter painter = new BoardPainter(imageMap, sFree);
+
+		Block __ = Block.FREE;
+		Block xx = Block.DESTRUCTIBLE_WALL;
+		Board board = Board.ofQuadrantNWBlocksWalled(
+				Arrays.asList(Arrays.asList(__, __, __, __, __, __, xx), Arrays.asList(__, __, __, __, __, __, xx),
+						Arrays.asList(__, __, __, __, __, __, xx), Arrays.asList(__, __, __, __, __, __, xx),
+						Arrays.asList(__, __, __, __, __, __, xx), Arrays.asList(xx, xx, xx, xx, xx, xx, xx)));
+
+		List<Player> players = new ArrayList<>();
+		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), INITIAL_BOMBS, 5));
+		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), INITIAL_BOMBS, 5));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), INITIAL_BOMBS, 5));
+		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), INITIAL_BOMBS, 5));
+		GameState gameState = new GameState(board, players);
+
+		return new Level(painter, gameState);
+	}
+
+	private static Level empty() {
+
+		Map<Block, BlockImage> imageMap = new HashMap<>();
+		imageMap.put(Block.FREE, BlockImage.IRON_FLOOR);
+		imageMap.put(Block.INDESTRUCTIBLE_WALL, BlockImage.DARK_BLOCK);
+		imageMap.put(Block.DESTRUCTIBLE_WALL, BlockImage.EXTRA);
+		imageMap.put(Block.CRUMBLING_WALL, BlockImage.EXTRA_O);
+		imageMap.put(Block.BONUS_BOMB, BlockImage.BONUS_BOMB);
+		imageMap.put(Block.BONUS_RANGE, BlockImage.BONUS_RANGE);
+		BlockImage sFree = BlockImage.IRON_FLOOR_S;
+		BoardPainter painter = new BoardPainter(imageMap, sFree);
+
+		Block __ = Block.FREE;
+		Board board = Board.ofQuadrantNWBlocksWalled(
+				Arrays.asList(Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, __),
+						Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, __),
+						Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, __)));
+
+		List<Player> players = new ArrayList<>();
+		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), 9, 9));
+		GameState gameState = new GameState(board, players);
+
+		return new Level(painter, gameState);
+	}
+
+	private static Level debug() {
+
+		Map<Block, BlockImage> imageMap = new HashMap<>();
+		imageMap.put(Block.FREE, BlockImage.IRON_FLOOR);
+		imageMap.put(Block.INDESTRUCTIBLE_WALL, BlockImage.DARK_BLOCK);
+		imageMap.put(Block.DESTRUCTIBLE_WALL, BlockImage.EXTRA);
+		imageMap.put(Block.CRUMBLING_WALL, BlockImage.EXTRA_O);
+		imageMap.put(Block.BONUS_BOMB, BlockImage.BONUS_BOMB);
+		imageMap.put(Block.BONUS_RANGE, BlockImage.BONUS_RANGE);
+		BlockImage sFree = BlockImage.IRON_FLOOR_S;
+		BoardPainter painter = new BoardPainter(imageMap, sFree);
+
+		Block __ = Block.FREE;
+		Block BR = Block.BONUS_RANGE;
+		Block xx = Block.DESTRUCTIBLE_WALL;
+		Board board = Board.ofQuadrantNWBlocksWalled(
+				Arrays.asList(Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, __),
+						Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, __),
+						Arrays.asList(__, __, __, __, __, __, __), Arrays.asList(__, __, __, __, __, __, xx)));
+
+		List<Player> players = new ArrayList<>();
+		players.add(new Player(PlayerID.PLAYER_1, NB_LIFES, new Cell(1, 1), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_2, NB_LIFES, new Cell(13, 1), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_3, NB_LIFES, new Cell(13, 11), 9, 9));
+		players.add(new Player(PlayerID.PLAYER_4, NB_LIFES, new Cell(1, 11), 9, 9));
 		GameState gameState = new GameState(board, players);
 
 		return new Level(painter, gameState);

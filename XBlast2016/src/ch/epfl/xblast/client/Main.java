@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import ch.epfl.xblast.PlayerID;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import ch.epfl.xblast.PlayerAction;
@@ -34,7 +35,7 @@ public class Main {
 	private static void createUI(XblastComponent xbc, DatagramChannel channel, SocketAddress hostAdress) {
 		JFrame window = new JFrame("XBlast2016");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		
 		xbc.setSize(xbc.getPreferredSize());
 
@@ -49,7 +50,7 @@ public class Main {
 		Consumer<PlayerAction> c = (move)->{
 			sendBuffer.put((byte) move.ordinal());
 			try {
-				sendBuffer.flip();
+				sendBuffer.rewind();
 				channel.send(sendBuffer, hostAdress);
 				sendBuffer.clear();
 			} catch (Exception e) {
@@ -69,7 +70,11 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException, InvocationTargetException {
-		String hostName = (args.length <= 0) ? "localhost" : args[0];
+
+		String hostName = JOptionPane.showInputDialog(null, "Enter the IP adress of the server !", "XBlast2016 !",
+				JOptionPane.QUESTION_MESSAGE);
+		hostName = (hostName == null)? "localhost" : hostName;
+		
 		DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
 		channel.configureBlocking(false);
 		SocketAddress hostAdress = new InetSocketAddress(hostName, PORT);
@@ -80,6 +85,7 @@ public class Main {
 		List<Byte> serialGs = new ArrayList<>();
 		GameState gS;
 		PlayerID id;
+		PlayerID winnerId ;
 		XblastComponent xbc = new XblastComponent();
 		
 		SwingUtilities.invokeAndWait(() -> createUI(xbc, channel, hostAdress));
@@ -88,14 +94,19 @@ public class Main {
 			channel.send(sendBuffer, hostAdress);
 			sendBuffer.rewind();
 			Thread.sleep(Time.MS_PER_S);
-		
 		}
 
 		channel.configureBlocking(true);
-
-		while (true) {
+		boolean end = false;
+		byte b = -1;
+		while (!end) {
 			serialGs.clear();
 			gSbuffer.flip(); 
+//			if((b = gSbuffer.get())== (byte)PlayerAction.END_GAME.ordinal()){
+//				end = true;
+//				if((b = gSbuffer.get())== (byte)PlayerAction.DRAW.ordinal())
+//				winnerId = PlayerID.values()[gSbuffer.get()];
+//			}
 			id = PlayerID.values()[gSbuffer.get()];
 			
 			while (gSbuffer.hasRemaining()) {
